@@ -41,7 +41,7 @@ export class TripleChoicePage implements OnInit {
   ionViewWillEnter(){
     this.getGame();
     this.admob.loadInterstitial();
-    this.admob.showBanner('top',70);
+    this.admob.showBanner('top',80);
 
     if(this.api.checkUser()){
       this.is_user=true;
