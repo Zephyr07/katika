@@ -1,0 +1,67 @@
+<ion-content [fullscreen]="true">
+  <div class="fond">
+    <ion-toolbar style="--background: transparent" class="ion-text-center">
+      <ion-chip color="medium" slot="start">
+        <ion-avatar>
+          <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+        </ion-avatar>
+        <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+      </ion-chip>
+
+      <ion-chip style="background: white" (click)="showRule()">
+        <ion-label>Règles du jeu</ion-label>
+      </ion-chip>
+
+      <ion-chip slot="end" color="medium">
+        <ion-label>{{user.point|priceFormat}} W</ion-label>
+      </ion-chip>
+    </ion-toolbar>
+    <ion-row>
+      <ion-col class="ion-text-center" size="6">
+        <img src="../../../../assets/img/wz/game/mem.png" class="radius" alt="">
+      </ion-col>
+      <ion-col class="ion-text-center" size="6">
+        <div class="jackpot pulsate-bck">
+          {{game.jackpot|priceFormat}} W <br> à gagner
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-grid class="ion-text-center">
+      Niveau : <strong>{{level}}</strong> &nbsp; Temps restant : <strong>{{time}}s</strong>
+      <ion-progress-bar [value]="progress" color="medium" style="height: 20px"></ion-progress-bar>
+    </ion-grid>
+    <ion-grid class="game">
+
+      <ion-row>
+        <ion-col size="{{size}}" *ngFor="let p of positions">
+          <img src="../../../../assets/img/wz/game/memory/{{p.id}}.png" alt="" *ngIf="p.show && !p.find">
+          <img src="../../../../assets/img/wz/game/memory/tile.png" style="border:2px solid #022747" alt=""
+               (click)="showTile(p)" *ngIf="!p.show && !p.find">
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="is_replay">
+        <ion-col>
+          <ion-button expand="block" class="pulsate-bck" (click)="play()" color="medium">Jouer</ion-button>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+
+    <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+      <ion-grid>
+
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
+          </ion-col>
+          <ion-col *ngIf="!is_replay">
+            <ion-button expand="block" [ngClass]="{'pulsate-bck':time==0}" (click)="replay()" color="medium">Rejouer</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-footer>
+  </div>
+</ion-content>
+

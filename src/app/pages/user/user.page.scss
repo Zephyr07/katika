@@ -1,0 +1,42 @@
+.info-tournament{
+
+  ion-col{
+    padding: 5px;
+    div{
+      background: #fff;
+      height: 100px;
+      padding-top: 21px;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 6px !important;
+
+
+      &.bg-dark{
+        background: #000 !important;
+        color:#fff !important;
+        ion-icon{
+          color:#fff !important;
+        }
+      }
+
+      &.bg-red{
+        background: var(--ion-color-primary) !important;
+        color:#fff !important;
+        ion-icon{
+          color:#fff !important;
+        }
+      }
+    }
+  }
+
+}
+
+.info{
+  ion-item {
+    text-align: center;
+  }
+}
+
+.video{
+  ion-item{
+    background: var(--ion-color-tertiary);
+  }
+}

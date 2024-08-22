@@ -1,0 +1,64 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/crystal.png') no-repeat center/cover fixed !important;
+}
+
+ion-chip{
+  background: var(--ion-color-medium);
+  color: #022747;
+}
+
+.jackpot{
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+h2, h3{
+  font-family: Rapier;
+  text-align: center;
+  color:#fff
+}
+h2{
+  font-size: 40px;
+}
+h3{
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-board {
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  grid-gap: 10px;
+}
+
+.crystal-btn {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background-color: var(--ion-color-medium);
+  border: 2px solid #022747;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.crystal-btn.revealed {
+  background-color: wheat;
+  transform: scale(1.1);
+}
+
+.reset-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}

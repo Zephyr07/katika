@@ -1,0 +1,146 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-chip *ngIf="is_user" (click)="showUser()">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name}}</ion-label>
+    </ion-chip>
+
+    <ion-chip slot="end" *ngIf="is_user">
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="{{'pull_to_refresh'|translate}}"
+      refreshingSpinner="circles"
+      refreshingText="{{'loading'|translate}}...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center" size="12">
+        <img src="../../../assets/img/KATIKA-10-08-2024.png" alt="" class="radius" >
+
+        <img src="../../../assets/img/Joue-et-tente-de-gagner-13-08-2024.png" alt="" class="radius" >
+      </ion-col>
+      <ion-col size="12" class="rapier ion-text-center" style="font-size: 15px">
+        Cagnotte du jour <br>
+        <span style="font-size: 40px; color:var(--ion-color-medium)">{{cagnotte|priceFormat}} W</span>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <ion-grid>
+    <div class="sous-titre ion-text-center">
+      <img src="../../../assets/img/fa.gif" alt="" class="radius">
+    </div>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-chip *ngFor="let s of scores">
+          <ion-avatar>
+            <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
+          </ion-avatar>
+          <ion-label><strong>{{s.user.user_name|limitTo:10}}</strong>
+            <br>
+            <small><strong>{{s.jackpot|priceFormat}}</strong> W à {{s.game.name}}</small>
+            <br>
+            <small>{{s.updated_at|dateFormat}}</small>
+          </ion-label>
+        </ion-chip>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-chip *ngFor="let s of scores_bis">
+          <ion-avatar>
+            <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
+          </ion-avatar>
+          <ion-label><strong>{{s.user.user_name|limitTo:10}}</strong>
+            <br>
+            <small><strong>{{s.jackpot|priceFormat}}</strong> W à {{s.game.name}}</small>
+            <br>
+            <small>{{s.updated_at|dateFormat}}</small>
+          </ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <div class="sous-titre ion-text-center" style="margin-top: 0">
+      <img src="../../../assets/img/Jouer-10-08-2024.gif" alt="" class="radius" style="width: 80%" (click)="games()">
+    </div>
+  </ion-grid>
+
+  <ion-button  style="display: none" id="open-modalC" expand="block">Open Sheet Modal</ion-button>
+
+  <ion-modal #modalDetail trigger="open-modalC" [initialBreakpoint]="0.75" [breakpoints]="[0,0.75,1]">
+    <ng-template>
+      <ion-content>
+        <ion-row class="ion-text-center" style="margin-top: 10px">
+          <ion-col size="6">
+            <img src="../../../assets/img/Connexion-10-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='c'">
+          </ion-col>
+          <ion-col size="6">
+            <img src="../../../assets/img/inscription-10-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='i'">
+          </ion-col>
+        </ion-row>
+
+        <ion-grid class="custom" *ngIf="choice=='c'">
+          <ion-row>
+            <ion-col>
+              <ion-input type="number" label="Téléphone*" min="MIN" max="MAX" [(ngModel)]="phone" labelPlacement="stacked" placeholder="Téléphone"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-input type="password" label="Mot de passe" (keyup.enter)="login()" [(ngModel)]="password" labelPlacement="stacked" placeholder="Mot de passe"></ion-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" color="tertiary" (click)="login()" >{{'login'|translate}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-grid class="custom" *ngIf="choice=='i'">
+          <ion-row>
+            <ion-col size="6">
+              <ion-input type="text" label="Username*" [(ngModel)]="user_name" labelPlacement="stacked" placeholder="Username"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-input type="number" label="Téléphone*" min="{{MIN}}" max="{{MAX}}" [(ngModel)]="phone" labelPlacement="stacked" placeholder="Téléphone"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col >
+              <ion-input type="email" label="Email*" [(ngModel)]="email" labelPlacement="stacked" placeholder="Email"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <ion-input type="password" label="Mot de passe" [(ngModel)]="password" labelPlacement="stacked" placeholder="Mot de passe"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-input type="password" label="Mot de passe encore" [(ngModel)]="password_confirmation" labelPlacement="stacked" placeholder="Mot de passe encore"></ion-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" color="tertiary" (click)="register()" >{{'register'|translate}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

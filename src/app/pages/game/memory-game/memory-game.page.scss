@@ -1,0 +1,20 @@
+.game{
+  ion-col{
+    padding: 0 2px;
+    img{
+      //height: 100%;
+      border-radius: 10px;
+    }
+  }
+}
+
+ion-chip{
+  background: var(--ion-color-medium);
+  color: #022747;
+}
+
+.jackpot{
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}

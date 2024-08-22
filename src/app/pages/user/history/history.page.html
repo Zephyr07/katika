@@ -1,0 +1,27 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background:#f6f6f6 !important">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Historique de score</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row style="font-weight: bold">
+      <ion-col size="5">Jeu</ion-col>
+      <ion-col size="3">Niveau</ion-col>
+      <ion-col size="4">Date</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let s of scores">
+      <ion-col size="5">
+        <strong>{{s.game.name}}</strong>
+        <br>
+        <small *ngIf="s.is_winner==1">Gagné</small>
+      </ion-col>
+      <ion-col size="3" class="ion-text-center">{{s.level}}</ion-col>
+      <ion-col size="4">{{s.updated_at|dateFormat}}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

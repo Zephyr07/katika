@@ -1,5 +1,7 @@
 {
-  "name": "pos-app",
-  "integrations": {},
+  "name": "SmoothSale",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

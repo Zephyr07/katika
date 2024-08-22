@@ -1,0 +1,233 @@
+<ion-content [fullscreen]="true">
+  <div class="fond">
+    <ion-toolbar style="--background: transparent" class="ion-text-center">
+      <ion-chip color="medium" slot="start">
+        <ion-avatar>
+          <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+        </ion-avatar>
+        <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+      </ion-chip>
+
+      <ion-chip style="background: white" (click)="showRule()">
+        <ion-label>Règles du jeu</ion-label>
+      </ion-chip>
+
+      <ion-chip slot="end" color="medium">
+        <ion-label>{{user.point|priceFormat}} W</ion-label>
+      </ion-chip>
+    </ion-toolbar>
+    <ion-grid style="color: transparent;">
+      <ion-row>
+        <ion-col size="21">
+          Level : {{level}} &nbsp; Size: {{size}} &nbsp; Answer :
+        </ion-col>
+        <ion-col size="21">
+          Choice : {{choice}} &nbsp; Is loose :  {{is_loose}}
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid class="grid-game">
+      <ion-row>
+        <ion-col size="12">
+          <img src="../../../../assets/img/wz/game/bat.png" style="border-radius: 20px">
+        </ion-col>
+        <ion-col size="12" class="ion-text-center">
+          <img src="../../../../assets/img/level/n{{level}}.png" style="border-radius: 20px; width: 40%">
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="level==1" [ngClass]="{'selected-row': level==1}">
+        <ion-col size="6" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="6" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="level==2" [ngClass]="{'selected-row': level==2}">
+        <ion-col size="6" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="6" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==3" [ngClass]="{'selected-row': level==3}">
+        <ion-col size="4" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==4" [ngClass]="{'selected-row': level==4}">
+        <ion-col size="4" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==5" [ngClass]="{'selected-row': level==5}">
+        <ion-col size="4" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="4" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==6" [ngClass]="{'selected-row': level==6}">
+        <ion-col size="3" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(4)" [ngClass]="{'good-answer': choice==4 && choice==answer, 'loose': answer==4 && is_loose, 'choice':choice==4 && choice!=answer}">
+          <div class="game-block middle">4<ion-icon *ngIf="choice==4 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==7" [ngClass]="{'selected-row': level==7}" id="level5">
+        <ion-col size="3" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(4)" [ngClass]="{'good-answer': choice==4 && choice==answer, 'loose': answer==4 && is_loose, 'choice':choice==4 && choice!=answer}">
+          <div class="game-block middle">4<ion-icon *ngIf="choice==4 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==8" [ngClass]="{'selected-row': level==8}">
+        <ion-col size="3" (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col size="3" (click)="checkChoice(4)" [ngClass]="{'good-answer': choice==4 && choice==answer, 'loose': answer==4 && is_loose, 'choice':choice==4 && choice!=answer}">
+          <div class="game-block middle">4<ion-icon *ngIf="choice==4 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==9" class="col-l-10" [ngClass]="{'selected-row': level==9}">
+        <ion-col (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(4)" [ngClass]="{'good-answer': choice==4 && choice==answer, 'loose': answer==4 && is_loose, 'choice':choice==4 && choice!=answer}">
+          <div class="game-block middle">4<ion-icon *ngIf="choice==4 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(5)" [ngClass]="{'good-answer': choice==5 && choice==answer, 'loose': answer==5 && is_loose, 'choice':choice==5 && choice!=answer}">
+          <div class="game-block middle">5<ion-icon *ngIf="choice==5 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row *ngIf="level==10" class="col-l-10" [ngClass]="{'selected-row': level==10}">
+        <ion-col (click)="checkChoice(1)" [ngClass]="{'good-answer': choice==1 && choice==answer, 'loose': answer==1 && is_loose, 'choice':choice==1 && choice!=answer}">
+          <div class="game-block middle">1<ion-icon *ngIf="choice==1 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(2)" [ngClass]="{'good-answer': choice==2 && choice==answer, 'loose': answer==2 && is_loose, 'choice':choice==2 && choice!=answer}">
+          <div class="game-block middle">2<ion-icon *ngIf="choice==2 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(3)" [ngClass]="{'good-answer': choice==3 && choice==answer, 'loose': answer==3 && is_loose, 'choice':choice==3 && choice!=answer}">
+          <div class="game-block middle">3<ion-icon *ngIf="choice==3 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(4)" [ngClass]="{'good-answer': choice==4 && choice==answer, 'loose': answer==4 && is_loose, 'choice':choice==4 && choice!=answer}">
+          <div class="game-block middle">4<ion-icon *ngIf="choice==4 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+
+        <ion-col (click)="checkChoice(5)" [ngClass]="{'good-answer': choice==5 && choice==answer, 'loose': answer==5 && is_loose, 'choice':choice==5 && choice!=answer}">
+          <div class="game-block middle">5<ion-icon *ngIf="choice==5 && choice==answer" name="checkmark-circle"></ion-icon></div>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+
+    <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+      <ion-grid>
+        <ion-row class="ion-text-center">
+          <ion-col size="3"></ion-col>
+          <ion-col size="6">
+            <div class="jackpot pulsate-bck">
+              {{game.jackpot|priceFormat}} W <br> à gagner
+            </div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" [ngClass]="{'pulsate-bck':is_loose||is_win}" (click)="checkPoint(true)" color="medium">Rejouer</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-footer>
+  </div>
+</ion-content>
+

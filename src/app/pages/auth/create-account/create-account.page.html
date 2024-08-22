@@ -1,0 +1,59 @@
+<ion-content class="auth">
+  <div class="custom-backgrounds">
+
+    <div class="ion-text-center">
+      <img src="../../../../assets/icon/logo.png" alt="Logo" style="width: 25vh; margin-top: 25px">
+    </div>
+
+    <form class="shadows">
+      <ion-grid>
+        <ion-row color="primary" class="ion-justify-content-center" justify-content-center>
+          <ion-col>
+            <div class="ion-text-center">
+              <h3>{{'create_account'|translate}}</h3>
+            </div>
+            <div>
+              <ion-item>
+                <ion-input type="text" placeholder="{{'full_name'|translate}}" [(ngModel)]="full_name" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="text" placeholder="{{'user_name'|translate}}" [(ngModel)]="user_name" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="email" placeholder="{{'email'|translate}}" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="number" min="NUMBER_RANGE.min" placeholder="{{'phone_number'|translate}}" [(ngModel)]="phone" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="text" placeholder="{{'store_code'|translate}}" [(ngModel)]="store_code" [ngModelOptions]="{standalone: true}"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="password" placeholder="{{'password'|translate}}"
+                           [(ngModel)]="password" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-input type="password" placeholder="{{'password_confirmation'|translate}}"
+                           (keyup.enter)="register()"[(ngModel)]="password_confirmation" [ngModelOptions]="{standalone: true}" required></ion-input>
+              </ion-item>
+            </div>
+            <div>
+              <ion-button
+                color="tertiary"
+                (click)="register()"
+                expand="block">{{'login'|translate}}</ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row style="margin-top:5px">
+          <ion-col class="ion-text-center">
+            <a style="text-decoration: underline;" (click)="goToLogin()">
+              <span class="primary">{{'login'|translate}}</span>
+            </a>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+
+  </div>
+</ion-content>

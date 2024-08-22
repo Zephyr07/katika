@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>{{'edit_my_info'|translate}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="custom">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        {{'email'|translate}} : {{user.email|limitTo:5}}****
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        {{'phone'|translate}} : {{user.phone|limitTo:5}}****
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input [(ngModel)]="user_name" [ngModelOptions]="{standalone: true}" placeholder="{{'user_name'|translate}}"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-input [(ngModel)]="password" type="password" [ngModelOptions]="{standalone: true}" placeholder="{{'password'|translate}}"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="save()" color="tertiary">
+          {{'save'|translate}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+
+</ion-content>
