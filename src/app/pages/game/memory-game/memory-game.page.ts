@@ -315,7 +315,7 @@ export class MemoryGamePage implements OnInit {
       // debit
       const opt ={
         user_id:this.user.id,
-        game:'Memory'
+        game_id:this.game.id
       };
 
       this.api.post('start_game',opt).then(a=>{

@@ -1,3 +1,8 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/ka.jpeg') no-repeat center/cover fixed !important;
+}
+
+
 ion-title{
   img{
     width: 225px;
@@ -43,6 +48,7 @@ ion-card-subtitle{
 
 ion-row{
   margin-bottom: 10px;
+  margin-top: -20px;
 }
 
 .custom{
@@ -59,5 +65,16 @@ ion-row{
 }
 
 ion-toolbar{
-  --background: #f6f6f6;
+  --background: transparent !important;
+}
+
+.cagnotte{
+  color: #3de400;
+  background: #293c64a6;
+  border-radius: 20px;
+}
+
+.chip{
+  background: #FCD000;
+  color:var(--ion-color-tertiary)
 }

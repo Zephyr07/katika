@@ -46,6 +46,8 @@ export class GamePage implements OnInit {
       this.router.navigateByUrl('game/aviator');
     } else if(t=='puzzle'){
       this.router.navigateByUrl('game/puzzle');
+    } else if(t=='fortune'){
+      this.router.navigateByUrl('game/fortune');
     }
   }
 }

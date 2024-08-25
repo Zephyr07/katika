@@ -198,7 +198,7 @@ export class PuzzlePage implements OnInit {
     });
     const alert = await this.alertController.create({
       header: 'VOUS AVEZ PERDU',
-      message: 'Vous n\'avez pas reussi à trouver les 5 crystaux',
+      message: 'Vous n\'avez pas reussi à trouver les 5 cristaux',
       buttons: [
         {
           text: 'Fermer',

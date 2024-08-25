@@ -1,0 +1,61 @@
+<ion-content>
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip slot="end">
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+  <h3 class="jackpot ion-text-center" style="margin-bottom: 20px">
+    Jackpot :
+    <strong style="color:#fff;"> {{game.jackpot|priceFormat}} W</strong>
+  </h3>
+
+  <div id="wheel-container">
+    <canvas id="wheel"></canvas>
+  </div>
+
+  <ion-grid *ngIf="result.prize!=undefined">
+    <h3 class="ion-text-center primary">Resultat : {{result.prize}}</h3>
+
+  </ion-grid>
+
+
+
+  <ion-grid style="margin: 10px; background: #ddb8788c; border-radius: 20px;">
+    <h3 class="ion-text-center tertiary">Les prix à gagner</h3>
+    <ion-row  style="font-size: 10px">
+      <ion-col size="3" *ngFor="let s of win_p">
+        {{s.text}} : <strong>{{s.prize}}</strong>
+      </ion-col>
+      <ion-col size="3">
+        Autre : <strong>0 W</strong>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-footer style="background: transparent !important;">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted" (click)="close()" color="tertiary">Fermer</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted" (click)="startGame()" color="medium">Jouer</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
+</ion-content>
+

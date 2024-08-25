@@ -1,13 +1,13 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-chip *ngIf="is_user" (click)="showUser()">
+    <ion-chip *ngIf="is_user" class="chip" (click)="showUser()">
       <ion-avatar>
         <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
       </ion-avatar>
       <ion-label>{{user.user_name}}</ion-label>
     </ion-chip>
 
-    <ion-chip slot="end" *ngIf="is_user">
+    <ion-chip slot="end" class="chip" *ngIf="is_user">
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
@@ -25,13 +25,15 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center" size="12">
-        <img src="../../../assets/img/KATIKA-10-08-2024.png" alt="" class="radius" >
+        <img src="../../../assets/img/Katika-25-08-2024.png" alt="" class="radius" >
 
-        <img src="../../../assets/img/Joue-et-tente-de-gagner-13-08-2024.png" alt="" class="radius" >
+        <img src="../../../assets/img/Joue-et-tente-de-gagner-25-08-2024.png" alt="" class="radius" >
       </ion-col>
-      <ion-col size="12" class="rapier ion-text-center" style="font-size: 15px">
-        Cagnotte du jour <br>
-        <span style="font-size: 40px; color:var(--ion-color-medium)">{{cagnotte|priceFormat}} W</span>
+      <ion-col size="12" class="rapier ion-text-center">
+        <div class="cagnotte">
+          <span style="font-size: 30px">Cagnotte du jour</span> <br>
+          <span style="font-size: 40px; color:#fff">{{cagnotte|priceFormat}} W</span>
+        </div>
       </ion-col>
     </ion-row>
 
@@ -39,11 +41,11 @@
 
   <ion-grid>
     <div class="sous-titre ion-text-center">
-      <img src="../../../assets/img/fa.gif" alt="" class="radius">
+      <img src="../../../assets/img/Gagnants-pr-c-dents-25-08-2024.png" style="width: 80%" alt="" class="radius">
     </div>
     <ion-row>
       <ion-col class="ion-text-center">
-        <ion-chip *ngFor="let s of scores">
+        <ion-chip *ngFor="let s of scores" class="chip">
           <ion-avatar>
             <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
           </ion-avatar>
@@ -56,7 +58,7 @@
         </ion-chip>
       </ion-col>
       <ion-col class="ion-text-center">
-        <ion-chip *ngFor="let s of scores_bis">
+        <ion-chip *ngFor="let s of scores_bis" class="chip">>
           <ion-avatar>
             <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
           </ion-avatar>
@@ -73,7 +75,7 @@
 
   <ion-grid>
     <div class="sous-titre ion-text-center" style="margin-top: 0">
-      <img src="../../../assets/img/Jouer-10-08-2024.gif" alt="" class="radius" style="width: 80%" (click)="games()">
+      <img src="../../../assets/img/Jouer-25-08-2024.png" alt="" class="radius" style="width: 80%" (click)="games()">
     </div>
   </ion-grid>
 

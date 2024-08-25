@@ -18,7 +18,7 @@
 
   <div class="car" *ngIf="!isCrashed">
     <div class="loop-wrapper">
-      <div class="mountain"></div>
+      <div class="mountain" id="mon"></div>
       <div class="hill"></div>
       <div class="tree"></div>
       <div class="tree"></div>
@@ -43,19 +43,52 @@
   </div>
 
   <div class="game-container">
+    <ion-grid>
+      <h3>Selectionner un multiplicateur </h3>
+      <ion-row>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" size="small" (click)="user_multiplier=2">x2</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==2" color="medium" size="small">x2</ion-button>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=3" color="tertiary" size="small" (click)="user_multiplier=3">x3</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==3" color="medium" size="small">x3</ion-button>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=5" color="tertiary" size="small" (click)="user_multiplier=5">x5</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==5" color="medium" size="small">x5</ion-button>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=10" color="tertiary" size="small" (click)="user_multiplier=10">x10</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==10" color="medium" size="small">x10</ion-button>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=15" color="tertiary" size="small" (click)="user_multiplier=15">x15</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==15" color="medium" size="small">x15</ion-button>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=20" color="tertiary" size="small" (click)="user_multiplier=20">x20</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==20" color="medium" size="small">x20</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="1"></ion-col>
+        <ion-col size="10" class="custom">
+          <ion-input [disabled]="isStarted" type="number" min="1" max="20" step="0.1" [(ngModel)]="user_multiplier" placeholder="Multiplicateur personnalisé"></ion-input>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
     <h3>Mutliplicateur : {{ multiplier.toFixed(2) }}</h3>
-    <h3 *ngIf="is_win">Vous avez encaissé avant le crash</h3>
-    <h2 *ngIf="!isCrashed" style="color:var(--ion-color-tertiary)">Vos gains <br> {{(mise*multiplier).toFixed(2)}} W</h2>
-    <h3 *ngIf="isCrashed">Le camion a crashé</h3>
+    <h2 *ngIf="!isCrashed && user_multiplier!=undefined" style="color:var(--ion-color-tertiary)">Vos gains <br> {{(mise*user_multiplier).toFixed(2)}} W</h2>
+    <h2 *ngIf="isCrashed">Le camion <br>a crashé !!!</h2>
 
     <ion-row>
       <ion-col size="6">
-        <ion-button expand="block" (click)="close()" color="light">Fermer</ion-button>
+        <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
       </ion-col>
       <ion-col size="6">
-        <ion-button expand="block" [ngClass]="{'pulsate-bck':isCrashed}" *ngIf="!isStarted" (click)="startGame()" color="light">Jouer</ion-button>
-        <ion-button expand="block" [ngClass]="{'pulsate-bck':isCrashed}" *ngIf="isStarted && !isCrashed" (click)="stopGame()" color="tertiary">Encaisser</ion-button>
-        <ion-button expand="block" [ngClass]="{'pulsate-bck':isCrashed}" *ngIf="isCrashed" (click)="startGame()" color="primary">Rejouer</ion-button>
+        <ion-button expand="block" [disabled]="isStarted" [ngClass]="{'pulsate-bck':isCrashed}" (click)="startGame()" color="medium">Jouer</ion-button>
       </ion-col>
     </ion-row>
   </div>

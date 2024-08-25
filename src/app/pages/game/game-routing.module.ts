@@ -24,6 +24,14 @@ const routes: Routes = [
     path: 'puzzle',
     loadChildren: () => import('./puzzle/puzzle.module').then( m => m.PuzzlePageModule)
   },
+  {
+    path: 'wheel',
+    loadChildren: () => import('./wheel/wheel.module').then( m => m.WheelPageModule)
+  },
+  {
+    path: 'fortune',
+    loadChildren: () => import('./fortune/fortune.module').then( m => m.FortunePageModule)
+  }
 
 ];
 
