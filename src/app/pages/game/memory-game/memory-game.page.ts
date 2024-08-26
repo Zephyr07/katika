@@ -340,7 +340,6 @@ export class MemoryGamePage implements OnInit {
   }
 
   goodChoice(a,b){
-    this.time+=2;
     this.count-=1;
     // ok, faire disparaitre les tule et augmenter le chronos de X secondes
     setTimeout(()=>{
@@ -354,6 +353,8 @@ export class MemoryGamePage implements OnInit {
       } else {
         this.win_level();
       }
+    } else {
+      this.time+=2;
     }
   }
 
@@ -417,6 +418,7 @@ export class MemoryGamePage implements OnInit {
   }
 
   async win_level(){
+    clearInterval(this.interval);
     const alert = await this.alertController.create({
       header: 'Niveau terminé',
       subHeader:"Passez au niveau suivant",
@@ -436,18 +438,7 @@ export class MemoryGamePage implements OnInit {
   }
 
   async loose(){
-    // enregistrement du stocke
-    const opt ={
-      level:this.level,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      is_winner:false
-    };
-    this.game.jackpot+=50;
 
-    this.api.post('scores',opt).then(d=>{
-      //console.log(d)
-    });
     const alert = await this.alertController.create({
       header: 'Vous avez perdu',
       buttons: [

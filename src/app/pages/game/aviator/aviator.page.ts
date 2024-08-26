@@ -12,10 +12,12 @@ import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 })
 export class AviatorPage implements OnInit {
 
+  countdownInterval:any;
   user_multiplier:number;
   mise=0;
   private timeInterval=100;
   multiplier: number = 1;
+  private private_multiplier: number = 1;
   private crashTime: number = 0;
   isCrashed: boolean = false;
   //private successRate: number = Math.random() * 100; // Random success rate
@@ -23,14 +25,26 @@ export class AviatorPage implements OnInit {
   interval:any;
   is_win=false;
   isStarted=false;
+  private finals=[];
   private series=[];
   private index=0;
+  private decision=0;
+
+  can_play=true;
+
+  party=0;
 
   is_user=false;
   pub=false;
   user:any={};
   game:any={};
   private target =0;
+  private count = 100;
+  private dif = 0;
+  isWin=false;
+  auto=false;
+  chiffre=3;
+  isCountdown=false;
 
   constructor(
     public navCtrl: NavController,
@@ -40,7 +54,9 @@ export class AviatorPage implements OnInit {
     private admob:AdmobProvider,
     private alertController:AlertController
   ) {
-    this.series = this.getSeries(100);
+    this.series = this.getSeries(this.count);
+    this.finals= this.genererTableau(this.count);
+    this.dif = this.randomInRange(0,0.1);
   }
 
   ngOnInit(){
@@ -74,31 +90,65 @@ export class AviatorPage implements OnInit {
   }
 
   startGame() {
-    if(this.user_multiplier!=undefined && this.user_multiplier>1.01){
+    this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
+      this.user = a.data.user;
+      localStorage.setItem('user_ka',JSON.stringify(this.user));
+    });
+    this.party++;
+    //console.log(this.party, this.index);
+    if(this.user_multiplier!=undefined && this.user_multiplier>1){
       if(this.user.point<50){
         this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
+        this.isCountdown=false;
+        clearInterval(this.countdownInterval);
+        clearInterval(this.interval);
+        this.chiffre=5;
+        this.isStarted=false;
+        this.isCrashed=false;
+        this.auto=false;
+        this.can_play=true;
       } else {
-        // debit
-        const opt ={
-          user_id:this.user.id,
-          game_id:this.game.id
-        };
+        // gestion du countdown
 
-        this.api.post('start_game',opt).then(a=>{
-          this.user.point-=50;
+        this.isCountdown=true;
+        this.chiffre=3;
+        this.countdownInterval = setInterval(()=>{
+          this.chiffre--;
+          if(this.chiffre==0){
 
-        });
-        const index = Math.floor(Math.random() * this.series.length);
-        this.target = this.series[index];
-        this.index++;
-        this.mise=50;
-        this.isStarted=true;
-        this.is_win = false;
-        this.isCrashed = false;
-        this.multiplier = 1;
-        this.crashTime = Math.floor(Math.random() * 10000) + 5000; // Crash time between 5 to 15 seconds
-        //this.crashTime = Math.random() * (3 - 1);
-        this.increaseMultiplier();
+            this.isCrashed=false;
+            this.isWin=false;
+            this.isStarted=false;
+
+            this.isCountdown=false;
+            clearInterval(this.countdownInterval);
+            // debit
+            const opt ={
+              user_id:this.user.id,
+              game_id:this.game.id
+            };
+
+            this.api.post('start_game',opt).then(a=>{
+              this.user.point-=50;
+            });
+            const index = Math.floor(Math.random() * this.series.length);
+            this.target = this.series[this.index];
+            this.decision = this.finals[this.index];
+            //console.log('ici',this.decision,this.target);
+            this.index=(this.index+1)%this.series.length;
+            this.mise=50;
+            this.isStarted=true;
+            this.is_win = false;
+            this.isCrashed = false;
+            this.multiplier = 1;
+            this.private_multiplier = 1;
+            this.crashTime = Math.floor(Math.random() * 10000) + 5000; // Crash time between 5 to 15 seconds
+            //this.crashTime = Math.random() * (3 - 1);
+            this.increaseMultiplier();
+          }
+        },1000);
+
+
       }
     } else {
       this.util.doToast('Vous n\'avez pas renseinger de multiplicateur',3000,'tertiary');
@@ -115,50 +165,89 @@ export class AviatorPage implements OnInit {
         clearInterval(this.interval);
         return;
       }
-      /*if(this.x>=5000 && this.x<8000){
-        this.multiplier+=0.01;
-      } else if(this.x>=8000){
-        this.multiplier+=0.015;
-      }*/
 
       if(this.x>=0 && this.x<3000){
         // apres une seconde le multiplicateur change
-        this.multiplier+=0.01;
+        this.private_multiplier+=0.01;
       } else if(this.x>=3000 && this.x<10000){
-        this.multiplier+=0.02;
+        this.private_multiplier+=0.02;
       } else if(this.x>=10000 && this.x<20000){
-        this.multiplier+=0.03;
+        this.private_multiplier+=0.03;
       } else if(this.x>=20000 && this.x<40000){
-        this.multiplier+=0.04;
+        this.private_multiplier+=0.04;
       } else {
-        this.multiplier+=0.05;
+        this.private_multiplier+=0.05;
       }
+
+      if(this.private_multiplier>=this.user_multiplier-0.01){
+        if(this.decision==0){
+          this.crash();
+          clearInterval(this.interval);
+          //console.log('c');
+          return;
+        } else {
+          this.multiplier+=0.02;
+          // victoire
+          this.stopGame();
+          //console.log("F");
+        }
+      }
+
+      if(this.private_multiplier>this.target){
+        this.multiplier+=0.01;
+        //console.log("a",this.private_multiplier,this.multiplier);
+        this.crash();
+        clearInterval(this.interval);
+        return;
+      }
+
+      if(this.decision==0 && this.user_multiplier==1.01){
+        this.crash();
+        clearInterval(this.interval);
+        //console.log('b');
+        return;
+
+      }
+      if(this.decision==0 && this.user_multiplier-1.01>0.1){
+        if(this.private_multiplier==this.user_multiplier-this.dif){
+          this.crash();
+          clearInterval(this.interval);
+          //console.log('d');
+          return;
+        }
+
+      }
+      this.private_multiplier = parseFloat(this.private_multiplier.toFixed(2));
+      this.multiplier=this.private_multiplier;
+      
       this.x+=this.timeInterval;
 
-      if(this.multiplier>this.target){
-        //this.multiplier-=0.01;
-        this.crash();
-        clearInterval(this.interval);
-      }
 
-      if(this.multiplier>=this.user_multiplier){
-        // victoire
-        this.stopGame();
-      }
-      /*/this.multiplier += 0.01; // Increase multiplier every second
-      this.successRate = Math.random() * 100; // Update success rate
-      if (this.successRate < 10) {
-        this.multiplier-=0.01;
-        this.crash();
-        clearInterval(this.interval);
-      }*/
     }, this.timeInterval);
   }
 
   crash() {
     this.isCrashed = true;
     this.isStarted=false;
-    this.loose();
+    this.can_play = !this.auto;
+    //this.loose();
+    setTimeout(()=>{
+      if(this.auto){
+        this.startGame();
+      } else {
+        this.can_play=true;
+      }
+    },2000)
+  }
+
+  cancel(){
+    this.isCountdown=false;
+    clearInterval(this.countdownInterval);
+    this.chiffre=5;
+    this.isStarted=false;
+    this.isCrashed=false;
+    this.auto=false;
+    this.can_play=true;
   }
 
   close(){
@@ -170,7 +259,7 @@ export class AviatorPage implements OnInit {
     clearInterval(this.interval);
     if (!this.isCrashed) {
       //this.util.doToast('Vous avez encaissé avant le crash! Le multiplicateur était de  ' + this.multiplier.toFixed(2),5000,'medium','top');
-      this.is_win=true;
+      this.isWin=true;
       this.isStarted=false;
       // ajout des points
       this.win();
@@ -207,6 +296,7 @@ export class AviatorPage implements OnInit {
 
 
   async win(){
+    this.user.point = this.user.point+this.mise*this.user_multiplier;
     const opt ={
       level:this.user_multiplier,
       user_id:this.user.id,
@@ -218,22 +308,30 @@ export class AviatorPage implements OnInit {
     this.api.post('scores',opt).then(d=>{
 
     });
-    const alert = await this.alertController.create({
-      header: 'VOUS AVEZ GAGNEZ',
-      subHeader:"Toutes nos félicitations",
-      message: 'Vos points ont été crédités sur votre compte',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'confirm',
-          handler: () => {
-            this.ionViewWillEnter();
-          },
-        }
-      ],
-    });
+    if(this.auto){
+      this.util.doToast('Vous avez gagnez, vos gains ont été crédités',2000);
+      setTimeout(()=>{
+        this.startGame();
+      },2000);
+    } else {
+      const alert = await this.alertController.create({
+        header: 'VOUS AVEZ GAGNEZ',
+        subHeader:"Toutes nos félicitations",
+        message: 'Vos points ont été crédités sur votre compte',
+        buttons: [
+          {
+            text: 'Fermer',
+            role: 'confirm',
+            handler: () => {
+              this.ionViewWillEnter();
+            },
+          }
+        ],
+      });
 
-    await alert.present();
+      await alert.present();
+    }
+
   }
   async loose() {
     // enregistrement du stocke
@@ -306,41 +404,42 @@ export class AviatorPage implements OnInit {
       "greaterThan10": Math.floor(count * percentages.greaterThan10)
     };
 
-    // Helper function to generate random numbers within a range with 2 decimals
-    function randomInRange(min, max) {
-      return parseFloat((Math.random() * (max - min) + min).toFixed(2));
-    }
 
     // Generate numbers based on the ranges
 
     for (let i = 0; i < limits.lessThan2; i++) {
-      numbers.push(randomInRange(2, 2.99));
+      numbers.push(this.randomInRange(2, 2.99));
     }
 
     for (let i = 0; i < limits.lessThan5; i++) {
-      numbers.push(randomInRange(3, 5));
+      numbers.push(this.randomInRange(3, 5));
     }
 
     for (let i = 0; i < limits.lessThan1; i++) {
-      numbers.push(randomInRange(1, 1.99));
+      numbers.push(this.randomInRange(1, 1.99));
     }
 
     for (let i = 0; i < limits.lessThan10; i++) {
-      numbers.push(randomInRange(6, 10));
+      numbers.push(this.randomInRange(6, 10));
     }
 
     for (let i = 0; i < limits.greaterThan10; i++) {
-      numbers.push(randomInRange(10, 50));
+      numbers.push(this.randomInRange(10, 50));
     }
-
+    console.log(numbers.length);
     // If the total number of numbers is less than count due to rounding, fill up the remainder with random <1 numbers
-    while (numbers.length < count) {
-      numbers.push(randomInRange(0, 1));
-    }
+    /*while (numbers.length < count) {
+      numbers.push(this.randomInRange(0, 1));
+    }*/
 
     // Mélange de la série pour répartir aléatoirement les nombres
     numbers = this.shuffleArray(numbers);
     return numbers;
+  }
+
+  // Helper function to generate random numbers within a range with 2 decimals
+  randomInRange(min, max) {
+    return parseFloat((Math.random() * (max - min) + min).toFixed(2));
   }
 
   shuffleArray<T>(array: T[]): T[] {
@@ -359,7 +458,28 @@ export class AviatorPage implements OnInit {
     return array;
   }
 
-  getSeriesFormServer(){
-    // recuperation des series et de la position et du statut du jeu (si encours ou à l'arret)
+  genererTableau(X: number): number[] {
+    const tableau: number[] = [];
+
+    const nbZeros = Math.floor(X * 0.5); // Calcul du nombre de 0 (70%)
+    const nbUn = X - nbZeros; // Le reste sera des 1
+
+    // Ajouter 0 au tableau
+    for (let i = 0; i < nbZeros; i++) {
+      tableau.push(0);
+    }
+
+    // Ajouter 1 au tableau
+    for (let i = 0; i < nbUn; i++) {
+      tableau.push(1);
+    }
+
+    // Mélanger le tableau de manière aléatoire pour répartir les 0 et 1
+    for (let i = tableau.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tableau[i], tableau[j]] = [tableau[j], tableau[i]]; // Échange des éléments
+    }
+
+    return tableau;
   }
 }

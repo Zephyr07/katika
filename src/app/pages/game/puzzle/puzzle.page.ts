@@ -59,7 +59,7 @@ export class PuzzlePage implements OnInit {
       // debit
       const opt ={
         user_id:this.user.id,
-        game:'Crystal'
+        game_id:this.game.id
       };
       this.api.post('start_game',opt).then(a=>{
         this.user.point-=50;
@@ -183,19 +183,6 @@ export class PuzzlePage implements OnInit {
   }
 
   async loose(){
-    // enregistrement du stocke
-    const opt ={
-      level:this.score/10,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      jackpot:0,
-      is_winner:false
-    };
-    this.game.jackpot+=50;
-
-    this.api.post('scores',opt).then(d=>{
-
-    });
     const alert = await this.alertController.create({
       header: 'VOUS AVEZ PERDU',
       message: 'Vous n\'avez pas reussi à trouver les 5 cristaux',

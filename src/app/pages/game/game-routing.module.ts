@@ -25,12 +25,12 @@ const routes: Routes = [
     loadChildren: () => import('./puzzle/puzzle.module').then( m => m.PuzzlePageModule)
   },
   {
-    path: 'wheel',
-    loadChildren: () => import('./wheel/wheel.module').then( m => m.WheelPageModule)
-  },
-  {
     path: 'fortune',
     loadChildren: () => import('./fortune/fortune.module').then( m => m.FortunePageModule)
+  },
+  {
+    path: 'solitaire',
+    loadChildren: () => import('./solitaire/solitaire.module').then( m => m.SolitairePageModule)
   }
 
 ];

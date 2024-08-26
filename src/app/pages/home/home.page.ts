@@ -74,6 +74,9 @@ export class HomePage implements OnInit {
   ionViewWillEnter(){
     this.getCagnotte();
     this.getScores();
+    if(!this.api.checkCredential()){
+      this.is_user=false;
+    }
   }
 
   getCagnotte(){

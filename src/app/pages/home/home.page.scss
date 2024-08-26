@@ -1,7 +1,10 @@
-ion-content{
+ion-content.home-content{
   --background: url('/assets/img/wallpaper/ka.jpeg') no-repeat center/cover fixed !important;
 }
 
+h2,h3{
+  font-family: Rapier;
+}
 
 ion-title{
   img{
@@ -48,7 +51,9 @@ ion-card-subtitle{
 
 ion-row{
   margin-bottom: 10px;
-  margin-top: -20px;
+  &.score{
+    margin-top: -20px;
+  }
 }
 
 .custom{

@@ -10,7 +10,7 @@ import {AdmobProvider} from "./providers/admob/AdmobProvider";
 import {ApiProvider} from "./providers/api/api";
 import {AuthProvider} from "./providers/auth/auth";
 import {UtilProvider} from "./providers/util/util";
-
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 
 @Component({
   selector: 'app-root',
@@ -25,13 +25,11 @@ export class AppComponent {
 
     private admob:AdmobProvider,
     private notif: NotificationProvider,
-    private auth:AuthProvider,
-    private api:ApiProvider,
-    private util:UtilProvider
   ) {
     this.admob.initialize();
     moment.locale('fr');
     if(isCordovaAvailable()){
+      ScreenOrientation.lock({ orientation: 'portrait' });
       this.OneSignalInit();
       this.notif.init();
       this.notif.navigationEvent.subscribe(

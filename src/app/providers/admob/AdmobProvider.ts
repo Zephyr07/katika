@@ -123,6 +123,7 @@ export class AdmobProvider {
   }
 
   async showInterstitial(){
+    console.log(this.pub)
     if(this.pub){
       await AdMob.showInterstitial().then(d=>{
         //console.log("Show");
@@ -212,7 +213,7 @@ export class AdmobProvider {
 
   setId(){
     this.api.getSettings().then((d:any)=>{
-      if(d.length>0){
+      if(d){
         this.pub = d.pub == 'enable';
         if(this.pub){
           if(d.is_testing_ad=='true'){

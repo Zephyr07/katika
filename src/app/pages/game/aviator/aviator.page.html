@@ -16,8 +16,13 @@
     </ion-chip>
   </ion-toolbar>
 
+  <div class="countdown middle" *ngIf="chiffre>0 && isCountdown">
+    {{chiffre}}
+  </div>
+
   <div class="car" *ngIf="!isCrashed">
     <div class="loop-wrapper">
+      <div class="multiplicateur middle">x{{multiplier.toFixed(2)}}</div>
       <div class="mountain" id="mon"></div>
       <div class="hill"></div>
       <div class="tree"></div>
@@ -31,6 +36,7 @@
 
   <div class="crash" *ngIf="isCrashed">
     <div class="loop-wrapper">
+      <div class="multiplicateur middle">x{{multiplier.toFixed(2)}}</div>
       <div class="montagne"></div>
       <div class="paysage"></div>
       <div class="arbre"></div>
@@ -44,51 +50,55 @@
 
   <div class="game-container">
     <ion-grid>
-      <h3>Selectionner un multiplicateur </h3>
+      <h3>Multiplicateur </h3>
       <ion-row>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" size="small" (click)="user_multiplier=2">x2</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==2" color="medium" size="small">x2</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" expand="block" (click)="user_multiplier=2">x2</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==2" color="medium" expand="block">x2</ion-button>
         </ion-col>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=3" color="tertiary" size="small" (click)="user_multiplier=3">x3</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==3" color="medium" size="small">x3</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=3" color="tertiary" expand="block" (click)="user_multiplier=3">x3</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==3" color="medium" expand="block">x3</ion-button>
         </ion-col>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=5" color="tertiary" size="small" (click)="user_multiplier=5">x5</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==5" color="medium" size="small">x5</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=4" color="tertiary" expand="block" (click)="user_multiplier=4">x4</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==4" color="medium" expand="block">x4</ion-button>
         </ion-col>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=10" color="tertiary" size="small" (click)="user_multiplier=10">x10</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==10" color="medium" size="small">x10</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=5" color="tertiary" expand="block" (click)="user_multiplier=5">x5</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==5" color="medium" expand="block">x5</ion-button>
         </ion-col>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=15" color="tertiary" size="small" (click)="user_multiplier=15">x15</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==15" color="medium" size="small">x15</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=15" color="tertiary" expand="block" (click)="user_multiplier=15">x15</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==15" color="medium" expand="block">x15</ion-button>
         </ion-col>
-        <ion-col size="2">
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=20" color="tertiary" size="small" (click)="user_multiplier=20">x20</ion-button>
-          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==20" color="medium" size="small">x20</ion-button>
+        <ion-col size="3">
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=20" color="tertiary" expand="block" (click)="user_multiplier=20">x20</ion-button>
+          <ion-button [disabled]="isStarted" *ngIf="user_multiplier==20" color="medium" expand="block">x20</ion-button>
         </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="1"></ion-col>
-        <ion-col size="10" class="custom">
+        <ion-col size="6" class="middle">
           <ion-input [disabled]="isStarted" type="number" min="1" max="20" step="0.1" [(ngModel)]="user_multiplier" placeholder="Multiplicateur personnalisé"></ion-input>
         </ion-col>
       </ion-row>
+
     </ion-grid>
 
-    <h3>Mutliplicateur : {{ multiplier.toFixed(2) }}</h3>
-    <h2 *ngIf="!isCrashed && user_multiplier!=undefined" style="color:var(--ion-color-tertiary)">Vos gains <br> {{(mise*user_multiplier).toFixed(2)}} W</h2>
+    <h3><ion-toggle [(ngModel)]="auto" [disabled]="isStarted" [checked]="auto" color="medium" [enableOnOffLabels]="true">Jeu Auto ?</ion-toggle></h3>
+    <h2 *ngIf="isWin" style="color:var(--ion-color-tertiary)">Votre gains <br> {{(mise*user_multiplier).toFixed(2)}} W</h2>
     <h2 *ngIf="isCrashed">Le camion <br>a crashé !!!</h2>
+    
 
     <ion-row>
+      <ion-col size="12">
+        <ion-button expand="block" *ngIf="isCountdown && chiffre>1" (click)="cancel()" color="light">Annuler</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col size="6">
-        <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
+        <ion-button expand="block" [disabled]="isStarted || isCountdown" *ngIf="can_play" (click)="close()" color="tertiary">Fermer</ion-button>
       </ion-col>
       <ion-col size="6">
-        <ion-button expand="block" [disabled]="isStarted" [ngClass]="{'pulsate-bck':isCrashed}" (click)="startGame()" color="medium">Jouer</ion-button>
+        <ion-button expand="block" [disabled]="isStarted || isCountdown" *ngIf="can_play" (click)="startGame()" color="medium">Jouer</ion-button>
       </ion-col>
     </ion-row>
   </div>

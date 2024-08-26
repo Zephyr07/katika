@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527565472171",
+    "project_id": "katika-ee1d3",
+    "storage_bucket": "katika-ee1d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527565472171:android:62209842e0cf346372d2ee",
+        "android_client_info": {
+          "package_name": "com.warzone237.katika"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2n_rzh7Yeuw4CT99bEyOQT6rfKLWHrHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

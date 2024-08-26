@@ -15,12 +15,19 @@ export class NotificationProvider {
 
   init() {
     OneSignalX.initialize(ONE_SIGNAL_CONF.app_id);
+    OneSignalX.Debug.setLogLevel(6);
     OneSignalX.Notifications.addEventListener('click', async (e) => {
       let clickData = await e.notification;
       console.log("Notification Clicked : " + clickData);
       this.handle(clickData)
     })
 
+    OneSignalX.Debug.setLogLevel(6);
+    // iOS - Prompts the user for notification permissions.
+    //    * Since this shows a generic native prompt, we recommend instead using an In-App Message to prompt for notification permission (See step 6) to better communicate to your users what notifications they will get.
+    OneSignalX.Notifications.requestPermission(true).then((success: Boolean) => {
+      console.log("Notification permission granted " + success);
+    })
   }
 
   handle(data){

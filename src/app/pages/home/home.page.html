@@ -13,15 +13,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content
-      pullingIcon="chevron-down-circle-outline"
-      pullingText="{{'pull_to_refresh'|translate}}"
-      refreshingSpinner="circles"
-      refreshingText="{{'loading'|translate}}...">
-    </ion-refresher-content>
-  </ion-refresher>
+<ion-content [fullscreen]="true" class="home-content">
+
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center" size="12">
@@ -40,10 +33,10 @@
   </ion-grid>
 
   <ion-grid>
-    <div class="sous-titre ion-text-center">
+    <div class="sous-titre ion-text-center" style="margin-top: -10px !important;">
       <img src="../../../assets/img/Gagnants-pr-c-dents-25-08-2024.png" style="width: 80%" alt="" class="radius">
     </div>
-    <ion-row>
+    <ion-row class="score">
       <ion-col class="ion-text-center">
         <ion-chip *ngFor="let s of scores" class="chip">
           <ion-avatar>
@@ -75,7 +68,7 @@
 
   <ion-grid>
     <div class="sous-titre ion-text-center" style="margin-top: 0">
-      <img src="../../../assets/img/Jouer-25-08-2024.png" alt="" class="radius" style="width: 80%" (click)="games()">
+      <img src="../../../assets/img/Jouer-25-08-2024.png" alt="" class="radius pulsate-bck" style="width: 80%" (click)="games()">
     </div>
   </ion-grid>
 
@@ -86,10 +79,10 @@
       <ion-content>
         <ion-row class="ion-text-center" style="margin-top: 10px">
           <ion-col size="6">
-            <img src="../../../assets/img/Connexion-10-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='c'">
+            <img src="../../../assets/img/Connexion-26-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='c'">
           </ion-col>
           <ion-col size="6">
-            <img src="../../../assets/img/inscription-10-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='i'">
+            <img src="../../../assets/img/Inscription-26-08-2024.png" alt="" class="radius" style="width: 80%" (click)="choice='i'">
           </ion-col>
         </ion-row>
 

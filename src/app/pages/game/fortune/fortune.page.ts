@@ -16,6 +16,11 @@ export class FortunePage implements OnInit,AfterViewInit {
   is_user = false;
   game:any={};
 
+  private indexDec=0;
+  private decision=0;
+
+  private finals=[];
+  private count = 5;
   isStarted=false;
 
   win_p=[];
@@ -72,7 +77,9 @@ export class FortunePage implements OnInit,AfterViewInit {
     public alertController:AlertController,
     public navCtrl:NavController,
     private admob:AdmobProvider
-  ) { }
+  ) {
+    this.finals = this.genererTableau(this.count);
+  }
 
   ngOnInit() {
     this.admob.loadInterstitial();
@@ -80,6 +87,15 @@ export class FortunePage implements OnInit,AfterViewInit {
       if(this.prices[i]!='0 W'){
         this.win_p.push(
           {
+            index:i,
+            text: `${(i + 1)}`,
+            prize: this.prices[i],
+          }
+        );
+      } else {
+        this.lost_p.push(
+          {
+            index:i,
             text: `${(i + 1)}`,
             prize: this.prices[i],
           }
@@ -152,7 +168,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     this.api.post('scores',opt).then(d=>{
       this.ionViewWillEnter();
     });
-    this.util.doToast("Felicitations, vous avez gagnez "+jackpot+" W",3000);
+    //this.util.doToast("Felicitations, vous avez gagnez "+jackpot+" W",3000);
   }
 
   async loose(){
@@ -239,7 +255,7 @@ export class FortunePage implements OnInit,AfterViewInit {
       } else {
         ctx.fillStyle = '#000';
       }
-      ctx.font = '16px Arial';
+      ctx.font = '14px Arial';
       ctx.fillText(this.segments[i].text, radius / 2 - 10, 0);
       ctx.restore();
     }
@@ -306,7 +322,7 @@ export class FortunePage implements OnInit,AfterViewInit {
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillStyle = '#000';
-          ctx.font = '16px Arial';
+          ctx.font = '14px Arial';
           ctx.fillText(this.segments[i].text, radius / 2 - 10, 0);
           ctx.restore();*/
         }
@@ -318,15 +334,31 @@ export class FortunePage implements OnInit,AfterViewInit {
         const finalAngle = totalRotation % 360;
         const selectedIndex = Math.floor(finalAngle / segmentAngle);
         this.highlightedIndex = selectedIndex; // Surbrillance du segment sélectionné
+
+        // decision
+        this.decision=this.finals[this.indexDec];
+        this.indexDec=(this.indexDec+1)%this.finals.length;
         this.result = this.segments[selectedIndex];
 
         if(this.result.prize!='Jackpot'){
           const price = parseInt(this.result.prize.split(' ')[0]);
           if(price!=0){
-            this.win(price);
+            if(this.decision==0){
+              // attribution d'un autre segment
+              const index = Math.floor(Math.random() * (this.lost_p.length + 1));
+              this.result = this.segments[index];
+            } else {
+              this.win(price);
+            }
           }
         } else {
-          this.win(this.game.jackpot+50);
+          if(this.decision==0){
+            // attribution d'un autre segment
+            const index = Math.floor(Math.random() * (this.lost_p.length + 1));
+            this.result = this.segments[index];
+          } else {
+            this.win(this.game.jackpot+50);
+          }
         }
 
         // Ré-afficher la roue avec le segment gagnant mis en surbrillance
@@ -368,7 +400,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#000';
-    ctx.font = '16px Arial';
+    ctx.font = '14px Arial';
     ctx.fillText(this.segments[this.highlightedIndex].text, radius / 2 - 10, 0);
     ctx.restore();
 
@@ -390,6 +422,31 @@ export class FortunePage implements OnInit,AfterViewInit {
   // Fonction pour attribuer des couleurs uniques à chaque segment
   private getPrice(index: number): string {
     return this.prices[index % this.prices.length];
+  }
+
+  genererTableau(X: number): number[] {
+    const tableau: number[] = [];
+
+    const nbZeros = Math.floor(X * 0.7); // Calcul du nombre de 0 (70%)
+    const nbUn = X - nbZeros; // Le reste sera des 1
+
+    // Ajouter 0 au tableau
+    for (let i = 0; i < nbZeros; i++) {
+      tableau.push(0);
+    }
+
+    // Ajouter 1 au tableau
+    for (let i = 0; i < nbUn; i++) {
+      tableau.push(1);
+    }
+
+    // Mélanger le tableau de manière aléatoire pour répartir les 0 et 1
+    for (let i = tableau.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tableau[i], tableau[j]] = [tableau[j], tableau[i]]; // Échange des éléments
+    }
+
+    return tableau;
   }
 }
 

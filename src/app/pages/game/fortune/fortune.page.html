@@ -15,9 +15,13 @@
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
-  <h3 class="jackpot ion-text-center" style="margin-bottom: 20px">
+  <h3 class="jackpot ion-text-center"  style="margin: 10px 15px;
+  background: #ddb8788c;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 30px;">
     Jackpot :
-    <strong style="color:#fff;"> {{game.jackpot|priceFormat}} W</strong>
+    <span style="color:var(--ion-color-primary);"> {{game.jackpot|priceFormat}} W</span>
   </h3>
 
   <div id="wheel-container">
@@ -25,7 +29,11 @@
   </div>
 
   <ion-grid *ngIf="result.prize!=undefined">
-    <h3 class="ion-text-center primary">Resultat : {{result.prize}}</h3>
+    <h3 class="ion-text-center primary" style="margin: 10px 30px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 5px 5px 10px;
+  font-size: 25px;">Resultat : {{result.prize}}</h3>
 
   </ion-grid>
 
@@ -33,7 +41,7 @@
 
   <ion-grid style="margin: 10px; background: #ddb8788c; border-radius: 20px;">
     <h3 class="ion-text-center tertiary">Les prix à gagner</h3>
-    <ion-row  style="font-size: 10px">
+    <ion-row  style="font-size: 12px">
       <ion-col size="3" *ngFor="let s of win_p">
         {{s.text}} : <strong>{{s.prize}}</strong>
       </ion-col>

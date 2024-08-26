@@ -625,4 +625,9 @@ export class UtilProvider {
 
     return dd;
   }
+
+  // Helper function to generate random numbers within a range with 2 decimals
+  randomInRange(min, max) {
+    return parseFloat((Math.random() * (max - min) + min).toFixed(2));
+  }
 }

@@ -154,19 +154,7 @@ export class TripleChoicePage implements OnInit {
 
   async loose(){
     this.is_loose = true;
-    // enregistrement du stocke
-    const opt ={
-      level:this.level,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      jackpot:0,
-      is_winner:false
-    };
-    this.game.jackpot+=50;
 
-    this.api.post('scores',opt).then(d=>{
-
-    });
     const alert = await this.alertController.create({
       header: 'Vous avez perdu',
       buttons: [

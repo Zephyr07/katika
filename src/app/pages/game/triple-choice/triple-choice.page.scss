@@ -188,7 +188,7 @@
 .good-answer{
   .game-block{
     background: var(--ion-color-danger) !important;
-    border-color: #ddb878;
+    border-color: var(--ion-color-medium);
     color:#fff;
   }
 }
@@ -196,7 +196,7 @@
 .loose{
   .game-block{
     background: var(--ion-color-danger) !important;
-    border-color: #ddb878;
+    border-color: var(--ion-color-medium);
     color:#fff;
     -webkit-animation: vibrate-1 0.3s linear infinite both;
     animation: vibrate-1 0.3s linear infinite both;
@@ -205,9 +205,9 @@
 
 .choice{
   .game-block{
-    color:#ddb878 !important;
+    color:var(--ion-color-medium) !important;
     background: #fff;
-    border-color: #ddb878;
+    border-color: var(--ion-color-medium);
   }
 }
 
@@ -222,7 +222,7 @@
 
   ion-title{
     font-size: 30px;
-    color:#ddb878;
+    color:var(--ion-color-medium);
     text-align: center;
 
     span{
@@ -250,12 +250,12 @@
 }
 
 .game-block{
-  border: 2px solid #ddb878;
+  border: 2px solid var(--ion-color-tertiary);
   text-align: center;
   height: 100px;
   border-radius: 10px;
   font-size: 30px;
-  background: #787046;
+  background: var(--ion-color-medium);
   color: #fff;
 
 }
@@ -279,7 +279,7 @@ ion-chip{
   background: white;
   padding: 10px;
   border-radius: 27px;
-  border: 4px solid #ddb878;
+  border: 4px solid var(--ion-color-medium);
   color: #022747;
   font-size: 20px;
   font-weight: bold;

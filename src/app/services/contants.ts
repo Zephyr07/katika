@@ -5,8 +5,8 @@ import * as CryptoJS from 'crypto-js';
 //export const API_ENDPOINT = 'http://kt.local/api/';
 export const API_ENDPOINT = 'https://katika.warzone237.com/public/api/';
 export const ONE_SIGNAL_CONF = {
-  "sender_id": '472124460397',
-  "app_id": 'a475f23d-3180-48f2-8798-8b8997e3f0b8',
+  "sender_id": '527565472171',
+  "app_id": '6c3ae446-ac30-4b42-9626-a247ef5b584f',
 };
 
 export const MOIS = [
