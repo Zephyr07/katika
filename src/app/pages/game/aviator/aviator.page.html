@@ -50,7 +50,7 @@
 
   <div class="game-container">
     <ion-grid>
-      <h3>Multiplicateur </h3>
+      <h3>Multiplicateur</h3>
       <ion-row>
         <ion-col size="3">
           <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" expand="block" (click)="user_multiplier=2">x2</ion-button>
@@ -77,15 +77,26 @@
           <ion-button [disabled]="isStarted" *ngIf="user_multiplier==20" color="medium" expand="block">x20</ion-button>
         </ion-col>
         <ion-col size="6" class="middle">
-          <ion-input [disabled]="isStarted" type="number" min="1" max="20" step="0.1" [(ngModel)]="user_multiplier" placeholder="Multiplicateur personnalisé"></ion-input>
+          <ion-input [disabled]="isStarted" style="z-index: 0;" type="number" min="1" max="20" step="0.1" [(ngModel)]="user_multiplier" placeholder="Multiplicateur personnalisé"></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="rapier middle">
+          <h3>Mise</h3>
+        </ion-col>
+        <ion-col size="5">
+          <ion-input [disabled]="isStarted" style="z-index: 0;" type="number" min="50" max="10000" step="50" [(ngModel)]="mise" placeholder="Mise"></ion-input>
         </ion-col>
       </ion-row>
 
     </ion-grid>
 
-    <h3><ion-toggle [(ngModel)]="auto" [disabled]="isStarted" [checked]="auto" color="medium" [enableOnOffLabels]="true">Jeu Auto ?</ion-toggle></h3>
-    <h2 *ngIf="isWin" style="color:var(--ion-color-tertiary)">Votre gains <br> {{(mise*user_multiplier).toFixed(2)}} W</h2>
+    <h3><ion-toggle style="z-index: 0;" [(ngModel)]="auto" [disabled]="isStarted" [checked]="auto" color="medium" [enableOnOffLabels]="true">Jeu Auto ?</ion-toggle></h3>
     <h2 *ngIf="isCrashed">Le camion <br>a crashé !!!</h2>
+    <h3 *ngIf="auto">
+      Total gain : {{total_gain - mise*total_partie |priceFormat}} W
+    </h3>
     
 
     <ion-row>
@@ -93,13 +104,20 @@
         <ion-button expand="block" *ngIf="isCountdown && chiffre>1" (click)="cancel()" color="light">Annuler</ion-button>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <ion-button expand="block" [disabled]="isStarted || isCountdown" *ngIf="can_play" (click)="close()" color="tertiary">Fermer</ion-button>
-      </ion-col>
-      <ion-col size="6">
-        <ion-button expand="block" [disabled]="isStarted || isCountdown" *ngIf="can_play" (click)="startGame()" color="medium">Jouer</ion-button>
-      </ion-col>
-    </ion-row>
+
   </div>
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+  <ion-footer *ngIf="showFooter" style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted || isCountdown" (click)="close()" color="tertiary">Fermer</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted || isCountdown" (click)="startGame()" color="medium">Jouer</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
 </ion-content>

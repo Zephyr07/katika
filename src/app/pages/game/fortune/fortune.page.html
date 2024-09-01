@@ -51,16 +51,17 @@
     </ion-row>
   </ion-grid>
 
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
 
-  <ion-footer style="background: transparent !important;">
+  <ion-footer *ngIf="showFooter" style="width: 100%; background: transparent !important;">
     <ion-grid>
 
       <ion-row>
         <ion-col>
-          <ion-button expand="block" [disabled]="isStarted" (click)="close()" color="tertiary">Fermer</ion-button>
+          <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
         </ion-col>
         <ion-col>
-          <ion-button expand="block" [disabled]="isStarted" (click)="startGame()" color="medium">Jouer</ion-button>
+          <ion-button expand="block" (click)="startGame()" color="medium">Jouer</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

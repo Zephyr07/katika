@@ -8,6 +8,7 @@ import { MemoryGamePageRoutingModule } from './memory-game-routing.module';
 
 import { MemoryGamePage } from './memory-game.page';
 import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {PipeModule} from "../../../pipe/pipe.module";
     FormsModule,
     IonicModule,
     MemoryGamePageRoutingModule,
-    PipeModule
+    PipeModule,
+    ModalMessageModule
   ],
   declarations: [MemoryGamePage]
 })

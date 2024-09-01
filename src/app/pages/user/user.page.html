@@ -17,7 +17,7 @@
     </ion-refresher-content>
   </ion-refresher>
   <div class="video" style="height: 200px">
-    <div class="info">
+    <div class="info" (click)="editUser()">
       <ion-item class="infos shadow" color="tertiary" lines="none">
         <ion-label>
           <h3 class="bold ion-text-capitalize">{{user.user_name}}</h3>
@@ -30,15 +30,6 @@
 
   <ion-grid class="info-tournament">
     <ion-row>
-      <ion-col size="4" (click)="editUser()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="pencil-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'edit_my_info'|translate}}</span>
-        </div>
-      </ion-col>
       <ion-col size="4" (click)="historique()">
         <div class="radius">
           <span>
@@ -57,6 +48,24 @@
           <span class="info-title">{{'Transfert de point'|translate}}</span>
         </div>
       </ion-col>
+      <ion-col size="4" (click)="recharge()">
+        <div class="radius">
+          <span>
+          <ion-icon class="big" color="medium" name="refresh-outline"></ion-icon>
+          </span>
+          <br>
+          <span class="info-title">{{'Recharger le compte'|translate}}</span>
+        </div>
+      </ion-col>
+      <ion-col size="4" (click)="joinGroup()">
+        <div class="radius">
+          <span>
+          <ion-icon class="big" color="medium" name="people-outline"></ion-icon>
+          </span>
+          <br>
+          <span class="info-title">{{'Rejoindre le groupe'|translate}}</span>
+        </div>
+      </ion-col>
       <ion-col size="4" (click)="callKatika()">
         <div class="radius">
           <span>
@@ -66,15 +75,7 @@
           <span class="info-title">{{'Contacter le Katika'|translate}}</span>
         </div>
       </ion-col>
-      <ion-col size="4" (click)="recharge()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="cash-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Recharger le compte'|translate}}</span>
-        </div>
-      </ion-col>
+
       <ion-col size="4" (click)="askLanguage()">
         <div class="radius">
           <span>
@@ -127,6 +128,7 @@
         </ion-row>
 
         <ion-grid class="custom">
+          <h5>Transfert tes points à un autre joueur</h5>
           <ion-row>
             <ion-col>
               <ion-input type="number" label="Nombre de point*" min="10000" max="user.point" [(ngModel)]="point" labelPlacement="stacked" placeholder="Nombre de point"></ion-input>

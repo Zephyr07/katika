@@ -19,9 +19,12 @@
     <div class="score-board">
       <h2>{{game.jackpot|priceFormat}} W</h2>
       <h3>à gagner</h3>
+      <div class="ion-text-center rapier tertiary" style="margin-top:5px">
+        Vie restante : <span *ngIf="totalLosses<2">❤️</span>️<span *ngIf="totalLosses<1">❤️</span>
+      </div>
     </div>
 
-    <div class="grid">
+    <div class="grid" style="grid-gap: {{gridGap}}">
       <button *ngFor="let crystal of crystals; let i = index"
               [disabled]="crystal.revealed || gameOver"
               (click)="revealCrystal(i)"
@@ -33,6 +36,19 @@
       </button>
     </div>
   </div>
+
+  <!--div class="modal-message" *ngIf="showMessage" style="width: {{largeur}}">
+    <h3>{{titre}}</h3>
+    {{message}}
+    <br>
+    <div class="ion-text-center">
+      <ion-button (click)="closeMessage()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </div>
+  </div-->
+
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
 
   <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
     <ion-grid>

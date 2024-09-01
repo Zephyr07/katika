@@ -32,7 +32,7 @@
         <ion-col size="12">
           <img src="../../../../assets/img/wz/game/bat.png" style="border-radius: 20px">
         </ion-col>
-        <ion-col size="12" class="ion-text-center">
+        <ion-col size="12" class="ion-text-center" *ngIf="isStarted">
           <img src="../../../../assets/img/level/n{{level}}.png" style="border-radius: 20px; width: 40%">
         </ion-col>
       </ion-row>
@@ -207,23 +207,25 @@
 
     </ion-grid>
 
+    <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+
     <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
       <ion-grid>
         <ion-row class="ion-text-center">
-          <ion-col size="3"></ion-col>
-          <ion-col size="6">
-            <div class="jackpot pulsate-bck">
-              {{game.jackpot|priceFormat}} W <br> à gagner
+          <ion-col size="2"></ion-col>
+          <ion-col size="8">
+            <div class="jackpot rapier" [ngClass]="{'pulsate-bck':!isStarted}">
+              <span style="font-size: 35px"> {{game.jackpot|priceFormat}} W</span> <br> à gagner
             </div>
           </ion-col>
         </ion-row>
 
-        <ion-row>
+        <ion-row *ngIf="showFooter">
           <ion-col>
             <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button expand="block" [ngClass]="{'pulsate-bck':is_loose||is_win}" (click)="checkPoint(true)" color="medium">Rejouer</ion-button>
+            <ion-button expand="block" [ngClass]="{'pulsate-bck':is_loose||is_win}" (click)="startGame()" color="medium">Jouer</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>

@@ -1,0 +1,64 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip color="medium" slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip slot="end" color="medium">
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-grid>
+    <ion-row *ngFor="let row of rows" class="apple-row">
+      <ion-col size="1" style="height: {{hauteur}}px" class="middle">
+        <span *ngIf="row.gain>0" class="gain" [ngClass]="{'active':gain_tmp>=row.gain}">{{row.gain|priceFormat}}</span>
+      </ion-col>
+
+      <ion-col size="1" *ngFor="let col of row.items"
+               style="height: {{hauteur}}px"
+               class="focus " [ngClass]="{'pulsate-bck':level==row.id && !isLoose && isStarted}"
+               (click)="choice(col)"
+      >
+        <img src="../../../../assets/img/apple/katika_choix.png" alt="{{col.id}}" *ngIf="level==row.id"   style="height: {{hauteur}}px">
+        <img src="../../../../assets/img/apple/default_snow.png" alt="{{col.id}}" *ngIf="level<row.id" style="height: {{hauteur}}px">
+
+
+        <img src="../../../../assets/img/apple/bones_front.png" alt="{{col.id}}" *ngIf="level>row.id && col.status==0 && !col.user_choice" style="height: {{hauteur}}px">
+        <img src="../../../../assets/img/apple/or.png" alt="{{col.id}}" *ngIf="level>row.id && col.status==1 && !col.user_choice" style="height: {{hauteur}}px">
+
+
+        <img src="../../../../assets/img/apple/bones_front.png" class="pulsate-bck" alt="{{col.id}}" *ngIf="level>row.id && col.status==0 && col.user_choice" style="height: {{hauteur}}px">
+        <img src="../../../../assets/img/apple/or.png" class="pulsate-bck" alt="{{col.id}}" *ngIf="level>row.id && col.status==1 && col.user_choice" style="height: {{hauteur}}px">
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+
+  <ion-footer *ngIf="showFooter" style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" class="pulsate-bck" *ngIf="!isStarted && !isLoose" (click)="startGame(false)" color="medium">Jouer</ion-button>
+          <ion-button expand="block" *ngIf="isStarted && isLoose" (click)="startGame(true)" color="light">Rejouer</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
+</ion-content>

@@ -9,6 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../pipe/pipe.module";
+import {ModalMessageModule} from "../../components/modal-message/modal-message.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {PipeModule} from "../../pipe/pipe.module";
     IonicModule,
     HomePageRoutingModule,
     TranslateModule,
-    PipeModule
+    PipeModule,
+    ModalMessageModule
   ],
   declarations: [HomePage]
 })

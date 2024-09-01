@@ -316,11 +316,15 @@ export class UserPage implements OnInit {
     if(this.user.point<10000){
       this.util.doToast('Vous ne pouvez pas contacter le Katika si vos points sont inférieur à 10 000W. Jouez et terminez les 10 niveaux pour gagner la cagnottes',5000);
     } else {
-      window.location.href="https://api.whatsapp.com/send?phone=237653996540&text=Bonjour Katika";
+      window.location.href="http://t.me/holyghost777";
     }
   }
 
   recharge(){
     window.location.href="https://api.whatsapp.com/send?phone=237653996540&text=Bonjour Katika, je souhaite recharger mon compte";
+  }
+
+  joinGroup(){
+    window.location.href="http://t.me/holyghost777";
   }
 }

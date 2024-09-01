@@ -80,6 +80,42 @@ ion-toolbar{
 }
 
 .chip{
-  background: #FCD000;
+  background: #fff;
   color:var(--ion-color-tertiary)
+}
+
+.version{
+  color: #000;
+  background: #fff;
+  border-radius: 10%;
+  padding: 2px 5px;
+}
+
+.grid-rank{
+  margin: 0 10%;
+  background: url('/assets/img/apple/default_snow.png') no-repeat center/cover fixed !important;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 5px;
+  max-height: 150px;
+  overflow: auto;
+  font-family: Rapier;
+
+
+  .rank1{
+    color: var(--ion-color-primary);
+  }
+  .rank2{
+    color: var(--ion-color-tertiary);
+  }
+  .rank3{
+    color: var(--ion-color-danger);
+  }
+
+  ion-col{
+    padding: 0;
+  }
+  ion-row{
+    margin-bottom: 0;
+  }
 }

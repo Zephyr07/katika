@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { GameBlockComponent } from './game-block.component';
+import { ModalMessageComponent } from './modal-message.component';
 
-describe('GameBlockComponent', () => {
-  let component: GameBlockComponent;
-  let fixture: ComponentFixture<GameBlockComponent>;
+describe('ModalMessageComponent', () => {
+  let component: ModalMessageComponent;
+  let fixture: ComponentFixture<ModalMessageComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GameBlockComponent ],
+      declarations: [ ModalMessageComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GameBlockComponent);
+    fixture = TestBed.createComponent(ModalMessageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

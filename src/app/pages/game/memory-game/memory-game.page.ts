@@ -4,6 +4,7 @@ import {ApiProvider} from "../../../providers/api/api";
 import * as _ from "lodash";
 import {UtilProvider} from "../../../providers/util/util";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
+import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-memory-game',
@@ -29,6 +30,14 @@ export class MemoryGamePage implements OnInit {
   user:any={};
   game:any={};
 
+  isStarted=false;
+  isConnected=true;
+  showFooter=true;
+  titre="";
+  message="";
+  showMessage=false;
+  isFirstTime=true;
+
   pub="disabled";
 
 
@@ -39,11 +48,15 @@ export class MemoryGamePage implements OnInit {
     private admob : AdmobProvider,
     private api : ApiProvider
   ) {
+    this.initializeNetworkListener();
     this.taille=window.innerHeight
   }
 
   ngOnInit() {
-    this.startGame();
+    this.size=2;
+    this.count=21;
+    this.time=0;
+    this.positions = this.setTiles(this.count*2)
   }
 
   ionViewWillEnter(){
@@ -55,8 +68,6 @@ export class MemoryGamePage implements OnInit {
       this.is_subscription= this.user.is_subscription;
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;
-        this.is_subscription = this.api.checkSubscription(this.user.subscription).is_actived;
-        this.user.is_subscription=this.is_subscription;
         localStorage.setItem('user_ka',JSON.stringify(this.user));
       });
     } else {
@@ -72,258 +83,134 @@ export class MemoryGamePage implements OnInit {
   }
 
   showTile(p){
-    if(this.time>0 && !this.is_replay){
-      p.show=true;
-      if(this.first_choice==0){
-        this.first_choice = p.id;
-      } else {
-        this.second_choice = p.id;
-      }
-
-      if(this.first_choice!=0 && this.second_choice!=0){
-        // les deux chois on été fait
-        if(p.id%2==0){
-          // verification si p et p-1 ont été cliqué
-          if(this.first_choice==this.second_choice-1){
-            // ok, faire disparaitre les tule et augmenter le chronos de X secondes
-            this.goodChoice(this.first_choice,this.second_choice);
-          } else {
-            //echec
-            this.badChoice(this.first_choice,this.second_choice);
-          }
+    if(this.isStarted){
+      if(this.time>0 && !this.is_replay){
+        p.show=true;
+        if(this.first_choice==0){
+          this.first_choice = p.id;
         } else {
-          // verification si p et p-1 ont été cliqué
-          if(this.second_choice==this.first_choice-1){
-            // ok, faire disparaitre les tule et augmenter le chronos de X secondes
-            this.goodChoice(this.first_choice,this.second_choice);
-          } else {
-            //echec
-            this.badChoice(this.first_choice,this.second_choice);
-          }
+          this.second_choice = p.id;
         }
-        this.first_choice=0;
-        this.second_choice=0;
-      } else {
-        // on attend le second choix
-      }
-    }
-  }
 
-  async replay(){
-    clearInterval(this.interval);
-    if(this.pub=='enable'){
-      await this.admob.showInterstitial();
-      await this.admob.loadInterstitial();
-    }
-    /*this.time=this.base;
-    this.progress = this.base;
-    this.is_replay=true;
-
-    clearInterval(this.interval);*/
-    this.level=1;
-    this.startGame()
-  }
-
-  async play(){
-    if(this.is_user){
-      /*if(!this.is_subscription){
-        const alert = await this.alertController.create({
-          header: 'Vous n\'êtes pas membre de la salle',
-          message: 'Devenez membre pour pouvoir jouer à ce jeu',
-          buttons: [
-            {
-              text: 'Fermer',
-              role: 'cancel',
-              handler: () => {
-                this.close();
-              },
-            },
-            {
-              text: 'Devenir membre',
-              role: 'confirm',
-              handler: () => {
-                console.log('Alert canceled');
-                this.becomeMember();
-              },
+        if(this.first_choice!=0 && this.second_choice!=0){
+          // les deux chois on été fait
+          if(p.id%2==0){
+            // verification si p et p-1 ont été cliqué
+            if(this.first_choice==this.second_choice-1){
+              // ok, faire disparaitre les tule et augmenter le chronos de X secondes
+              this.goodChoice(this.first_choice,this.second_choice);
+            } else {
+              //echec
+              this.badChoice(this.first_choice,this.second_choice);
             }
-          ],
-        });
-
-        await alert.present();
-      } else {
-        this.first_choice=0;
-        this.second_choice=0;
-        this.time=this.base;
-        this.progress = this.time;
-        this.count=18;
-        this.positions = this.setTiles(36);
-        this.startTime();
-        this.is_replay=false;
-      }*/
-      this.first_choice=0;
-      this.second_choice=0;
-      this.time=this.base;
-      this.progress = this.time;
-      this.count=18;
-      this.positions = this.setTiles(36);
-      this.startTime();
-      this.is_replay=false;
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Vous n\'êtes pas connecté',
-        message: 'Connectez-vous pour pouvoir jouer à ce jeu',
-        buttons: [
-          {
-            text: 'Fermer',
-            role: 'cancel',
-            handler: () => {
-              this.close();
-            },
-          },
-          {
-            text: 'Se connecter',
-            role: 'confirm',
-            handler: () => {
-              console.log('Alert canceled');
-              this.login();
-            },
+          } else {
+            // verification si p et p-1 ont été cliqué
+            if(this.second_choice==this.first_choice-1){
+              // ok, faire disparaitre les tule et augmenter le chronos de X secondes
+              this.goodChoice(this.first_choice,this.second_choice);
+            } else {
+              //echec
+              this.badChoice(this.first_choice,this.second_choice);
+            }
           }
-        ],
-      });
-
-      await alert.present();
-    }
-  }
-
-  async play_level(level){
-    if(this.is_user){
-      if(level==1){
-        this.size=6;
-        this.count=1;
-        this.time=5;
-        this.positions = this.setTiles(2)
-      } else if(level==2){
-        this.size=6;
-        this.count=2;
-        this.time=5;
-        this.positions = this.setTiles(4)
-      } else if(level==3){
-        this.size=4;
-        this.count=3;
-        this.time=7;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==4){
-        this.size=4;
-        this.count=4;
-        this.time=7;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==5){
-        this.size=3;
-        this.count=6;
-        this.time=15;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==6){
-        this.size=3;
-        this.count=8;
-        this.time=20;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==7){
-        this.size=2;
-        this.count=12;
-        this.time=25;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==8){
-        this.size=2;
-        this.count=15;
-        this.time=25;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==9){
-        this.size=2;
-        this.count=18;
-        this.time=30;
-        this.positions = this.setTiles(this.count*2)
-      } else if(level==10){
-        this.size=2;
-        this.count=21;
-        this.time=35;
-        this.positions = this.setTiles(this.count*2)
-      }
-      this.base=this.time;
-      this.progress = this.time;
-      this.first_choice=0;
-      this.second_choice=0;
-      this.startTime();
-      this.is_replay=false;
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Vous n\'êtes pas connecté',
-        message: 'Connectez-vous pour pouvoir jouer à ce jeu',
-        buttons: [
-          {
-            text: 'Fermer',
-            role: 'cancel',
-            handler: () => {
-              this.close();
-            },
-          },
-          {
-            text: 'Se connecter',
-            role: 'confirm',
-            handler: () => {
-              console.log('Alert canceled');
-              this.login();
-            },
-          }
-        ],
-      });
-
-      await alert.present();
-    }
-  }
-
-  async startGame(){
-    const alert = await this.alertController.create({
-      header: 'Bienvenu dans "Memory"',
-      subHeader: 'Règles du jeu',
-      message: 'Vous devez trouvez les 16 paires avant le temps imparti pour gagner. Vous gagnez 2s lorsque vous trouvez une paire correct. Trouvez toutes les paires et gagnez 1 heure de jeu gratuit à la salle. Que la chance soit avec vous!',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
-            this.close();
-          },
-        },
-        {
-          text: 'Jouer',
-          role: 'confirm',
-          handler: () => {
-            console.log('Alert canceled');
-            this.checkPoint();
-          },
+          this.first_choice=0;
+          this.second_choice=0;
+        } else {
+          // on attend le second choix
         }
-      ],
-    });
-
-    await alert.present();
+      }
+    } else {
+      this.titre = "La partie n'a pas encore commencé";
+      this.message ="Cliquer sur jouer pour commencer à jouer";
+      this.showMessage=true;
+    }
   }
 
-  checkPoint(){
-    if(this.user.point<50){
-      this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
-    } else {
-      // debit
-      const opt ={
-        user_id:this.user.id,
-        game_id:this.game.id
-      };
-
-      this.api.post('start_game',opt).then(a=>{
-        this.user.point-=50;
-
-      });
-      this.play_level(this.level);
+  play_level(level){
+    if(level==1){
+      this.size=6;
+      this.count=1;
+      this.time=5;
+      this.positions = this.setTiles(2)
+    } else if(level==2){
+      this.size=6;
+      this.count=2;
+      this.time=5;
+      this.positions = this.setTiles(4)
+    } else if(level==3){
+      this.size=4;
+      this.count=3;
+      this.time=7;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==4){
+      this.size=4;
+      this.count=4;
+      this.time=7;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==5){
+      this.size=3;
+      this.count=6;
+      this.time=15;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==6){
+      this.size=3;
+      this.count=8;
+      this.time=20;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==7){
+      this.size=2;
+      this.count=12;
+      this.time=25;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==8){
+      this.size=2;
+      this.count=15;
+      this.time=25;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==9){
+      this.size=2;
+      this.count=18;
+      this.time=30;
+      this.positions = this.setTiles(this.count*2)
+    } else if(level==10){
+      this.size=2;
+      this.count=21;
+      this.time=35;
+      this.positions = this.setTiles(this.count*2)
     }
+    this.base=this.time;
+    this.progress = this.time;
+    this.first_choice=0;
+    this.second_choice=0;
+    this.startTime();
+    this.is_replay=false;
+  }
+
+  startGame(){
+    if(this.isConnected){
+      if(this.user.point==undefined || this.user.point<50){
+        this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
+      } else {
+        this.showFooter=false;
+        // debit
+        const opt ={
+          user_id:this.user.id,
+          game_id:this.game.id
+        };
+
+        this.api.post('start_game',opt).then(a=>{
+          this.user.point-=50;
+          this.level=1;
+          this.isStarted=true;
+          this.play_level(this.level);
+        });
+      }
+    } else {
+      this.showMessage=true;
+      this.titre="Vous n'êtes pas connecté";
+      this.message="Connectez-vous à internet pour continuer à jouer";
+    }
+
   }
 
   close(){
@@ -388,6 +275,7 @@ export class MemoryGamePage implements OnInit {
   }
 
   async win(){
+
     const opt ={
       level:this.level,
       user_id:this.user.id,
@@ -396,25 +284,15 @@ export class MemoryGamePage implements OnInit {
     };
     this.game.jackpot+=50;
 
+    this.titre = "VOUS AVEZ GAGNEZ !!!";
+    this.message ="Vous avez gagnez "+this.game.jackpot+" W. Vos points ont été crédités sur votre compte";
+    this.showMessage=true;
+    this.showFooter=true;
+
     this.api.post('scores',opt).then(d=>{
-
-    });
-    const alert = await this.alertController.create({
-      header: 'VOUS AVEZ GAGNEZ',
-      subHeader:"Toutes nos félicitations",
-      message: 'Vos points ont été crédités sur votre compte',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'confirm',
-          handler: () => {
-            this.ionViewWillEnter();
-          },
-        }
-      ],
+      this.showFooter=true;
     });
 
-    await alert.present();
   }
 
   async win_level(){
@@ -437,25 +315,18 @@ export class MemoryGamePage implements OnInit {
     await alert.present();
   }
 
-  async loose(){
+  loose(){
+    this.titre = "Vous avez perdu";
+    this.message ="Pas de chance, peut-être une prochaine fois 😭😭😭";
+    this.showMessage=true;
+    this.showFooter=true;
+    this.is_replay=false;
+    this.isStarted=false;
+    this.ionViewWillEnter();
+  }
 
-    const alert = await this.alertController.create({
-      header: 'Vous avez perdu',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
-            //this.close();
-            //clearInterval(this.interval);
-            this.is_replay=false;
-            this.ionViewWillEnter();
-          },
-        }
-      ],
-    });
-
-    await alert.present();
+  closeMessage(event: string){
+    this.showMessage=false;
   }
 
   startTime(){
@@ -483,25 +354,45 @@ export class MemoryGamePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      if(this.isFirstTime){
+        this.showRule();
+        this.message = this.game.rule;
+        this.isFirstTime=false;
+      }
+    },q=>{
+      this.util.handleError(q);
     })
   }
 
-  async showRule(){
-    const alert = await this.alertController.create({
-      header: 'Bienvenu dans "'+this.game.name+'"',
-      subHeader: 'Règles du jeu',
-      message: this.game.rule,
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
+  showRule(){
+    this.titre=this.game.name;
+    this.message=this.game.rule;
+    this.showMessage=true;
+  }
 
-          },
-        }
-      ],
+  async initializeNetworkListener() {
+    // Vérifier l'état initial du réseau
+    const status: NetworkStatus = await Network.getStatus();
+
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      //console.log('Changement de l’état du réseau:', status);
+
+      if (!status.connected) {
+        this.isConnected=false;
+        this.showMessage=true;
+        this.titre="Vous n'êtes pas connecté";
+        this.message="Connectez-vous à internet pour continuer à jouer";
+        console.log('Vous avez perdu la connexion Internet.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      } else {
+        this.isConnected=true;
+        this.showMessage=true;
+        this.titre="Connexion retablie";
+        this.message="Vous pouvez continuer à jouer";
+        console.log('Connexion Internet restaurée.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      }
     });
-
-    await alert.present();
   }
 }

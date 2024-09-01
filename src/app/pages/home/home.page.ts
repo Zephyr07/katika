@@ -8,6 +8,8 @@ import {Camera, CameraResultType, CameraSource} from "@capacitor/camera";
 import {Device} from "@capacitor/device";
 import {NUMBER_RANGE} from "../../services/contants";
 import {AdmobProvider} from "../../providers/admob/AdmobProvider";
+import {environment} from "../../../environments/environment";
+import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-home',
@@ -25,6 +27,7 @@ export class HomePage implements OnInit {
   password_confirmation="";
   scores:any=[];
   scores_bis:any=[];
+  version = environment.version;
 
   cagnotte:number;
   lang="";
@@ -35,12 +38,17 @@ export class HomePage implements OnInit {
 
   is_user=true;
 
+  titre="";
+  message="";
+  showMessage=false;
+
   constructor(
     private router:Router,
     private api:ApiProvider,
     private auth:AuthProvider,
     private util:UtilProvider,
   ) {
+    this.initializeNetworkListener();
     Device.getLanguageCode().then(d=>{
       this.lang=d.value;
     });
@@ -104,23 +112,25 @@ export class HomePage implements OnInit {
 
   getScores(){
     this.scores=[];
-    this.scores_bis=[];
     const opt={
-      is_winner:1,
-      _sortDir:'desc',
-      _includes:'user,game'
+      _sortDir:'desc'
     };
 
-    this.api.getList('scores',opt).then((d:any)=>{
-      let i=0;
-      d.forEach(v=>{
-        if(i%2==0 && i<2){
-          this.scores.push(v);
-        } else if(i%2==1 && i<2){
-          this.scores_bis.push(v);
+    this.api.getList('hit',opt).then((d:any)=>{
+      let i = 1;
+      for (const s in d) {
+        if (d.hasOwnProperty(s)) {
+          this.scores.push(
+            {
+              rank:i,
+              user_name:s,
+              point:d[s]
+            }
+          );
+          i++;
         }
-        i++;
-      });
+      }
+      //console.log(d);
     }, q=>{
       this.util.hideLoading();
       this.util.handleError(q);
@@ -140,7 +150,7 @@ export class HomePage implements OnInit {
     if(this.checkForm()){
       this.util.showLoading('register');
       const opt={
-        user_name:this.user_name.trim(),
+        user_name:this.util.capitalize(this.user_name.trim()),
         email:this.email.trim(),
         phone:this.phone,
         password:this.password,
@@ -296,5 +306,31 @@ export class HomePage implements OnInit {
       //console.log('Async operation has ended');
       event.target.complete();
     }, 500);
+  }
+
+  closeMessage(event: string){
+    this.showMessage=false;
+  }
+
+  async initializeNetworkListener() {
+    // Vérifier l'état initial du réseau
+    const status: NetworkStatus = await Network.getStatus();
+
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      //console.log('Changement de l’état du réseau:', status);
+
+      if (!status.connected) {
+        this.showMessage=true;
+        this.titre="Vous n'êtes pas connecté";
+        this.message="Connectez-vous à internet pour continuer à jouer";
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      } else {
+        this.showMessage=true;
+        this.titre="Connexion retablie";
+        this.message="Vous pouvez continuer à jouer";
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      }
+    });
   }
 }

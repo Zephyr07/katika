@@ -4,6 +4,7 @@ import {AlertController, NavController} from "@ionic/angular";
 import {ApiProvider} from "../../../providers/api/api";
 import {UtilProvider} from "../../../providers/util/util";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
+import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-triple-choice',
@@ -11,12 +12,10 @@ import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
   styleUrls: ['./triple-choice.page.scss'],
 })
 export class TripleChoicePage implements OnInit {
-  is_click = false;
   choice=99999;
   answer = 0;
   level=1;
   size=6;
-  first_game = true;
   is_loose = false;
   is_win = false;
   is_user = false;
@@ -25,16 +24,26 @@ export class TripleChoicePage implements OnInit {
 
   game:any={};
 
+  isStarted=false;
+  isConnected=true;
+  showFooter=true;
+  titre="";
+  message="";
+  showMessage=false;
+  isFirstTime=true;
+
   constructor(
     private navCtrl:NavController,
     private alertController : AlertController,
     private util : UtilProvider,
     private admob : AdmobProvider,
     private api : ApiProvider
-  ) { }
+  ) {
+    this.initializeNetworkListener();
+  }
 
   ngOnInit() {
-    this.startGame();
+
 
   }
 
@@ -62,75 +71,66 @@ export class TripleChoicePage implements OnInit {
     this.admob.hideBanner();
   }
 
-  async startGame(){
-    const alert = await this.alertController.create({
-      header: 'Bienvenu dans "Bats à 10"',
-      subHeader: 'Règles du jeu',
-      message: 'A chaque niveau vous devez choisir la bonne case pour avancer. Soyez le premier à trouver les 10 bonnes cases et gagnez minimum 10 000W. Que la chance soit avec vous!',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
-            this.close();
-          },
-        },
-        {
-          text: 'Jouer',
-          role: 'confirm',
-          handler: () => {
-            console.log('Alert canceled');
-            this.checkPoint(false);
-          },
-        }
-      ],
-    });
-
-    await alert.present();
-  }
-
-  checkPoint(bool:boolean){
-    if(this.user.point<50){
-      this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
+  startGame(){
+    if(this.isConnected){
+      if(this.user.point<50){
+        this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
+      } else {
+        // debit
+        const opt = {
+          user_id:this.user.id,
+          game_id:this.game.id
+        };
+        this.api.post('start_game',opt).then(a=>{
+          this.user.point-=50;
+          this.level = 1;
+          this.choice=99999;
+          this.setAnswer();
+          this.is_loose=false;
+          this.isStarted=true;
+          this.showFooter=false;
+        });
+      }
     } else {
-      // debit
-      const opt ={
-        user_id:this.user.id,
-        game_id:this.game.id
-      };
-      this.api.post('start_game',opt).then(a=>{
-        this.user.point-=50;
-      });
-      this.play(bool)
+      this.showMessage=true;
+      this.titre="Vous n'êtes pas connecté";
+      this.message="Connectez-vous à internet pour continuer à jouer";
     }
   }
 
   checkChoice(t){
-    if(!this.is_loose){
-      this.choice = t;
-      if(this.answer ==t){
-        setTimeout(()=>{
-          // win, passage au niveau suivant
-          if(this.level==10){
-            // win
-            this.win();
-            this.is_win=true;
-          } else {
-            this.level++;
-            if(this.level==5){
-              this.admob.showInterstitial().then(da=>{
-                this.admob.loadInterstitial()
-              });
+    if(this.isStarted){
+      if(!this.is_loose){
+        this.choice = t;
+        if(this.answer ==t){
+          setTimeout(()=>{
+            // win, passage au niveau suivant
+            if(this.level==10){
+              // win
+              this.win();
+              this.is_win=true;
+            } else {
+              this.level++;
+              if(this.level==5){
+                this.admob.showInterstitial().then(da=>{
+                  this.admob.loadInterstitial()
+                });
+              }
+              this.setAnswer();
+              this.choice=0;
             }
-            this.setAnswer();
-            this.choice=0;
-          }
-        },700)
-      } else{
-        //this.level=1;
-        this.loose();
+          },700)
+        } else{
+          //this.level=1;
+          this.loose();
+        }
       }
+    } else {
+      this.titre = "La partie n'a pas encore commencé";
+      this.message ="Cliquer sur jouer pour commencer à jouer";
+      this.showMessage=true;
     }
+
 
   }
 
@@ -153,23 +153,13 @@ export class TripleChoicePage implements OnInit {
   }
 
   async loose(){
+    this.isStarted=false;
     this.is_loose = true;
-
-    const alert = await this.alertController.create({
-      header: 'Vous avez perdu',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
-            //this.close();
-            this.ionViewWillEnter();
-          },
-        }
-      ],
-    });
-
-    await alert.present();
+    this.titre = "Vous avez perdu";
+    this.message ="Pas de chance, peut-être une prochaine fois 😭😭😭";
+    this.showMessage=true;
+    this.showFooter=true;
+    this.ionViewWillEnter();
   }
 
   async win(){
@@ -182,100 +172,23 @@ export class TripleChoicePage implements OnInit {
       is_winner:true
     };
 
+    this.titre = "VOUS AVEZ GAGNEZ !!!";
+    this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
+    this.showMessage=true;
+    this.showFooter=true;
 
     this.api.post('scores',opt).then(d=>{
-
-    });
-    const alert = await this.alertController.create({
-      header: 'VOUS AVEZ GAGNEZ',
-      subHeader:"Toutes nos félicitations",
-      message: 'Vos points ont été crédités sur votre compte',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'confirm',
-          handler: () => {
-            this.ionViewWillEnter();
-          },
-        }
-      ],
+      this.ionViewWillEnter();
     });
 
-    await alert.present();
   }
 
 
-  async play(is_ads){
-    if(this.is_user){
-      /*if(!this.is_subscription){
-        const alert = await this.alertController.create({
-          header: 'Vous n\'êtes pas membre de la salle',
-          message: 'Devenez membre pour pouvoir jouer à ce jeu',
-          buttons: [
-            {
-              text: 'Fermer',
-              role: 'cancel',
-              handler: () => {
-                this.close();
-              },
-            },
-            {
-              text: 'Devenir membre',
-              role: 'confirm',
-              handler: () => {
-                console.log('Alert canceled');
-                this.becomeMember();
-              },
-            }
-          ],
-        });
-
-        await alert.present();
-      } else {
-        if(is_ads){
-          this.admob.showInterstitial();
-          this.admob.loadInterstitial();
-        }
-
-        this.level = 1;
-        this.choice=99999;
-        this.setAnswer();
-        this.is_loose=false;
-      }*/
-      if(is_ads){
-        this.admob.showInterstitial();
-        this.admob.loadInterstitial();
-      }
-
-      this.level = 1;
-      this.choice=99999;
-      this.setAnswer();
-      this.is_loose=false;
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Vous n\'êtes pas connecté',
-        message: 'Connectez-vous pour pouvoir jouer à ce jeu',
-        buttons: [
-          {
-            text: 'Fermer',
-            role: 'cancel',
-            handler: () => {
-              this.close();
-            },
-          },
-          {
-            text: 'Se connecter',
-            role: 'confirm',
-            handler: () => {
-              console.log('Alert canceled');
-              this.login();
-            },
-          }
-        ],
-      });
-
-      await alert.present();
-    }
+  async play(){
+    this.level = 1;
+    this.choice=99999;
+    this.setAnswer();
+    this.is_loose=false;
   }
 
   close(){
@@ -294,28 +207,52 @@ export class TripleChoicePage implements OnInit {
   getGame(){
     const opt={
       name:'Bats à 10'
-    }
+    };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      if(this.isFirstTime){
+        this.showRule();
+        this.message = this.game.rule;
+        this.isFirstTime=false;
+      }
+    },q=>{
+      this.util.handleError(q);
     })
   }
 
-  async showRule(){
-    const alert = await this.alertController.create({
-      header: 'Bienvenu dans "'+this.game.name+'"',
-      subHeader: 'Règles du jeu',
-      message: this.game.rule,
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
+  showRule(){
+    this.titre=this.game.name;
+    this.message=this.game.rule;
+    this.showMessage=true;
+  }
 
-          },
-        }
-      ],
+  closeMessage(event: string){
+    this.showMessage=false;
+  }
+
+  async initializeNetworkListener() {
+    // Vérifier l'état initial du réseau
+    const status: NetworkStatus = await Network.getStatus();
+
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      //console.log('Changement de l’état du réseau:', status);
+
+      if (!status.connected) {
+        this.isConnected=false;
+        this.showMessage=true;
+        this.titre="Vous n'êtes pas connecté";
+        this.message="Connectez-vous à internet pour continuer à jouer";
+        console.log('Vous avez perdu la connexion Internet.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      } else {
+        this.isConnected=true;
+        this.showMessage=true;
+        this.titre="Connexion retablie";
+        this.message="Vous pouvez continuer à jouer";
+        console.log('Connexion Internet restaurée.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      }
     });
-
-    await alert.present();
   }
 }

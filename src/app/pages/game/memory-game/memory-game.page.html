@@ -41,15 +41,11 @@
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="is_replay">
-        <ion-col>
-          <ion-button expand="block" class="pulsate-bck" (click)="play()" color="medium">Jouer</ion-button>
-        </ion-col>
-      </ion-row>
-
     </ion-grid>
 
-    <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+    <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+
+    <ion-footer *ngIf="showFooter" style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
       <ion-grid>
 
         <ion-row>
@@ -57,7 +53,7 @@
             <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
           </ion-col>
           <ion-col *ngIf="!is_replay">
-            <ion-button expand="block" [ngClass]="{'pulsate-bck':time==0}" (click)="replay()" color="medium">Rejouer</ion-button>
+            <ion-button expand="block" class="pulsate-bck" (click)="startGame()" color="medium">Jouer</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>

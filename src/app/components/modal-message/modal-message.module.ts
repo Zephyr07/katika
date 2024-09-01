@@ -3,20 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-import {GameBlockComponent} from "./game-block.component";
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../pipe/pipe.module";
+import {ModalMessageComponent} from "./modal-message.component";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
     TranslateModule,
-    PipeModule,
-    TranslateModule
+    IonicModule,
+    PipeModule
     ],
-  declarations: [GameBlockComponent],
-  exports: [GameBlockComponent]
+  declarations: [ModalMessageComponent],
+  exports: [ModalMessageComponent]
 })
-export class GameBlockModule {}
+export class ModalMessageModule {}

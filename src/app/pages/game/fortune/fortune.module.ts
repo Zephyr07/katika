@@ -8,6 +8,7 @@ import { FortunePageRoutingModule } from './fortune-routing.module';
 
 import { FortunePage } from './fortune.page';
 import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {PipeModule} from "../../../pipe/pipe.module";
     FormsModule,
     IonicModule,
     FortunePageRoutingModule,
-    PipeModule
+    PipeModule,
+    ModalMessageModule
   ],
   declarations: [FortunePage]
 })

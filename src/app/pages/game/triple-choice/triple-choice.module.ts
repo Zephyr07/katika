@@ -7,9 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { TripleChoicePageRoutingModule } from './triple-choice-routing.module';
 
 import { TripleChoicePage } from './triple-choice.page';
-import {GameBlockModule} from "../../../components/game-block/game-block.module";
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import {PipeModule} from "../../../pipe/pipe.module";
     FormsModule,
     IonicModule,
     TripleChoicePageRoutingModule,
-    GameBlockModule,
     TranslateModule,
     PipeModule,
+    ModalMessageModule
   ],
   declarations: [TripleChoicePage]
 })

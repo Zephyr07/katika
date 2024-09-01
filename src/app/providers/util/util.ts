@@ -24,6 +24,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 const pdfFontsX = require('pdfmake-unicode/dist/pdfmake-unicode;js');
 pdfMakeX.vfs = pdfFontsX.pdfMake.vfs;*/
 import * as pdfMake from "pdfmake/build/pdfmake";
+import {Network, NetworkStatus} from "@capacitor/network";
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -96,6 +97,18 @@ export class UtilProvider {
     });
   }
 
+  initializeNetworkListener() {
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      console.log('Network status changed', status);
+
+      if (!status.connected) {
+        console.log('Vous avez perdu la connexion Internet.');
+        // Tu peux aussi ajouter une notification pour l'utilisateur ici
+      }
+    });
+  }
+
   formarPrice(price) {
     if (price === undefined) {
       return '';
@@ -160,44 +173,50 @@ export class UtilProvider {
     }
   }
 
-  handleError(q, next?){
-    console.log(JSON.stringify(q),q);
-    if(q.response){
-      q=q.response;
-    }
-    if(q.data.ct){
-      // crypté
-      q.data = this.decryptAESData(JSON.stringify(q.data));
-    }
-    if (q.data.status_code === 401) {
-      if(q.data.errors.message[0]=="These credentials do not match our records."){
-        this.doToast('bad_credential',3000,'danger');
-      } else {
-        this.doToast('Vous n\'êtes pas connecté',3000);
-      }
-      localStorage.setItem('user_taxi_driver',undefined);
-      /*if(next){
-        this.presentToastWithOptions(next);
-      }*/
-    } else if(q.status === 401){
-      this.doToast('bad_credential',3000);
-    } else if (q.status === 422) {
-      let message = "";
-      for(let i in q.data.errors){
-        message+=""+q.data.errors[i][0]+", ";
-      }
-      this.doToast(message,5000, 'light');
-    } else if (q.error) {
-      this.doToast(q.error,3000, 'light');
+  async handleError(q, next?){
+    const status = await Network.getStatus();console.log('État initial du réseau:', status);
+    if(!status.connected){
+      this.doToast("Vous devez être connecté à internet pour pouvoir continuer",'3000','light','top');
     } else {
-      //alert(JSON.stringify(q.data));
-      if(q.data.error && q.data.error.message){
-        this.doToast(JSON.stringify(q.data.error.message)+ '\n Erreurs ' + q.data.error.status_code,5000);
-      } else {
-        this.doToast(JSON.stringify(q.data.message)+ '\n Erreur ',5000 , 'light');
+      console.log(JSON.stringify(q),q);
+      if(q.response){
+        q=q.response;
       }
-      //this.hideLoading();
+      if(q.data.ct){
+        // crypté
+        q.data = this.decryptAESData(JSON.stringify(q.data));
+      }
+      if (q.data.status_code === 401) {
+        if(q.data.errors.message[0]=="These credentials do not match our records."){
+          this.doToast('bad_credential',3000,'danger');
+        } else {
+          this.doToast('Vous n\'êtes pas connecté',3000);
+        }
+        localStorage.setItem('user_taxi_driver',undefined);
+        /*if(next){
+          this.presentToastWithOptions(next);
+        }*/
+      } else if(q.status === 401){
+        this.doToast('bad_credential',3000);
+      } else if (q.status === 422) {
+        let message = "";
+        for(let i in q.data.errors){
+          message+=""+q.data.errors[i][0]+", ";
+        }
+        this.doToast(message,5000, 'light');
+      } else if (q.error) {
+        this.doToast(q.error,3000, 'light');
+      } else {
+        //alert(JSON.stringify(q.data));
+        if(q.data.error && q.data.error.message){
+          this.doToast(JSON.stringify(q.data.error.message)+ '\n Erreurs ' + q.data.error.status_code,5000);
+        } else {
+          this.doToast(JSON.stringify(q.data.message)+ '\n Erreur ',5000 , 'light');
+        }
+        //this.hideLoading();
+      }
     }
+
   }
 
   async presentToastWithOptions(text,next,time?,button_text?) {

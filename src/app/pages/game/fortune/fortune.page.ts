@@ -4,6 +4,7 @@ import {ApiProvider} from "../../../providers/api/api";
 import {UtilProvider} from "../../../providers/util/util";
 import {AlertController, NavController} from "@ionic/angular";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
+import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-fortune',
@@ -20,20 +21,28 @@ export class FortunePage implements OnInit,AfterViewInit {
   private decision=0;
 
   private finals=[];
-  private count = 5;
+  private count = 50;
   isStarted=false;
+
+  isConnected=true;
+  showFooter=true;
+  titre="";
+  message="";
+  showMessage=false;
+  isFirstTime=true;
 
   win_p=[];
   lost_p=[];
 
   private prices = [
     '0 W',
-    '100 W',
-    '30 W',
+    '300 W',
     '0 W',
     '0 W',
     '0 W',
+    '200 W',
     'Jackpot',
+    '2000 W',
     '0 W',
     '0 W',
     '0 W',
@@ -41,11 +50,10 @@ export class FortunePage implements OnInit,AfterViewInit {
     '0 W',
     '0 W',
     '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '10 W',
-    '0 W',
+    '700 W',
+    'Jackpot',
+    '100 W',
+    '1 W',
     '50 W',
     '1000 W',
     '0 W',
@@ -78,6 +86,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     public navCtrl:NavController,
     private admob:AdmobProvider
   ) {
+    this.initializeNetworkListener();
     this.finals = this.genererTableau(this.count);
   }
 
@@ -134,29 +143,28 @@ export class FortunePage implements OnInit,AfterViewInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      if(this.isFirstTime){
+        this.showRule();
+        this.message = this.game.rule;
+        this.isFirstTime=false;
+      }
+    },q=>{
+      this.util.handleError(q);
     })
   }
 
-  async showRule(){
-    const alert = await this.alertController.create({
-      header: 'Bienvenu dans "'+this.game.name+'"',
-      subHeader: 'Règles du jeu',
-      message: this.game.rule,
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'cancel',
-          handler: () => {
+  showRule(){
+    this.titre=this.game.name;
+    this.message=this.game.rule;
+    this.showMessage=true;
+  }
 
-          },
-        }
-      ],
-    });
-
-    await alert.present();
+  closeMessage(event: string){
+    this.showMessage=false;
   }
 
   async win(jackpot){
+
     const opt ={
       level:10,
       user_id:this.user.id,
@@ -164,58 +172,50 @@ export class FortunePage implements OnInit,AfterViewInit {
       jackpot,
       is_winner:true
     };
-
+    this.titre = "VOUS AVEZ GAGNEZ !!!";
+    this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
+    this.showMessage=true;
     this.api.post('scores',opt).then(d=>{
       this.ionViewWillEnter();
+    },q=>{
+      this.util.handleError(q);
     });
     //this.util.doToast("Felicitations, vous avez gagnez "+jackpot+" W",3000);
   }
 
   async loose(){
-    // enregistrement du stocke
-    const opt ={
-      level:1,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      jackpot:0,
-      is_winner:false
-    };
-    this.game.jackpot+=50;
-
-    this.api.post('scores',opt).then(d=>{
-
-    });
-    const alert = await this.alertController.create({
-      header: 'VOUS AVEZ PERDU',
-      message: 'Vous n\'avez pas reussi à trouver les 5 cristaux',
-      buttons: [
-        {
-          text: 'Fermer',
-          role: 'confirm',
-          handler: () => {
-            this.ionViewWillEnter();
-          },
-        }
-      ],
-    });
-
-    await alert.present();
+    this.titre = "Vous avez perdu";
+    this.message ="Pas de chance, peut-être une prochaine fois 😭😭😭";
+    this.showMessage=true;
+    this.ionViewWillEnter();
   }
 
   startGame(){
-    this.isStarted=true;
-    if(this.user.point<50){
+    this.showMessage=false;
+    if(this.user.point==undefined || this.user.point<50){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
-      // debit
-      const opt ={
-        user_id:this.user.id,
-        game_id:this.game.id
-      };
-      this.api.post('start_game',opt).then(a=>{
-        this.user.point-=50;
-        this.spinWheel();
-      });
+
+      if(this.isConnected){
+        // debit
+        const opt ={
+          user_id:this.user.id,
+          game_id:this.game.id
+        };
+        this.api.post('start_game',opt).then(a=>{
+          this.user.point-=50;
+          this.showFooter=false;
+          this.isStarted=true;
+          this.result.prize=undefined;
+          this.spinWheel();
+        },q=>{
+          this.util.handleError(q);
+        });
+      } else {
+        this.showMessage=true;
+        this.titre="Vous n'êtes pas connecté";
+        this.message="Connectez-vous à internet pour continuer à jouer";
+      }
     }
   }
 
@@ -346,16 +346,20 @@ export class FortunePage implements OnInit,AfterViewInit {
             if(this.decision==0){
               // attribution d'un autre segment
               const index = Math.floor(Math.random() * (this.lost_p.length + 1));
-              this.result = this.segments[index];
+              this.result = this.lost_p[index];
+              this.highlightedIndex = this.result.index;
             } else {
               this.win(price);
             }
+          } else {
           }
         } else {
           if(this.decision==0){
             // attribution d'un autre segment
             const index = Math.floor(Math.random() * (this.lost_p.length + 1));
-            this.result = this.segments[index];
+            this.result = this.lost_p[index];
+            this.highlightedIndex = this.result.index;
+
           } else {
             this.win(this.game.jackpot+50);
           }
@@ -365,6 +369,7 @@ export class FortunePage implements OnInit,AfterViewInit {
         this.initializeWheel();
         this.highlightSegment();
         this.isStarted=false;
+        this.showFooter=true;
         this.getGame();
       },
     });
@@ -427,7 +432,7 @@ export class FortunePage implements OnInit,AfterViewInit {
   genererTableau(X: number): number[] {
     const tableau: number[] = [];
 
-    const nbZeros = Math.floor(X * 0.7); // Calcul du nombre de 0 (70%)
+    const nbZeros = Math.floor(X * 0.5); // Calcul du nombre de 0 (70%)
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau
@@ -447,6 +452,32 @@ export class FortunePage implements OnInit,AfterViewInit {
     }
 
     return tableau;
+  }
+
+  async initializeNetworkListener() {
+    // Vérifier l'état initial du réseau
+    const status: NetworkStatus = await Network.getStatus();
+
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      //console.log('Changement de l’état du réseau:', status);
+
+      if (!status.connected) {
+        this.isConnected=false;
+        this.showMessage=true;
+        this.titre="Vous n'êtes pas connecté";
+        this.message="Connectez-vous à internet pour continuer à jouer";
+        console.log('Vous avez perdu la connexion Internet.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      } else {
+        this.isConnected=true;
+        this.showMessage=true;
+        this.titre="Connexion retablie";
+        this.message="Vous pouvez continuer à jouer";
+        console.log('Connexion Internet restaurée.');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      }
+    });
   }
 }
 

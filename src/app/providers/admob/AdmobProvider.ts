@@ -123,7 +123,6 @@ export class AdmobProvider {
   }
 
   async showInterstitial(){
-    console.log(this.pub)
     if(this.pub){
       await AdMob.showInterstitial().then(d=>{
         //console.log("Show");

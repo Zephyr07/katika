@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-chip *ngIf="is_user" class="chip" (click)="showUser()">
+    <ion-chip lot="start" *ngIf="is_user" class="chip" (click)="showUser()">
       <ion-avatar>
         <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
       </ion-avatar>
@@ -32,43 +32,39 @@
 
   </ion-grid>
 
-  <ion-grid>
+  <ion-grid *ngIf="scores.length>0">
     <div class="sous-titre ion-text-center" style="margin-top: -10px !important;">
-      <img src="../../../assets/img/Gagnants-pr-c-dents-25-08-2024.png" style="width: 80%" alt="" class="radius">
+      <img src="../../../assets/img/Meilleurs-Joueurs-01-09-2024.png" style="width: 80%" alt="" class="radius">
     </div>
-    <ion-row class="score">
-      <ion-col class="ion-text-center">
-        <ion-chip *ngFor="let s of scores" class="chip">
-          <ion-avatar>
-            <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
-          </ion-avatar>
-          <ion-label><strong>{{s.user.user_name|limitTo:10}}</strong>
-            <br>
-            <small><strong>{{s.jackpot|priceFormat}}</strong> W à {{s.game.name}}</small>
-            <br>
-            <small>{{s.updated_at|dateFormat}}</small>
-          </ion-label>
-        </ion-chip>
-      </ion-col>
-      <ion-col class="ion-text-center">
-        <ion-chip *ngFor="let s of scores_bis" class="chip">>
-          <ion-avatar>
-            <img alt="{{s.user.user_name}}" src="../../../assets/icon/logo.png" />
-          </ion-avatar>
-          <ion-label><strong>{{s.user.user_name|limitTo:10}}</strong>
-            <br>
-            <small><strong>{{s.jackpot|priceFormat}}</strong> W à {{s.game.name}}</small>
-            <br>
-            <small>{{s.updated_at|dateFormat}}</small>
-          </ion-label>
-        </ion-chip>
-      </ion-col>
-    </ion-row>
+    <div class="grid-rank">
+      <ion-row>
+        <ion-col size="1">
+          #
+        </ion-col>
+        <ion-col size="7">
+          Joueur
+        </ion-col>
+        <ion-col size="4" class="ion-text-right">Points</ion-col>
+      </ion-row>
+      <ion-row *ngFor="let s of scores" class="rank{{s.rank}}">
+        <ion-col size="1">
+          <span *ngIf="s.rank>3">{{s.rank}}</span>
+          <span name="crown" *ngIf="s.rank==1">🥇</span><span name="crown" *ngIf="s.rank==2">🥈</span><span name="crown" *ngIf="s.rank==3">🥉</span>
+        </ion-col>
+        <ion-col size="7">
+          {{s.user_name}}
+        </ion-col>
+        <ion-col size="4" class="ion-text-right">{{s.point|priceFormat}} W</ion-col>
+      </ion-row>
+    </div>
   </ion-grid>
 
   <ion-grid>
     <div class="sous-titre ion-text-center" style="margin-top: 0">
       <img src="../../../assets/img/Jouer-25-08-2024.png" alt="" class="radius pulsate-bck" style="width: 80%" (click)="games()">
+    </div>
+    <div class="ion-text-center">
+      <span class="rapier version">{{version}}</span>
     </div>
   </ion-grid>
 

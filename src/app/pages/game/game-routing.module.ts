@@ -29,8 +29,8 @@ const routes: Routes = [
     loadChildren: () => import('./fortune/fortune.module').then( m => m.FortunePageModule)
   },
   {
-    path: 'solitaire',
-    loadChildren: () => import('./solitaire/solitaire.module').then( m => m.SolitairePageModule)
+    path: 'apple',
+    loadChildren: () => import('./apple/apple.module').then( m => m.ApplePageModule)
   }
 
 ];
