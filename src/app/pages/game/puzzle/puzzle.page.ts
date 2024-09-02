@@ -73,6 +73,10 @@ export class PuzzlePage implements OnInit {
     }
   }
 
+  ionViewWillLeave(){
+    this.admob.showInterstitial();
+  }
+
   async startGame(){
     this.canPlay=false;
     if(this.showMessage){

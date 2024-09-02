@@ -57,10 +57,10 @@ export class MemoryGamePage implements OnInit {
     this.count=21;
     this.time=0;
     this.positions = this.setTiles(this.count*2)
+    this.admob.loadInterstitial();
   }
 
   ionViewWillEnter(){
-    this.admob.showInterstitial();
     this.getGame();
     if(this.api.checkUser()){
       this.is_user=true;
@@ -79,7 +79,7 @@ export class MemoryGamePage implements OnInit {
     } else {
 
     }
-    this.admob.loadInterstitial();
+
   }
 
   showTile(p){
@@ -345,6 +345,7 @@ export class MemoryGamePage implements OnInit {
   }
 
   ionViewWillLeave(){
+    this.admob.showInterstitial();
     clearInterval(this.interval);
   }
 

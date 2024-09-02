@@ -43,14 +43,11 @@ export class TripleChoicePage implements OnInit {
   }
 
   ngOnInit() {
-
-
+    this.admob.loadInterstitial();
   }
 
   ionViewWillEnter(){
     this.getGame();
-    this.admob.loadInterstitial();
-    this.admob.showBanner('top',80);
 
     if(this.api.checkUser()){
       this.is_user=true;
@@ -68,7 +65,7 @@ export class TripleChoicePage implements OnInit {
   }
 
   ionViewWillLeave(){
-    this.admob.hideBanner();
+    this.admob.showInterstitial();
   }
 
   startGame(){

@@ -76,7 +76,6 @@ export class AviatorPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.admob.showBanner('top',80);
     this.admob.loadInterstitial();
     if(this.api.checkUser()){
       this.is_user=true;
@@ -98,7 +97,7 @@ export class AviatorPage implements OnInit {
   }
 
   ionViewWillLeave(){
-    this.admob.removeBanner();
+    this.admob.showInterstitial();
     clearInterval(this.interval);
   }
 

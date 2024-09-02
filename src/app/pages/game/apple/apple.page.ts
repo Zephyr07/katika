@@ -69,6 +69,10 @@ export class ApplePage implements OnInit {
     }
   }
 
+  ionViewWillLeave(){
+    this.admob.showInterstitial();
+  }
+
   ngOnInit() {
     this.admob.loadInterstitial();
     this.hauteur = (this.screenHeight-this.header)*0.8;
