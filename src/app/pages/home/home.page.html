@@ -52,7 +52,7 @@
           <span name="crown" *ngIf="s.rank==1">🥇</span><span name="crown" *ngIf="s.rank==2">🥈</span><span name="crown" *ngIf="s.rank==3">🥉</span>
         </ion-col>
         <ion-col size="7">
-          {{s.user_name}}
+          {{s.user_name|limitTo:10}}
         </ion-col>
         <ion-col size="4" class="ion-text-right">{{s.point|priceFormat}} W</ion-col>
       </ion-row>

@@ -1,21 +1,25 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip color="medium" slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip slot="end" color="medium">
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content [fullscreen]="true">
   <div class="fond">
-    <ion-toolbar style="--background: transparent" class="ion-text-center">
-      <ion-chip color="medium" slot="start">
-        <ion-avatar>
-          <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
-        </ion-avatar>
-        <ion-label>{{user.user_name|limitTo:10}}</ion-label>
-      </ion-chip>
 
-      <ion-chip style="background: white" (click)="showRule()">
-        <ion-label>Règles du jeu</ion-label>
-      </ion-chip>
-
-      <ion-chip slot="end" color="medium">
-        <ion-label>{{user.point|priceFormat}} W</ion-label>
-      </ion-chip>
-    </ion-toolbar>
     <ion-row>
       <ion-col class="ion-text-center" size="6">
         <img src="../../../../assets/img/wz/game/mem.png" class="radius" alt="">

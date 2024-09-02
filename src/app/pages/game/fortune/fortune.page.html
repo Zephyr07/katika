@@ -1,4 +1,4 @@
-<ion-content>
+<ion-header class="ion-no-border">
   <ion-toolbar style="--background: transparent" class="ion-text-center">
     <ion-chip slot="start">
       <ion-avatar>
@@ -15,6 +15,10 @@
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
   <h3 class="jackpot ion-text-center"  style="margin: 10px 15px;
   background: #ddb8788c;
   border-radius: 20px;

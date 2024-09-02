@@ -1,4 +1,4 @@
-<ion-content>
+<ion-header class="ion-no-border">
   <ion-toolbar style="--background: transparent" class="ion-text-center">
     <ion-chip color="medium" slot="start">
       <ion-avatar>
@@ -15,6 +15,9 @@
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
   <div class="game-container">
     <div class="score-board">
       <h2>{{game.jackpot|priceFormat}} W</h2>
