@@ -825,12 +825,12 @@ ion-menu-button, ion-back-button {
 }
 
 .modal-message{
-  position: absolute;
+  //position: absolute;
   width: 300px;
-  height: 40%;
+  height: 30%;
   background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
-  top: 30%;
-  left: 8%;
+  //top: 30%;
+  //left: 8%;
   border-radius: 5%;
   padding: 15px;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -842,6 +842,7 @@ ion-menu-button, ion-back-button {
   text-align: justify;
   letter-spacing: 1px;
   z-index: 999;
+  pointer-events: auto;
 
   h3{
     color:var(--ion-color-primary);
@@ -850,4 +851,19 @@ ion-menu-button, ion-back-button {
     font-family: 'Rapier', serif;
     text-align: center;
   }
+}
+
+app-modal-message{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display : flex;
+  align-items : center;
+  justify-content : center;
+  pointer-events: none; /* Désactive les clics sur la div */
 }

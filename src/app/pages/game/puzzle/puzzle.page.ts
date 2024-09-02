@@ -25,6 +25,7 @@ export class PuzzlePage implements OnInit {
   message="";
   showMessage=false;
   isFirstTime=true;
+  showFooter=true;
 
   isStarted=false;
   isConnected=true;
@@ -89,6 +90,7 @@ export class PuzzlePage implements OnInit {
       this.api.post('start_game',opt).then(a=>{
         this.user.point-=50;
         this.gameOver=false;
+        this.showFooter=false;
         this.isStarted=true;
         this.canPlay=true;
         this.initializeGame(false);
@@ -152,39 +154,45 @@ export class PuzzlePage implements OnInit {
 
   revealCrystal(index: number) {
     if(this.isConnected){
-      this.showMessage=false;
-      if (!this.crystals[index].revealed && this.canPlay) {
-        this.crystals[index].revealed = true;
+      if(this.isStarted){
+        this.showMessage=false;
+        if (!this.crystals[index].revealed && this.canPlay) {
+          this.crystals[index].revealed = true;
 
-        switch (this.crystals[index].type) {
-          case 'gain':
-            this.score += 10;
-            this.totalGains++;
-            break;
-          case 'loss':
-            //this.score -= 5;
-            this.totalLosses++;
-            if (this.totalLosses >= 2) {
-              this.isStarted=false;
-              this.isCrashed=true;
-              this.canPlay = false;
-              this.gameOver = true;
-              this.loose();
-            } else {
-              this.util.doToast('Il vous reste une vie',1000,'light');
-            }
-            break;
-          case 'neutral':
-          default:
-            // Rien ne se passe pour une case neutre
-            break;
-        }
+          switch (this.crystals[index].type) {
+            case 'gain':
+              this.score += 10;
+              this.totalGains++;
+              break;
+            case 'loss':
+              //this.score -= 5;
+              this.totalLosses++;
+              if (this.totalLosses >= 2) {
+                this.showFooter=true;
+                this.isStarted=false;
+                this.isCrashed=true;
+                this.canPlay = false;
+                this.gameOver = true;
+                this.loose();
+              }
+              break;
+            case 'neutral':
+            default:
+              // Rien ne se passe pour une case neutre
+              break;
+          }
 
-        if (this.score >= 50) {
-          this.gameOver = true;
-          this.win();
+          if (this.score >= 50) {
+            this.gameOver = true;
+            this.win();
+          }
         }
+      } else {
+        this.showMessage=true;
+        this.titre="Aucune partie";
+        this.message="Cliquez sur JOUER pour commencer la partie"
       }
+
     } else {
       this.showMessage=true;
       this.titre="Vous n'êtes pas connecté";
