@@ -157,6 +157,9 @@ export class AviatorPage implements OnInit {
                     this.finals= this.genererTableau(this.count);
                     this.index=0;
                   }
+                  if(this.mise>1000){
+                    this.finals=this.genererTableau(this.count,this.mise);
+                  }
                   this.index++;
                   this.isStarted=true;
                   this.is_win = false;
@@ -274,13 +277,13 @@ export class AviatorPage implements OnInit {
 
   crash() {
     this.isCrashed = true;
-    this.isStarted=false;
     this.can_play = !this.auto;
     //this.loose();
     setTimeout(()=>{
       if(this.auto){
         this.startGame();
       } else {
+        this.isStarted=false;
         this.showFooter=true;
         this.can_play=true;
       }
@@ -288,6 +291,7 @@ export class AviatorPage implements OnInit {
   }
 
   cancel(){
+    this.total_gain=0;
     this.isCountdown=false;
     clearInterval(this.countdownInterval);
     this.chiffre=3;
@@ -308,7 +312,6 @@ export class AviatorPage implements OnInit {
     if (!this.isCrashed) {
       //this.util.doToast('Vous avez encaissé avant le crash! Le multiplicateur était de  ' + this.multiplier.toFixed(2),5000,'medium','top');
       this.isWin=true;
-      this.isStarted=false;
       // ajout des points
       this.win();
     } else {
@@ -363,6 +366,7 @@ export class AviatorPage implements OnInit {
           this.startGame();
         },2000);
       } else {
+        this.isStarted=false;
         this.showFooter=true;
       }
     },q=>{
@@ -381,8 +385,8 @@ export class AviatorPage implements OnInit {
     let percentages = {
       "lessThan1": 0.1,  // 60% < 1
       "lessThan2": 0.1,  // 24% < 2
-      "lessThan5": 0.3,  // 10% < 5
-      "lessThan10": 0.5, // 5% < 10
+      "lessThan5": 0.4,  // 10% < 5
+      "lessThan10": 0.4, // 5% < 10
       "greaterThan10": 0.1 // 1% > 10
     };
 
@@ -449,10 +453,13 @@ export class AviatorPage implements OnInit {
     return array;
   }
 
-  genererTableau(X: number): number[] {
+  genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    const nbZeros = Math.floor(X * 0.6); // Calcul du nombre de 0 (70%)
+    let nbZeros = Math.floor(X * 0.6); // Calcul du nombre de 0 (70%)
+    if(mise){
+      nbZeros = Math.floor(X * 0.8)
+    }
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau
