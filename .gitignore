@@ -22,7 +22,7 @@ log.txt
 /www
 /platforms
 /plugins
-/android
+/android/*
 
 # Compiled output
 /dist
