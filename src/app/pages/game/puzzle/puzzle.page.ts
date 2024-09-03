@@ -20,12 +20,16 @@ export class PuzzlePage implements OnInit {
   totalGains: number = 0;
   totalLosses: number = 0;
 
+  price_life=1000;
   gridGap="";
   titre="";
   message="";
   showMessage=false;
   isFirstTime=true;
   showFooter=true;
+
+  private indexLife=0;
+  private tab_life = [1,3,5,8,10,15,20];
 
   isStarted=false;
   isConnected=true;
@@ -43,7 +47,7 @@ export class PuzzlePage implements OnInit {
     public navCtrl:NavController,
     private admob:AdmobProvider
   ) {
-    this.initializeNetworkListener();
+    this.util.initializeNetworkListener();
     if(this.screenWidth<310){
       this.gridGap="1px"
     } else {
@@ -138,7 +142,7 @@ export class PuzzlePage implements OnInit {
 
   initializeGame(bool) {
     this.crystals = [];
-    this.score = 10;
+    this.score = 0;
     this.totalLosses = 0;
     this.totalGains = 0;
     //this.gameOver = bool;
@@ -172,12 +176,16 @@ export class PuzzlePage implements OnInit {
               //this.score -= 5;
               this.totalLosses++;
               if (this.totalLosses >= 2) {
-                this.showFooter=true;
-                this.isStarted=false;
-                this.isCrashed=true;
-                this.canPlay = false;
-                this.gameOver = true;
-                this.loose();
+                if(this.user.point>this.tab_life[this.indexLife]*this.price_life){
+                  this.buyLive();
+                } else {
+                  this.showFooter=true;
+                  this.isStarted=false;
+                  this.isCrashed=true;
+                  this.canPlay = false;
+                  this.gameOver = true;
+                  this.loose();
+                }
               }
               break;
             case 'neutral':
@@ -238,29 +246,43 @@ export class PuzzlePage implements OnInit {
     }
   }
 
-  async initializeNetworkListener() {
-    // Vérifier l'état initial du réseau
-    const status: NetworkStatus = await Network.getStatus();
+  async buyLive(){
+    const alert = await this.alertController.create({
+      //cssClass: 'my-custom-class',
+      header: 'Acheter une vie?',
+      message:"Continuer à jouer pour "+(this.tab_life[this.indexLife]*this.price_life)+" W",
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          //cssClass: 'secondary',
+          handler: () => {
+            this.loose();
+          }
+        }, {
+          text: 'Oui',
+          handler: (data:any) => {
+            // reduction
+            const opt ={
+              multiplier:this.tab_life[this.indexLife]*this.price_life
+            };
 
-    // Écouter les changements de connexion
-    Network.addListener('networkStatusChange', (status) => {
-      //console.log('Changement de l’état du réseau:', status);
-
-      if (!status.connected) {
-        this.isConnected=false;
-        this.showMessage=true;
-        this.titre="Vous n'êtes pas connecté";
-        this.message="Connectez-vous à internet pour continuer à jouer";
-
-        console.log('Vous avez perdu la connexion Internet.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      } else {
-        this.isConnected=true;
-        console.log('Connexion Internet restaurée.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      }
+            this.api.post('get_life',opt).then(d=>{
+              this.showFooter=false;
+              this.isStarted=true;
+              this.isCrashed=false;
+              this.canPlay = true;
+              this.gameOver = false;
+              this.user.point-=this.tab_life[this.indexLife]*this.price_life
+              this.totalLosses=1;
+              this.indexLife++;
+            })
+          }
+        }
+      ]
     });
-  }
 
+    await alert.present();
+  }
 
 }

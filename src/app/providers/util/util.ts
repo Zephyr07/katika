@@ -97,18 +97,6 @@ export class UtilProvider {
     });
   }
 
-  initializeNetworkListener() {
-    // Écouter les changements de connexion
-    Network.addListener('networkStatusChange', (status) => {
-      console.log('Network status changed', status);
-
-      if (!status.connected) {
-        console.log('Vous avez perdu la connexion Internet.');
-        // Tu peux aussi ajouter une notification pour l'utilisateur ici
-      }
-    });
-  }
-
   formarPrice(price) {
     if (price === undefined) {
       return '';
@@ -648,5 +636,23 @@ export class UtilProvider {
   // Helper function to generate random numbers within a range with 2 decimals
   randomInRange(min, max) {
     return parseFloat((Math.random() * (max - min) + min).toFixed(2));
+  }
+
+  async initializeNetworkListener() {
+    // Vérifier l'état initial du réseau
+    const status: NetworkStatus = await Network.getStatus();
+
+    // Écouter les changements de connexion
+    Network.addListener('networkStatusChange', (status) => {
+      //console.log('Changement de l’état du réseau:', status);
+
+      if (!status.connected) {
+        this.doToast('Vous avez perdu la connexion Internet.',1000,'light');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      } else {
+        this.doToast('Connexion Internet restaurée.',1000,'light');
+        // Ajoute une notification pour l'utilisateur ici si nécessaire
+      }
+    });
   }
 }

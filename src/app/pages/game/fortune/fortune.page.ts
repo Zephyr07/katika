@@ -34,6 +34,8 @@ export class FortunePage implements OnInit,AfterViewInit {
   win_p=[];
   lost_p=[];
 
+  is_katika=true;
+
   private prices = [
     '0 W',
     '300 W',
@@ -64,6 +66,9 @@ export class FortunePage implements OnInit,AfterViewInit {
     '200 W',
     '500 W',
     '0 W',
+    '0 W',
+    '0 W',
+    '0 W',
     '0 W'
   ];
 
@@ -73,11 +78,7 @@ export class FortunePage implements OnInit,AfterViewInit {
   private segmentCount = 30;
 
   // Créer segmentCount segments avec des couleurs différentes
-  segments = Array.from({ length: this.segmentCount }, (_, i) => ({
-    text: `${(i + 1)}`,
-    color: this.getSegmentColor(i),
-    prize: this.getPrice(i),
-  }));
+  segments = [];
 
   constructor(
     private api:ApiProvider,
@@ -86,7 +87,18 @@ export class FortunePage implements OnInit,AfterViewInit {
     public navCtrl:NavController,
     private admob:AdmobProvider
   ) {
-    this.initializeNetworkListener();
+    this.api.getSettings().then((d:any)=>{
+      this.is_katika = d.katika == 'true';
+    })
+    for(let i =0;i<this.segmentCount;i++){
+      this.segments.push({
+        text: i + 1,
+        color: this.getSegmentColor(i),
+        prize: this.getPrice(i),
+        }
+      )
+    }
+    this.util.initializeNetworkListener();
     this.finals = this.genererTableau(this.count);
   }
 
@@ -316,15 +328,6 @@ export class FortunePage implements OnInit,AfterViewInit {
           ctx.fill();
           ctx.stroke();
 
-          /*/ Dessiner le texte dans chaque segment
-          ctx.save();
-          ctx.rotate(angle + segmentAngle / 2);
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#000';
-          ctx.font = '14px Arial';
-          ctx.fillText(this.segments[i].text, radius / 2 - 10, 0);
-          ctx.restore();*/
         }
 
         ctx.translate(-radius, -radius); // Réinitialiser la translation
@@ -339,29 +342,34 @@ export class FortunePage implements OnInit,AfterViewInit {
         this.decision=this.finals[this.indexDec];
         this.indexDec=(this.indexDec+1)%this.finals.length;
         this.result = this.segments[selectedIndex];
-
-        if(this.result.prize!='Jackpot'){
-          const price = parseInt(this.result.prize.split(' ')[0]);
-          if(price!=0){
-            if(this.decision==0){
-              // attribution d'un autre segment
-              const index = Math.floor(Math.random() * (this.lost_p.length + 1));
-              this.result = this.lost_p[index];
-              this.highlightedIndex = this.result.index;
+        if(this.result.prize==undefined){
+          this.result.prize=this.prices[this.result.text-1];
+        }
+        if(this.decision==0){
+          const index = Math.floor(Math.random() * (this.lost_p.length ));
+          this.result = this.lost_p[index];
+          if(this.result.prize==undefined){
+            this.result.prize=this.prices[this.result.text-1];
+          }
+          this.highlightedIndex = this.result.text-1;
+        } else {
+          if(this.result.prize=='Jackpot'){
+            if(this.is_katika){
+              this.win(this.game.jackpot+50);
+              this.is_katika=false;
             } else {
-              this.win(price);
+              const index = Math.floor(Math.random() * (this.lost_p.length ));
+              this.result = this.lost_p[index];
+              if(this.result.prize==undefined){
+                this.result.prize=this.prices[this.result.text-1];
+              }
+              this.highlightedIndex = this.result.text-1;
             }
           } else {
-          }
-        } else {
-          if(this.decision==0){
-            // attribution d'un autre segment
-            const index = Math.floor(Math.random() * (this.lost_p.length + 1));
-            this.result = this.lost_p[index];
-            this.highlightedIndex = this.result.index;
-
-          } else {
-            this.win(this.game.jackpot+50);
+            const price = parseInt(this.result.prize.split(' ')[0]);
+            if(price!=0){
+              this.win(price);
+            }
           }
         }
 
@@ -406,7 +414,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#000';
     ctx.font = '14px Arial';
-    ctx.fillText(this.segments[this.highlightedIndex].text, radius / 2 - 10, 0);
+    ctx.fillText(this.result.text, radius / 2 - 10, 0);
     ctx.restore();
 
     ctx.restore(); // Réinitialiser le contexte
@@ -426,7 +434,7 @@ export class FortunePage implements OnInit,AfterViewInit {
 
   // Fonction pour attribuer des couleurs uniques à chaque segment
   private getPrice(index: number): string {
-    return this.prices[index % this.prices.length];
+    return this.prices[index];
   }
 
   genererTableau(X: number): number[] {
@@ -452,32 +460,6 @@ export class FortunePage implements OnInit,AfterViewInit {
     }
 
     return tableau;
-  }
-
-  async initializeNetworkListener() {
-    // Vérifier l'état initial du réseau
-    const status: NetworkStatus = await Network.getStatus();
-
-    // Écouter les changements de connexion
-    Network.addListener('networkStatusChange', (status) => {
-      //console.log('Changement de l’état du réseau:', status);
-
-      if (!status.connected) {
-        this.isConnected=false;
-        this.showMessage=true;
-        this.titre="Vous n'êtes pas connecté";
-        this.message="Connectez-vous à internet pour continuer à jouer";
-        console.log('Vous avez perdu la connexion Internet.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      } else {
-        this.isConnected=true;
-        this.showMessage=true;
-        this.titre="Connexion retablie";
-        this.message="Vous pouvez continuer à jouer";
-        console.log('Connexion Internet restaurée.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      }
-    });
   }
 }
 

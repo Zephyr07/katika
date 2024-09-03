@@ -48,7 +48,7 @@ export class MemoryGamePage implements OnInit {
     private admob : AdmobProvider,
     private api : ApiProvider
   ) {
-    this.initializeNetworkListener();
+    this.util.initializeNetworkListener();
     this.taille=window.innerHeight
   }
 
@@ -369,31 +369,5 @@ export class MemoryGamePage implements OnInit {
     this.titre=this.game.name;
     this.message=this.game.rule;
     this.showMessage=true;
-  }
-
-  async initializeNetworkListener() {
-    // Vérifier l'état initial du réseau
-    const status: NetworkStatus = await Network.getStatus();
-
-    // Écouter les changements de connexion
-    Network.addListener('networkStatusChange', (status) => {
-      //console.log('Changement de l’état du réseau:', status);
-
-      if (!status.connected) {
-        this.isConnected=false;
-        this.showMessage=true;
-        this.titre="Vous n'êtes pas connecté";
-        this.message="Connectez-vous à internet pour continuer à jouer";
-        console.log('Vous avez perdu la connexion Internet.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      } else {
-        this.isConnected=true;
-        this.showMessage=true;
-        this.titre="Connexion retablie";
-        this.message="Vous pouvez continuer à jouer";
-        console.log('Connexion Internet restaurée.');
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      }
-    });
   }
 }
