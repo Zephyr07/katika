@@ -871,3 +871,45 @@ app-modal-message{
 .white{
   color:white !important;
 }
+
+.encoche{
+  background: white;
+  padding: 7px 5px;
+  border-radius: 20px;
+  text-align: center;
+  color: var(--ion-color-tertiary);
+  margin-bottom: 0;
+
+  ion-col{
+    padding: 0;
+  }
+
+  ion-icon{
+    font-size: 20px;
+    padding: 5px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    &.active{
+      background: var(--ion-color-medium);
+    }
+  }
+}
+
+.ion-col-55{
+  flex: 0 0 calc(calc(5.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  width: calc(calc(5.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  max-width: calc(calc(5.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+}
+
+.ion-col-325{
+  flex: 0 0 calc(calc(3.25 / var(--ion-grid-columns, 12)) * 100%) !important;
+  width: calc(calc(3.25 / var(--ion-grid-columns, 12)) * 100%) !important;
+  max-width: calc(calc(3.25 / var(--ion-grid-columns, 12)) * 100%) !important;
+}
+
+.ion-col-35{
+  flex: 0 0 calc(calc(3.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  width: calc(calc(3.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  max-width: calc(calc(3.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+}

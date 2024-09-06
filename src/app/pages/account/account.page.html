@@ -1,0 +1,128 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background:transparent">
+    <ion-title>Mon compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="custom">
+    <ion-list class="custom-list">
+      <div class="ion-text-center bold" style="font-size: 35px">
+        {{user.user_name}}
+        <br>
+        <div>
+          <ion-chip (click)="askForRecharge()" style="background: var(--ion-color-medium)">
+            <ion-avatar>
+              <img alt="{{user.user_name}}" src="../../../assets/icon/setting/diamond.svg" style="background: var(--ion-color-tertiary); padding: 3px" />
+            </ion-avatar>
+            <ion-label>{{user.point|priceFormat}} W </ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <ion-list-header>
+        <div class="sous-titre"></div>
+      </ion-list-header>
+
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Email
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{user.email |limitTo:5}}&#64;xxxxx.xxx
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Téléphone
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{user.phone|priceFormat}}
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Code Promo
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{promo_code.code}}
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Points
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{user.point|priceFormat}} W
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Points de parrainage
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{promo_code.amount * promo_code.son|priceFormat}}
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label slot="start">
+          Personnes parrainées
+        </ion-label>
+        <ion-label class="ion-text-right bold">
+          {{promo_code.son |priceFormat}} / {{promo_code.target_subscriber|priceFormat}}
+        </ion-label>
+      </ion-item>
+
+    </ion-list>
+
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-button expand="block" color="tertiary" (click)="editUser()" >{{'edit'|translate}}</ion-button>
+      </ion-col>
+      <ion-col class="ion-no-padding">
+        <ion-button expand="block" color="tertiary" (click)="logout()" >{{'logout'|translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-button expand="block" color="medium" (click)="presentAlert()" >{{'change_password'|translate}}</ion-button>
+      </ion-col>
+      <ion-col class="ion-no-padding">
+        <ion-button expand="block" color="primary" (click)="deleteUser()" >{{'delete_account'|translate}}</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+
+</ion-content>
+
+<ion-footer style=" width: 100%; background: transparent !important;">
+  <ion-grid>
+
+    <ion-row style="margin-bottom: 0">
+      <ion-col class="ion-col-35">
+
+      </ion-col>
+      <ion-col size="5">
+
+        <ion-row class="encoche shadow">
+          <ion-col class="middle" (click)="showUser()">
+            <ion-icon class="active" name="person-outline"></ion-icon>
+          </ion-col>
+
+          <ion-col class="middle" (click)="showHome()">
+            <ion-icon name="game-controller-outline"></ion-icon>
+          </ion-col>
+
+          <ion-col class="middle" (click)="showSetting()">
+            <ion-icon name="cog-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

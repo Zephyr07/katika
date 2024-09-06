@@ -143,7 +143,7 @@ d
 
   }
   register(credentials: {full_name?: string,user_name?:string,store_code?:string, phone: number, email: string, password: string, password_confirmation:string, country_id?:number,
-    settings?:any, onesignal_id?:string}) {
+    settings?:any, onesignal_id?:string, promo_code_id?:number}) {
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
       this.api.post('auth/signup',{value:crypt})

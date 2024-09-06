@@ -1,3 +1,10 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background:#f6f6f6 !important">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" color="tertiary"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content class="auth">
   <div class="custom-backgrounds">
 
@@ -27,15 +34,9 @@
                 (click)="login()"
                 expand="block">{{'login'|translate}}</ion-button>
             </div>
-            <div>
-              <ion-button
-                color="tertiary"
-                (click)="createPDF()"
-                expand="block">{{'pdf'|translate}}</ion-button>
-            </div>
           </ion-col>
         </ion-row>
-        <ion-row style="margin-top:5px">
+        <ion-row style="margin-top:5px; display: none;">
           <ion-col class="ion-text-center">
             <a style="text-decoration: underline;" (click)="goToRegister()">
               <span class="primary">{{'create_account'|translate}}</span>

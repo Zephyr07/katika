@@ -1,0 +1,130 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background:transparent">
+    <ion-title>Réglages</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-list class="ion-margin">
+
+    <ion-item-group>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="showUser()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/person.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{username}}</h2>
+          <p>Consulter votre compte</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" *ngIf="is_user" (click)="history()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/book.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Historique</h2>
+          <p>Consulter l'historique de vos gains</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="sharePromoCode()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/people.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Invitez des amis</h2>
+          <p>Parrainez et gagnez des points</p>
+        </ion-label>
+
+      </ion-item>
+
+      <ion-item lines="none" (click)="joinGroup()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/chatbubbles.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Rejoindre le groupe</h2>
+          <p>Rester informer de challenges hebdomadaires</p>
+        </ion-label>
+
+      </ion-item>
+      <ion-item lines="none">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/language.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Langue</h2>
+          <p>
+            <span *ngIf="lang=='fr'">Français</span>
+          </p>
+        </ion-label>
+
+      </ion-item>
+    </ion-item-group>
+
+    <ion-item-group>
+
+      <ion-item lines="none" (click)="contactUs()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/chatbox.svg" />
+        </ion-avatar>
+        <ion-label>Contacter le Katika</ion-label>
+      </ion-item>
+      <ion-item lines="none" (click)="shareApp()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/share-social.svg" />
+        </ion-avatar>
+        <ion-label>Partager l'application</ion-label>
+      </ion-item>
+
+      <ion-item lines="none" (click)="cgu()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/document-text.svg" />
+        </ion-avatar>
+        <ion-label>Conditions d'utilisation</ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/information-circle.svg" />
+        </ion-avatar>
+        <ion-label>
+          <ion-label>
+            <h2>Version</h2>
+            <p>{{version}}</p>
+          </ion-label>
+        </ion-label>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+</ion-content>
+
+<ion-footer style=" width: 100%; background: transparent !important;">
+  <ion-grid>
+
+    <ion-row style="margin-bottom: 0">
+      <ion-col class="ion-col-35">
+
+      </ion-col>
+      <ion-col size="5">
+
+        <ion-row class="encoche shadow">
+          <ion-col class="middle" (click)="showUser()">
+            <ion-icon name="person-outline"></ion-icon>
+          </ion-col>
+
+          <ion-col class="middle" (click)="showHome()">
+            <ion-icon name="game-controller-outline"></ion-icon>
+          </ion-col>
+
+          <ion-col class="middle" (click)="showSetting()">
+            <ion-icon class="active" name="cog-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-footer>

@@ -1,18 +1,19 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ApiProvider} from "../../providers/api/api";
-import {Router} from "@angular/router";
-import {AuthProvider} from "../../providers/auth/auth";
-import {ModalEditUserComponent} from "../../components/modal-edit-user/modal-edit-user.component";
-import {UtilProvider} from "../../providers/util/util";
-import {TranslateService} from "@ngx-translate/core";
 import {AlertController, IonModal, ModalController} from "@ionic/angular";
+import {Router} from "@angular/router";
+import {UtilProvider} from "../../providers/util/util";
+import {ApiProvider} from "../../providers/api/api";
+import {AuthProvider} from "../../providers/auth/auth";
+import {TranslateService} from "@ngx-translate/core";
+import {ModalEditUserComponent} from "../../components/modal-edit-user/modal-edit-user.component";
 
 @Component({
-  selector: 'app-user',
-  templateUrl: './user.page.html',
-  styleUrls: ['./user.page.scss'],
+  selector: 'app-account',
+  templateUrl: './account.page.html',
+  styleUrls: ['./account.page.scss'],
 })
-export class UserPage implements OnInit {
+export class AccountPage implements OnInit {
+
   @ViewChild(IonModal) modal: IonModal;
   user:any={};
   CANCEL="";
@@ -29,6 +30,8 @@ export class UserPage implements OnInit {
   point=1;
   phone:number;
   password="";
+
+  promo_code:any={};
 
   constructor(
     private router:Router,
@@ -72,16 +75,36 @@ export class UserPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    
+
     if (this.api.checkUser()) {
       let user = JSON.parse(localStorage.getItem('user_ka'));
       this.api.getList('auth/me',{id:user.id}).then((a:any)=>{
         this.user = a.data.user;
+        this.getPromoCode(user.id);
       });
     } else {
       this.util.doToast('Vous n\'êtes pas connecté',2000,'light');
       this.router.navigate(['/home']);
     }
+  }
+
+  getPromoCode(user_id){
+    const opt = {
+      user_id
+    };
+    this.api.getList('promo_codes',opt).then((d:any)=>{
+      if(d.length>0){
+        this.promo_code = d[0];
+      } else {
+        this.promo_code ={
+          code:"Vous n'avez pas de code promo",
+          son:0,
+          amount:0
+        }
+      }
+    },q=>{
+      this.util.handleError(q);
+    })
   }
 
   async editUser(o?:any){
@@ -104,47 +127,27 @@ export class UserPage implements OnInit {
     }
   }
 
-  transfert(){
-    if(this.point>this.user.point || this.point<10000){
-      this.util.doToast('Vous n\'avez pas assez de point, il vous faut minimum 10 000W pour initier un transfert',5000);
-    } else {
-      const opt = {
-        phone:this.phone
-      };
-      this.api.getList('users',opt).then((d:any)=>{
-        if(d.length>0){
-          this.util.showLoading('Transfert encours');
-          // utilisateur existant
-          if(d[0].phone==this.user.phone){
-            this.util.doToast('Vous ne pouvez pas vous transferer des points',4000);
-          } else {
-            const o = {
-              point:this.point,
-              phone:this.phone,
-              password:this.password
-            };
-            const x = this.util.encryptAESData(o);
-            this.api.post('transferts',{value:x}).then(d=>{
-              this.util.hideLoading();
-              this.closeModal();
-              this.point=1;
-              this.phone=null;
-              this.password="";
-              this.util.doToast('Transfert effectué',3000);
-              this.user.point-=this.point;
-              localStorage.setItem('user_ka',JSON.stringify(this.user));
-            },(error:any)=>{
-              const data = this.util.decryptAESData(JSON.stringify(error.response.data));
-              alert(data);
-              this.util.hideLoading();
-            })
-          }
-        } else {
-          this.util.doToast("Cet utilisateur n'existe pas",3000);
-        }
-      })
-    }
 
+  async askForRecharge(){
+    const alert = await this.alertController.create({
+      header: "Recharger le compte",
+      subHeader:"Souhaitez-vous recharger votre compte?",
+      buttons: [
+        {
+          text: "Non",
+          role: 'cancel',
+        },
+        {
+          text: "Oui",
+          role:'confirm',
+          handler:(data)=>{
+            this.recharge();
+          }
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   async deleteUser() {
@@ -282,14 +285,6 @@ export class UserPage implements OnInit {
     await alert.present();
   }
 
-  askLanguage(){
-    this.api.askLanguage();
-  }
-
-  modalTransfert(){
-    document.getElementById('open-modalT').click();
-  }
-
   logout(){
     this.auth.logout().then((d:any)=>{
       //this.router.navigateByUrl('home');
@@ -297,16 +292,8 @@ export class UserPage implements OnInit {
     })
   }
 
-  historique(){
-    this.router.navigateByUrl('user/history');
-  }
-
-  closeModal(){
-    this.modal.setCurrentBreakpoint(0);
-  }
-
   doRefresh(event) {
-   this.ionViewWillEnter();
+    this.ionViewWillEnter();
 
     setTimeout(() => {
       //console.log('Async operation has ended');
@@ -330,7 +317,7 @@ export class UserPage implements OnInit {
   }
 
   showUser(){
-    this.router.navigateByUrl('user');
+    this.router.navigateByUrl('account');
   }
 
   showHome(){

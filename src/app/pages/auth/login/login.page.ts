@@ -72,19 +72,14 @@ export class LoginPage implements OnInit {
 
         this.util.hideLoading();
         localStorage.setItem('is_user','true');
-        //this.navCtrl.navigateRoot(['/home']);
-        if(d.user.status=='pending_activation'){
+        this.navCtrl.navigateRoot(['/home']);
+        /*if(d.user.status=='pending_activation'){
           this.util.doToast('Votre compte n\'est pas activé. Contacter le responsable de la boutique',5000, 'warning');
         } else if(d.user.status=='enable') {
-          if(d.user.store_users==null){
-            // pas de store
-            this.navCtrl.navigateRoot(['/store-add']);
-          } else {
-            this.navCtrl.navigateRoot(['/home']);
-          }
+          this.navCtrl.navigateRoot(['/home']);
         } else {
           this.util.doToast('Votre compte est désactivé. Contacter le support au +237 673996540',5000, 'warning');
-        }
+        }*/
 
       }, q=>{
         alert(JSON.stringify(q));

@@ -34,9 +34,7 @@ export class GamePage implements OnInit {
     }
   }
 
-  ionViewWillLeave(){
 
-  }
   goToGame(t){
     if(t=='bats'){
       this.router.navigateByUrl('game/triple-choice');

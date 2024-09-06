@@ -27,7 +27,9 @@ export class HomePage implements OnInit {
   password_confirmation="";
   scores:any=[];
   version = environment.version;
-
+  promo_code:any={};
+  code="";
+  promo_code_id:number;
   target:number;
   lang="";
   choice="c";
@@ -88,6 +90,19 @@ export class HomePage implements OnInit {
     if(!this.api.checkCredential()){
       this.is_user=false;
     }
+
+    if(this.api.checkUser()){
+      this.is_user=true;
+      this.user=JSON.parse(localStorage.getItem('user_ka'));
+      this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
+        this.user = a.data.user;
+        localStorage.setItem('user_ka',JSON.stringify(this.user));
+      },q=>{
+        this.util.handleError(q);
+      });
+    } else {
+      this.is_user=false;
+    }
   }
 
   games(){
@@ -125,8 +140,31 @@ export class HomePage implements OnInit {
     })
   }
 
+  checkCodePromo(){
+    const opt = {
+      code:this.code
+    };
+
+    this.api.getList('promo_codes',opt).then((d:any)=>{
+      if(d.length>0){
+        this.promo_code = d[0];
+        this.promo_code_id = d[0].id;
+      } else {
+        this.util.doToast('Ce code promo n\'existe pas',3000);
+      }
+    })
+  }
+
   showUser(){
-    this.router.navigateByUrl('user');
+    if(this.is_user){
+      this.router.navigateByUrl('account');
+    } else {
+      this.router.navigateByUrl('login');
+    }
+  }
+
+  showSetting(){
+    this.router.navigateByUrl('setting');
   }
 
   closeModal(){
@@ -142,9 +180,17 @@ export class HomePage implements OnInit {
         email:this.email.trim(),
         phone:this.phone,
         password:this.password,
+        promo_code_id:0,
         settings:JSON.stringify([{"language":this.lang},{"notification":"true"}]),
         password_confirmation:this.password_confirmation
       }
+
+      if(this.promo_code_id!=undefined && this.promo_code_id>0){
+        opt.promo_code_id = this.promo_code_id;
+      } else {
+        delete opt.promo_code_id;
+      }
+
       this.auth.register(opt).then((d:any)=>{
         this.util.hideLoading();
         this.user = {
