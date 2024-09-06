@@ -1,0 +1,16 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr); /* 8 colonnes de taille égale */
+  grid-template-rows: repeat(6, 1fr);    /* 6 rangées de taille égale */
+  gap: 1px; /* Espacement de 1 pixel entre les éléments */
+  width: 100vw; /* Largeur de la grille à 100% de la largeur de la vue */
+  height: 100vh; /* Hauteur de la grille à 100% de la hauteur de la vue */
+}
+
+.grid-item {
+  background-color: lightblue; /* Couleur d'exemple, vous pouvez la modifier */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000; /* Bordure pour visualiser les éléments */
+}

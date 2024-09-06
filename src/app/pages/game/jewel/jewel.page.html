@@ -1,0 +1,14 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>jewel</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="grid-container">
+    <!-- Créez 48 éléments (6x8) -->
+    <div class="grid-item" *ngFor="let item of [].constructor(48); let i = index">
+      {{ i + 1 }}
+    </div>
+  </div>
+</ion-content>

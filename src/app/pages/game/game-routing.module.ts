@@ -31,6 +31,14 @@ const routes: Routes = [
   {
     path: 'apple',
     loadChildren: () => import('./apple/apple.module').then( m => m.ApplePageModule)
+  },
+  {
+    path: 'dice',
+    loadChildren: () => import('./dice/dice.module').then( m => m.DicePageModule)
+  },
+  {
+    path: 'jewel',
+    loadChildren: () => import('./jewel/jewel.module').then( m => m.JewelPageModule)
   }
 
 ];

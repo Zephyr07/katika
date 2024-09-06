@@ -1,0 +1,98 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip style="background: white" slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" slot="end" >
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="scene middle">
+    <div id="cube" class="cube">
+      <div class="face face1"></div>
+      <div class="face face2"></div>
+      <div class="face face3"></div>
+      <div class="face face4"></div>
+      <div class="face face5"></div>
+      <div class="face face6"></div>
+    </div>
+
+    <div id="cube2" class="cube">
+      <div class="face face1"></div>
+      <div class="face face2"></div>
+      <div class="face face3"></div>
+      <div class="face face4"></div>
+      <div class="face face5"></div>
+      <div class="face face6"></div>
+    </div>
+  </div>
+
+  <ion-grid class="de-grid">
+    <div class="timeline-container">
+      <div class="timeline">
+        <div class="timeline-point" *ngFor="let point of milestone" [ngClass]="{'active':gain_tmp>=point}"></div>
+      </div>
+    </div>
+    <ion-row class="dashboard">
+      <ion-col>Jackpot <br> {{game.jackpot|priceFormat}} W</ion-col>
+      <ion-col>Niveau <br> {{level}}</ion-col>
+      <ion-col>Vos gains <br> {{gain_tmp|priceFormat}} W</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <h3>Choix du nombre</h3>
+      </ion-col>
+      <ion-col class="demi3"></ion-col>
+      <ion-col *ngFor="let f of results" size="3" >
+        <ion-button [disabled]="isStarted" color="primary" expand="block" (click)="choix_result = f" *ngIf="choix_result == f">{{f}}</ion-button>
+        <ion-button [disabled]="isStarted" color="medium" expand="block" (click)="choix_result = f" *ngIf="choix_result != f">{{f}}</ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <h3>Décision</h3>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button [disabled]="isStarted" color="primary" expand="block" (click)="choix_decision = 'petit'" *ngIf="choix_decision == 'petit'">Moins</ion-button>
+        <ion-button [disabled]="isStarted" color="tertiary" expand="block" (click)="choix_decision = 'petit'" *ngIf="choix_decision != 'petit'">Moins</ion-button>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button [disabled]="isStarted" color="primary" expand="block" (click)="choix_decision = 'egal'" *ngIf="choix_decision == 'egal'">Egal</ion-button>
+        <ion-button [disabled]="isStarted" color="tertiary" expand="block" (click)="choix_decision = 'egal'" *ngIf="choix_decision != 'egal'">Egal</ion-button>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button [disabled]="isStarted" color="primary" expand="block" (click)="choix_decision = 'grand'" *ngIf="choix_decision == 'grand'">Plus</ion-button>
+        <ion-button [disabled]="isStarted" color="tertiary" expand="block" (click)="choix_decision = 'grand'" *ngIf="choix_decision != 'grand'">Plus</ion-button>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+  <ion-footer *ngIf="showFooter" style="position:absolute; bottom:0; width: 100%; background: transparent !important;">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted" (click)="close()" color="tertiary">Fermer</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" [disabled]="isStarted" (click)="startGame()" color="medium">Jouer</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
+</ion-content>

@@ -4,7 +4,6 @@ import {UtilProvider} from "../../../providers/util/util";
 import {ApiProvider} from "../../../providers/api/api";
 import {AuthProvider} from "../../../providers/auth/auth";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
-import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-aviator',

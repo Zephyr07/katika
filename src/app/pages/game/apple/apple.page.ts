@@ -366,7 +366,7 @@ export class ApplePage implements OnInit {
   genererTableau(X: number): number[] {
     const tableau: number[] = [];
 
-    const nbZeros = Math.floor(X * 0.4); // Calcul du nombre de 0 (40%)
+    const nbZeros = Math.floor(X * 0.7); // Calcul du nombre de 0 (40%)
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau

@@ -26,10 +26,9 @@ export class HomePage implements OnInit {
   password="";
   password_confirmation="";
   scores:any=[];
-  scores_bis:any=[];
   version = environment.version;
 
-  cagnotte:number;
+  target:number;
   lang="";
   choice="c";
 
@@ -80,26 +79,15 @@ export class HomePage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.getCagnotte();
+    this.api.getSettings().then((d:any)=>{
+      if(d){
+        this.target = d.target;
+      }
+    });
     this.getScores();
     if(!this.api.checkCredential()){
       this.is_user=false;
     }
-  }
-
-  getCagnotte(){
-
-    const opt = {
-      should_paginate:false,
-    };
-
-    this.api.getList('games',opt).then((d:any)=>{
-      let x = 0;
-      d.forEach(v=>{
-        x+=v.jackpot;
-      });
-      this.cagnotte=x;
-    })
   }
 
   games(){

@@ -1,0 +1,184 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/de.jpg') no-repeat center/cover fixed !important;
+}
+
+.scene {
+  margin: 35px auto 0;
+  width: 300px;
+  height: 200px
+}
+
+h3{
+  font-family: Rapier;
+  color: white;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.cube {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(150deg) rotateY(-57deg); /* Position de repos pour voir 3 faces */
+}
+
+#cube{
+  left: 20px;
+}
+
+#cube2{
+  left: 22px;
+  top:-40px;
+  transform: rotateX(-27deg) rotateY(297deg);
+}
+
+.face {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  //border: 2px solid #333;
+  border-radius: 10px; /* Bord arrondi */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* Ombre pour effet de profondeur */
+}
+
+.face1 {
+  transform: rotateY(0deg) translateZ(50px);
+  background: url('/assets/img/dice/1.png') no-repeat center/cover fixed ;
+  
+}
+
+.face2 {
+  transform: rotateY(90deg) translateZ(50px);
+  background: url('/assets/img/dice/2.png') no-repeat center/cover fixed ;
+  
+}
+
+.face3 {
+  transform: rotateY(180deg) translateZ(50px);
+  background: url('/assets/img/dice/3.png') no-repeat center/cover fixed ;
+  
+}
+
+.face4 {
+  transform: rotateY(-90deg) translateZ(50px);
+  background: url('/assets/img/dice/4.png') no-repeat center/cover fixed ;
+  
+}
+
+.face5 {
+  transform: rotateX(90deg) translateZ(50px);
+  background: url('/assets/img/dice/6.png') no-repeat center/cover fixed ;
+  
+}
+
+.face6 {
+  transform: rotateX(-90deg) translateZ(50px);
+  background: url('/assets/img/dice/5.png') no-repeat center/cover fixed ;
+  
+}
+
+.de-grid{
+  margin: 20px;
+  background: rgba(0, 255, 255, 0.3098039216);
+  border-radius: 20px;
+}
+.timeline-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.timeline {
+  position: relative;
+  width: 100%; /* La timeline prend toute la largeur de la div parent */
+  height: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  width: 90%;
+  height: 2px;
+  background-color: var(--ion-color-tertiary);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.timeline-point {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2; /* Les points sont au-dessus de la ligne */
+
+  &.active{
+    background: var(--ion-color-medium);
+  }
+}
+
+.timeline-point:nth-child(1) {
+  left: 0;
+}
+
+.timeline-point:nth-child(2) {
+  left: 10%;
+}
+
+.timeline-point:nth-child(3) {
+  left: 20%;
+}
+
+.timeline-point:nth-child(4) {
+  left: 30%;
+}
+
+.timeline-point:nth-child(5) {
+  left: 40%;
+}
+
+.timeline-point:nth-child(6) {
+  left: 50%;
+}
+
+.timeline-point:nth-child(7) {
+  left: 60%;
+}
+
+.timeline-point:nth-child(8) {
+  left: 70%;
+}
+
+.timeline-point:nth-child(9) {
+  left: 80%;
+}
+
+.timeline-point:nth-child(10) {
+  left: 90%;
+}
+
+.dashboard{
+  color: aqua !important;
+  background: #0006;
+  border-radius: 20px;
+  font-family: Rapier;
+  text-align: center;
+}
+
+.demi3{
+  flex: 0 0 calc(calc(1.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  width: calc(calc(1.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+  max-width: calc(calc(1.5 / var(--ion-grid-columns, 12)) * 100%) !important;
+}
