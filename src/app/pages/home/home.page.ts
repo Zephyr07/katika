@@ -49,7 +49,7 @@ export class HomePage implements OnInit {
     private auth:AuthProvider,
     private util:UtilProvider,
   ) {
-    this.initializeNetworkListener();
+    this.util.initializeNetworkListener();
     Device.getLanguageCode().then(d=>{
       this.lang=d.value;
     });
@@ -357,25 +357,8 @@ export class HomePage implements OnInit {
     this.showMessage=false;
   }
 
-  async initializeNetworkListener() {
-    // Vérifier l'état initial du réseau
-    const status: NetworkStatus = await Network.getStatus();
-
-    // Écouter les changements de connexion
-    Network.addListener('networkStatusChange', (status) => {
-      //console.log('Changement de l’état du réseau:', status);
-
-      if (!status.connected) {
-        this.showMessage=true;
-        this.titre="Vous n'êtes pas connecté";
-        this.message="Connectez-vous à internet pour continuer à jouer";
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      } else {
-        this.showMessage=true;
-        this.titre="Connexion retablie";
-        this.message="Vous pouvez continuer à jouer";
-        // Ajoute une notification pour l'utilisateur ici si nécessaire
-      }
-    });
+  goToReset(){
+    this.modal.setCurrentBreakpoint(0);
+    this.router.navigateByUrl('reset-password');
   }
 }

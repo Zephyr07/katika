@@ -300,16 +300,9 @@ export class AccountPage implements OnInit {
       event.target.complete();
     }, 500);
   }
-  callKatika(){
-    if(this.user.point<10000){
-      this.util.doToast('Vous ne pouvez pas contacter le Katika si vos points sont inférieurs à 10 000W.',5000);
-    } else {
-      window.location.href="http://t.me/holyghost777";
-    }
-  }
 
   recharge(){
-    window.location.href="http://t.me/holyghost777";
+    window.location.href="http://t.me/holyghost777?text=Bonjour+je+souhaite+recharger+mon+compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
   }
 
   joinGroup(){

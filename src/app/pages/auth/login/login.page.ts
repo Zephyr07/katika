@@ -95,6 +95,10 @@ export class LoginPage implements OnInit {
     this.router.navigateByUrl('create-account');
   }
 
+  goToReset(){
+    this.router.navigateByUrl('reset-password');
+  }
+
   createPDF(){
     this.util.createPDF();
     this.util.downloadPdf();

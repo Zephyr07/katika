@@ -90,7 +90,13 @@
               <ion-input type="password" label="Mot de passe" (keyup.enter)="login()" [(ngModel)]="password" labelPlacement="stacked" placeholder="Mot de passe"></ion-input>
             </ion-col>
           </ion-row>
-
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <a style="text-decoration: underline;" (click)="goToReset()">
+                <small class="black">{{'forgot_password'|translate}}</small>
+              </a>
+            </ion-col>
+          </ion-row>
           <ion-row>
             <ion-col>
               <ion-button expand="block" color="tertiary" (click)="login()" >{{'login'|translate}}</ion-button>

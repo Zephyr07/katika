@@ -94,7 +94,7 @@ export class SettingPage implements OnInit {
   }
 
   contactUs(){
-    window.location.href="http://t.me/holyghost777";
+    window.location.href="http://t.me/holyghost777?text=Bonjour+Katika";
   }
 
   async sharePromoCode(){

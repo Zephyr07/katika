@@ -24,6 +24,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/auth/create-account/create-account.module').then( m => m.CreateAccountPageModule)
   },
   {
+    path: 'reset-password',
+    loadChildren: () => import('./pages/auth/reset-password/reset-password.module').then( m => m.ResetPasswordPageModule)
+  },
+  {
     path: 'game',
     loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
   },
