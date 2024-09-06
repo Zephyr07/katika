@@ -29,7 +29,7 @@ export class PuzzlePage implements OnInit {
   showFooter=true;
 
   private indexLife=0;
-  private tab_life = [1,3,5,8,10,15,20];
+  private tab_life = [0.5,1,1.5,2,3,4,5];
 
   isStarted=false;
   isConnected=true;
@@ -215,7 +215,9 @@ export class PuzzlePage implements OnInit {
 
   win(){
     this.canPlay=false;
+    this.showFooter=true;
     this.game.jackpot+=50;
+
     const opt ={
       level:10,
       user_id:this.user.id,
@@ -237,6 +239,11 @@ export class PuzzlePage implements OnInit {
     this.titre = "Vous avez perdu";
     this.message ="Vous n'avez pas reussi à trouver les 5 cristaux 😭😭😭";
     this.showMessage=true;
+    this.gameOver=true;
+    this.showFooter=true;
+    this.isStarted=false;
+    this.canPlay=false;
+    this.indexLife=0;
   }
 
   closeMessage(event: string){
@@ -247,6 +254,11 @@ export class PuzzlePage implements OnInit {
   }
 
   async buyLive(){
+    if(this.score==30){
+      this.indexLife=4;
+    } else if(this.score==40){
+      this.indexLife=8;
+    }
     const alert = await this.alertController.create({
       //cssClass: 'my-custom-class',
       header: 'Acheter une vie?',

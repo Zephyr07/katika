@@ -74,9 +74,20 @@ export class HomePage implements OnInit {
 
     } else {
       localStorage.setItem('is_user','false');
-      // l'utilisateur n'existe pas
-      this.is_user=false;
-      //this.navCtrl.navigateRoot(['/login']);
+      this.is_user=false
+      /*/ l'utilisateur n'existe pas;
+      this.auth.login({email:'696870700',password:'root123'}).then((d:any)=>{
+        this.user = {
+          user_name:d.user.user_name,
+          point:d.user.point,
+          image:d.user.image,
+        };
+        this.is_user = true;
+
+      }, q=>{
+        this.util.hideLoading();
+        this.util.handleError(q);
+      })*/
     }
   }
 

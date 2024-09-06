@@ -41,7 +41,7 @@ export class SettingPage implements OnInit {
       this.user=JSON.parse(localStorage.getItem('user_ka'));
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;
-        this.username = this.user.username;
+        this.username = this.user.user_name;
         this.getPromoCode(this.user.id);
         localStorage.setItem('user_ka',JSON.stringify(this.user));
       });

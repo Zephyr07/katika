@@ -43,6 +43,9 @@ export class DicePage implements OnInit {
   user:any={};
   game:any={};
 
+  cube: HTMLElement;
+  cube2: HTMLElement;
+
   constructor(
     public navCtrl: NavController,
     private util:UtilProvider,
@@ -52,9 +55,15 @@ export class DicePage implements OnInit {
     private alertController:AlertController
   ) {
     this.finals= this.genererTableau(100);
+    // Assurez-vous que l'élément cube est chargé après l'initialisation du composant
+    setTimeout(() => {
+      this.cube = document.getElementById('cube') as HTMLElement;
+      this.cube2 = document.getElementById('cube2') as HTMLElement;
+    }, 0);
   }
 
   ngOnInit() {
+    this.admob.loadInterstitial();
     this.getGame();
     this.api.getSettings().then((d:any)=>{
       if(d){
@@ -65,7 +74,6 @@ export class DicePage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.admob.loadInterstitial();
     if(this.api.checkUser()){
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;
@@ -129,8 +137,6 @@ export class DicePage implements OnInit {
   }
 
   rollDice() {
-    const cube = document.getElementById('cube') as HTMLElement;
-    const cube2 = document.getElementById('cube2') as HTMLElement;
 
     let face = parseInt(this.util.randomInRange(6,1)+'');
     let face2 = parseInt(this.util.randomInRange(6,1)+'');
@@ -181,9 +187,52 @@ export class DicePage implements OnInit {
     const { x, y } = rotations[face];
     const f = rotations[face2];
     const spins = 10; // Nombre de rotations complètes
-    const duration = 3; // Durée totale en secondes
+    const duration = 2000; // Durée totale en secondes
+    const start = performance.now(); // Début de l'animation
 
-    // Animation du dé
+    // Rotation initiale
+    let currentRotationX = 0;
+    let currentRotationY = 0;
+
+    let currentRotationX2 = 0;
+    let currentRotationY2 = 0;
+
+    const animate = (time: number) => {
+      const elapsed = time - start;
+      const progress = Math.min(elapsed / duration, 1); // Progrès de l'animation
+
+      // Calcul de la rotation
+      const rotationX = currentRotationX + spins * 360 * progress + x * progress;
+      const rotationY = currentRotationY + spins * 360 * progress + y * progress;
+
+      const rotationX2 = currentRotationX2 + spins * 360 * progress + x * progress;
+      const rotationY2 = currentRotationY2 + spins * 360 * progress + y * progress;
+
+      // Appliquer la transformation
+      this.cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) translateZ(0)`;
+      setTimeout(()=>{
+        this.cube2.style.transform = `rotateX(${rotationX2}deg) rotateY(${rotationY2}deg) translateZ(0)`;
+      },100);
+
+      // Continuer tant que l'animation n'est pas terminée
+      if (progress < 1) {
+        window.requestAnimationFrame(animate); // Utilisation correcte dans une classe TypeScript
+      } else {
+        // Fin de l'animation
+        this.cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg) translateZ(0)`;
+        setTimeout(()=>{
+          this.cube2.style.transform = `rotateX(${f.x}deg) rotateY(${f.y}deg) translateZ(0)`;
+        },100);
+        setTimeout(()=>{
+          this.checkState();
+        },500);
+      }
+    };
+
+    // Lancer l'animation
+    window.requestAnimationFrame(animate);
+
+    /*/ Animation du dé
     cube.style.transition = `transform ${duration}s cubic-bezier(0.52, -0.08, 0.56, 0.98)`;
     cube.style.transform = `rotateX(${x + spins * 360}deg) rotateY(${y + spins * 360}deg)`;
 
@@ -200,7 +249,7 @@ export class DicePage implements OnInit {
       cube2.style.transform = `rotateX(${f.x}deg) rotateY(${f.y}deg)`;
       this.checkState();
     }, (duration+1) * 1000); // Correspond à la durée de l'animation
-
+    */
     this.index++;
   }
 
@@ -222,6 +271,7 @@ export class DicePage implements OnInit {
     this.isStarted=false;
     this.level++;
     this.gain_tmp+=this.milestone[this.level-2];
+
     if(this.level>9){
       this.win(false);
     } else {
@@ -279,8 +329,8 @@ export class DicePage implements OnInit {
     this.isStarted=false;
     this.showFooter=true;
     this.gain_tmp=0;
-    this.choix_result=0;
-    this.choix_decision="";
+    //this.choix_result=0;
+    //this.choix_decision="";
     this.level=1;
     this.ionViewWillEnter();
   }
@@ -306,7 +356,7 @@ export class DicePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
-      this.mise = this.game.mise;
+      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
         this.message = this.game.rule;
