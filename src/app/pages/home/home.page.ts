@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {IonModal} from "@ionic/angular";
+import {IonModal, NavController} from "@ionic/angular";
 import {ApiProvider} from "../../providers/api/api";
 import {UtilProvider} from "../../providers/util/util";
 import {NavigationExtras, Router} from "@angular/router";
@@ -48,6 +48,7 @@ export class HomePage implements OnInit {
     private api:ApiProvider,
     private auth:AuthProvider,
     private util:UtilProvider,
+    private navCtrl:NavController,
   ) {
     this.util.initializeNetworkListener();
     Device.getLanguageCode().then(d=>{
@@ -61,12 +62,19 @@ export class HomePage implements OnInit {
       // connexion
       const cre = this.util.decryptAESData(JSON.parse(localStorage.getItem('auth_ka')));
       this.auth.login(cre).then((d:any)=>{
-        localStorage.setItem('is_user','true');
-        this.is_user=true;
-        this.user = {
-          user_name:d.user.user_name,
-          point:d.user.point
-        };
+        if(d.user.status=='pending_activation'){
+          this.navCtrl.navigateRoot(['/activated-account']);
+        } else if(d.user.status=='enable') {
+          localStorage.setItem('is_user','true');
+          this.is_user=true;
+          this.user = {
+            user_name:d.user.user_name,
+            point:d.user.point
+          };
+        } else {
+          this.util.doToast('Votre compte est désactivé. Contacter le support au +237 673996540',5000, 'warning');
+        }
+
       },q=>{
         this.auth.logout();
         this.is_user=false;
@@ -152,18 +160,21 @@ export class HomePage implements OnInit {
   }
 
   checkCodePromo(){
-    const opt = {
-      code:this.code
-    };
+    if(this.code!="" && this.code.length>3){
+      const opt = {
+        code:this.code
+      };
 
-    this.api.getList('promo_codes',opt).then((d:any)=>{
-      if(d.length>0){
-        this.promo_code = d[0];
-        this.promo_code_id = d[0].id;
-      } else {
-        this.util.doToast('Ce code promo n\'existe pas',3000);
-      }
-    })
+      this.api.getList('promo_codes',opt).then((d:any)=>{
+        if(d.length>0){
+          this.promo_code = d[0];
+          this.promo_code_id = d[0].id;
+        } else {
+          this.util.doToast('Ce code promo n\'existe pas',3000);
+        }
+      })
+    }
+
   }
 
   showUser(){
@@ -209,7 +220,8 @@ export class HomePage implements OnInit {
           point:d.user.point
         };
         localStorage.setItem('user_game',JSON.stringify(d.user));
-        this.util.doToast('Inscription reussi, vous pouvez jouer',5000);
+        this.util.doToast('Inscription reussi, vous devez activer votre compte maintenant',5000);
+        this.navCtrl.navigateRoot(['/activated-account']);
         this.closeModal();
 
         // verification si le user a déjà un store
@@ -334,10 +346,14 @@ export class HomePage implements OnInit {
         localStorage.setItem('is_user','true');
         this.closeModal();
         //this.navCtrl.navigateRoot(['/home']);
+        if(d.user.status=='pending_activation'){
+          this.navCtrl.navigateRoot(['/activated-account']);
+        } else if(d.user.status=='enable') {
+        } else {
+          this.util.doToast('Votre compte est désactivé. Contacter le support au +237 673996540',5000, 'warning');
+        }
       }, q=>{
-        alert(JSON.stringify(q));
-        this.util.hideLoading();
-        this.util.handleError(q);
+        this.util.doToast('Numéro ou mot de passe incorrect',3000,'light');
       })
     }
     //localStorage.setItem('uid','rahul');

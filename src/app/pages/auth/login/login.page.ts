@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UtilProvider} from "../../../providers/util/util";
 import {MenuController, NavController} from "@ionic/angular";
 import {AuthProvider} from "../../../providers/auth/auth";
-import {Router} from "@angular/router";
+import {NavigationExtras, Router} from "@angular/router";
 import {ApiProvider} from "../../../providers/api/api";
 import {isCordovaAvailable} from "../../../services/utils";
 import OneSignal from "onesignal-cordova-plugin";
@@ -72,14 +72,14 @@ export class LoginPage implements OnInit {
 
         this.util.hideLoading();
         localStorage.setItem('is_user','true');
-        this.navCtrl.navigateRoot(['/home']);
-        /*if(d.user.status=='pending_activation'){
-          this.util.doToast('Votre compte n\'est pas activé. Contacter le responsable de la boutique',5000, 'warning');
+        //this.navCtrl.navigateRoot(['/home']);
+        if(d.user.status=='pending_activation'){
+          this.navCtrl.navigateRoot(['/activated-account']);
         } else if(d.user.status=='enable') {
           this.navCtrl.navigateRoot(['/home']);
         } else {
           this.util.doToast('Votre compte est désactivé. Contacter le support au +237 673996540',5000, 'warning');
-        }*/
+        }
 
       }, q=>{
         alert(JSON.stringify(q));

@@ -72,6 +72,7 @@ d
     });
 
   }
+
   activate(credentials: {code: number}) {
     //this.permissionsService.flushPermissions();
     return new Promise((resolve, reject) => {
@@ -80,7 +81,6 @@ d
         .then( (response) => {
           const data = this.util.decryptAESData(JSON.stringify(response));
           this.storeSession(data);
-          localStorage.setItem('auth_ka',JSON.stringify(credentials));
           /*angular.forEach(data.userRole, function (value) {
             AclService.attachRole(value)
           });

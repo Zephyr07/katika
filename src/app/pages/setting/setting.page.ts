@@ -100,7 +100,7 @@ export class SettingPage implements OnInit {
   async sharePromoCode(){
     await Share.share({
       title: 'Katika - Games',
-      text: 'Inscris toi avec mon code promo '+ this.promo_code.code+' et gagne '+this.promo_code.bonus+' W gratuit dans \'application Katika.',
+      text: 'Inscris toi avec mon code promo '+ this.promo_code.code+' et gagne '+this.promo_code.bonus+' W gratuit dans l\'application Katika.',
       url: 'https://play.google.com/store/apps/details?id=com.warzone237.katika'
     });
   }

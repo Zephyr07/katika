@@ -165,7 +165,7 @@ export class AccountPage implements OnInit {
           handler:(data)=>{
             //this.util.showLoading("updating");
             if(data.password!=""){
-              if(data.password.length>7){
+              if(data.password.length>5){
                 const opt={
                   email:data.email,
                   password:data.password,
@@ -174,7 +174,7 @@ export class AccountPage implements OnInit {
                 this.auth.delete(opt).then((d:any)=>{
                   this.util.hideLoading();
                   this.util.doToast("account_delete",5000);
-                  this.router.navigateByUrl('tabs');
+                  this.router.navigateByUrl('home');
                 })
               } else {
                 this.util.hideLoading();
