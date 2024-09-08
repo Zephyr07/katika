@@ -6,8 +6,10 @@ import {ApiProvider} from "../../providers/api/api";
 import {Share} from "@capacitor/share";
 import {ModalCgvComponent} from "../../components/modal-cgv/modal-cgv.component";
 import {ModalCguComponent} from "../../components/modal-cgu/modal-cgu.component";
-import {ModalController} from "@ionic/angular";
+import {AlertController, ModalController, Platform} from "@ionic/angular";
 import {UtilProvider} from "../../providers/util/util";
+import {NUMBER_RANGE} from "../../services/contants";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-setting',
@@ -18,6 +20,16 @@ export class SettingPage implements OnInit {
   version = environment.version;
   lang="Français";
 
+  CANCEL="";
+  UPDATE="";
+  TEXT="";
+  PHONE="";
+  PASS="";
+  NEW_PASS="";
+  AMOUNT="";
+
+  can_recharge=false;
+
   private promo_code:any ={};
   private user:any ={};
   username="";
@@ -26,9 +38,27 @@ export class SettingPage implements OnInit {
   constructor(
     private router:Router,
     private modalController:ModalController,
+    private alertController:AlertController,
     private api:ApiProvider,
-    private util:UtilProvider
+    private util:UtilProvider,
+    private translate:TranslateService,
+    private platform:Platform
   ) {
+    this.translate.get('cancel').subscribe( (res: string) => {
+      this.CANCEL=res;
+    });
+    this.translate.get('confirm').subscribe( (res: string) => {
+      this.UPDATE=res;
+    });
+    this.translate.get('recharge_account').subscribe( (res: string) => {
+      this.TEXT=res;
+    });
+    this.translate.get('phone').subscribe( (res: string) => {
+      this.PHONE=res;
+    });
+    this.translate.get('amount').subscribe( (res: string) => {
+      this.AMOUNT=res;
+    });
     this.lang = moment.locale();
   }
 
@@ -45,6 +75,14 @@ export class SettingPage implements OnInit {
         this.getPromoCode(this.user.id);
         localStorage.setItem('user_ka',JSON.stringify(this.user));
       });
+
+      this.api.getSettings().then((d:any)=>{
+        if(this.platform.is('ios')){
+          this.can_recharge= d.ios.recharge=='enable';
+        } else {
+          this.can_recharge= d.android.recharge=='enable';
+        }
+      })
     } else {
       this.is_user=false;
     }
@@ -127,5 +165,86 @@ export class SettingPage implements OnInit {
       cssClass: 'my-custom-class',
     });
     return await modal.present();
+  }
+
+  async recharge() {
+    if(this.can_recharge){
+      const alert = await this.alertController.create({
+        header: this.TEXT,
+        message:"Entrez le numéro mobile money et le montant que vous souhaitez recharger. La recharge minimum est de 50 W, soit 50 Francs.",
+        buttons: [
+          {
+            text: this.CANCEL,
+            role: 'cancel',
+          },
+          {
+            text: this.UPDATE,
+            role:'confirm',
+            handler:(data)=>{
+              if(!isNaN(data.phone) && data.phone <= NUMBER_RANGE.max && data.phone >= NUMBER_RANGE.min){
+                this.util.showLoading("treatment");
+                const opt = {
+                  amount:data.amount,
+                  user_id:this.user.id
+                };
+                let crypt = this.util.encryptAESData(opt);
+                this.api.post('init_buy_account',{value:crypt}).then(async (d:any) => {
+                  d = this.util.decryptAESData(JSON.stringify(d));
+                  const op = this.util.encryptAESData({
+                    id:d.payment.id,
+                    phone:data.phone
+                  });
+                  // initialisation du payment my-coolPay
+                  this.api.post('payment',{value:op}).then(e=>{
+                    e = this.util.decryptAESData(JSON.stringify(e));
+                    this.util.hideLoading();
+                    this.util.doToast('payment_pending',5000,'medium');
+                    // redirection vers la page de l'user
+                    /*setTimeout(()=>{
+                      this.navCtrl.navigateRoot(['/user']);
+                    },3000)*/
+                  }, q=>{
+                    this.util.hideLoading();
+                    this.util.handleError(q);
+                  })
+                  //console.log(d);
+                },q=>{
+                  this.util.hideLoading();
+                  this.util.handleError(q);
+                });
+              } else {
+                this.util.doToast('Veuillez entrer un numéro de téléphone valide',3000);
+              }
+            }
+          },
+        ],
+        inputs: [
+          {
+            placeholder: this.AMOUNT,
+            type:'number',
+            name:'amount',
+            attributes: {
+              step:50,
+              min: 0
+            },
+          },
+          {
+            placeholder: this.PHONE,
+            value:this.user.phone,
+            type:'number',
+            name:'phone',
+            attributes: {
+              min: NUMBER_RANGE.min,
+              max: NUMBER_RANGE.max
+            },
+          }
+        ],
+      });
+
+      await alert.present();
+    } else {
+      window.location.href="http://t.me/holyghost777?text=Bonjour+je+souhaite+recharger+mon+compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
+    }
+
   }
 }

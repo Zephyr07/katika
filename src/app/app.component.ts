@@ -11,6 +11,7 @@ import {ApiProvider} from "./providers/api/api";
 import {AuthProvider} from "./providers/auth/auth";
 import {UtilProvider} from "./providers/util/util";
 import { ScreenOrientation } from '@capacitor/screen-orientation';
+import {SplashScreen} from "@capacitor/splash-screen";
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent {
     private admob:AdmobProvider,
     private notif: NotificationProvider,
   ) {
+    this.splash();
     this.admob.initialize();
     moment.locale('fr');
     if(isCordovaAvailable()){
@@ -38,6 +40,15 @@ export class AppComponent {
         }
       );
     }
+  }
+
+  async splash(){
+    await SplashScreen.show({
+      showDuration: 2000,
+      fadeInDuration:100,
+      fadeOutDuration:100,
+      autoHide: true,
+    });
   }
 
   OneSignalInit(){

@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <ion-toolbar style="--background:transparent">
-    <ion-title>Réglages</ion-title>
+    <ion-title>Menu</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -17,6 +17,15 @@
         <ion-label>
           <h2>{{username}}</h2>
           <p>Consulter votre compte</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" *ngIf="is_user" (click)="recharge()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/card-outline.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Recharger mon compte</h2>
+          <p>Achetez des points pour et jouez</p>
         </ion-label>
       </ion-item>
       <ion-item lines="none" *ngIf="is_user" (click)="history()">
@@ -119,7 +128,7 @@
           </ion-col>
 
           <ion-col class="middle" (click)="showSetting()">
-            <ion-icon class="active" name="cog-outline"></ion-icon>
+            <ion-icon class="active" name="menu-outline"></ion-icon>
           </ion-col>
         </ion-row>
 
