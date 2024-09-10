@@ -27,6 +27,7 @@ export class TripleChoicePage implements OnInit {
   mise = 0;
 
   isStarted=false;
+  showLoading=true;
   isConnected=true;
   showFooter=true;
   titre="";
@@ -214,6 +215,7 @@ export class TripleChoicePage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
       this.util.handleError(q);

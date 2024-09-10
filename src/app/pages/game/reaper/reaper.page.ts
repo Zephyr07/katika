@@ -40,6 +40,7 @@ export class ReaperPage implements OnInit {
   message="";
   showMessage=false;
   isFirstTime=true;
+  showLoading=true;
 
   isConnected=true;
   canPlay=true;
@@ -140,6 +141,7 @@ export class ReaperPage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
       this.util.handleError(q);
@@ -206,7 +208,7 @@ export class ReaperPage implements OnInit {
           this.rows[8].gain = d.game_settings.repear.points[4];
           this.rows[9].gain = this.jackpot;
           this.rows= this.rows.reverse();
-
+          this.showLoading=false;
         } else {
           alert("Setting absent");
         }

@@ -34,6 +34,8 @@ export class HomePage implements OnInit {
   lang="";
   choice="c";
 
+  showLoading=true;
+
   user:any={
   };
 
@@ -152,8 +154,10 @@ export class HomePage implements OnInit {
           i++;
         }
       }
+      this.showLoading=false;
       //console.log(d);
     }, q=>{
+      this.showLoading=false;
       this.util.hideLoading();
       this.util.handleError(q);
     })

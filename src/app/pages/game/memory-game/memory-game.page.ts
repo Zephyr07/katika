@@ -29,6 +29,7 @@ export class MemoryGamePage implements OnInit {
   user:any={};
   game:any={};
 
+  showLoading=true;
   isStarted=false;
   isConnected=true;
   showFooter=true;
@@ -57,7 +58,7 @@ export class MemoryGamePage implements OnInit {
     this.size=2;
     this.count=21;
     this.time=0;
-    this.positions = this.setTiles(this.count*2)
+    this.positions = this.setTiles(this.count*2);
     this.admob.loadInterstitial();
   }
 
@@ -361,8 +362,10 @@ export class MemoryGamePage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
+      this.showLoading=false;
       this.util.handleError(q);
     })
   }

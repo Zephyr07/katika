@@ -9,6 +9,7 @@ import { AccountPageRoutingModule } from './account-routing.module';
 import { AccountPage } from './account.page';
 import {PipeModule} from "../../pipe/pipe.module";
 import {TranslateModule} from "@ngx-translate/core";
+import {ModalLoadingModule} from "../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {TranslateModule} from "@ngx-translate/core";
     IonicModule,
     AccountPageRoutingModule,
     PipeModule,
-    TranslateModule
+    TranslateModule,
+    ModalLoadingModule
   ],
   declarations: [AccountPage]
 })

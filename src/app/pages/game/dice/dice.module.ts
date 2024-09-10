@@ -9,6 +9,7 @@ import { DicePageRoutingModule } from './dice-routing.module';
 import { DicePage } from './dice.page';
 import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
 import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {PipeModule} from "../../../pipe/pipe.module";
     IonicModule,
     DicePageRoutingModule,
     ModalMessageModule,
-    PipeModule
+    PipeModule,
+    ModalLoadingModule
   ],
   declarations: [DicePage]
 })

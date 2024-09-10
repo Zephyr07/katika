@@ -27,6 +27,7 @@ export class AviatorPage implements OnInit {
   interval:any;
   is_win=false;
   isStarted=false;
+  showLoading=true;
   private finals=[];
   private series=[];
   private index=0;
@@ -339,8 +340,10 @@ export class AviatorPage implements OnInit {
         this.message = this.game.rule;
         this.isFirstTime=false;
       }
+      this.showLoading=false;
     },q=>{
       this.util.handleError(q);
+      this.showLoading=false;
     })
   }
 

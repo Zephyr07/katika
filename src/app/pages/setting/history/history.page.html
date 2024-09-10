@@ -22,4 +22,5 @@
       <ion-col size="4" class="ion-text-right">{{s.date|dateFormat}}</ion-col>
     </ion-row>
   </ion-grid>
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
 </ion-content>

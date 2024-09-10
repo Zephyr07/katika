@@ -22,6 +22,8 @@ export class JewelPage implements OnInit, AfterViewInit {
   private startIndex=-1;
   private endIndex=-1;
 
+  showLoading=true;
+
   private recursion=0;
   board:any={
     index:-1,
@@ -43,7 +45,8 @@ export class JewelPage implements OnInit, AfterViewInit {
   isLoose=false;
   isStarted=false;
 
-  private values = [
+  private values=[]
+  private valuess = [
     {
       point:1,
       name:'RED',
@@ -128,7 +131,7 @@ export class JewelPage implements OnInit, AfterViewInit {
     public navCtrl:NavController,
     private admob:AdmobProvider
   ) {
-
+    this.showLoading=true;
   }
 
   ngOnInit() {
@@ -145,6 +148,7 @@ export class JewelPage implements OnInit, AfterViewInit {
 
         this.items = this.getRandomItems(this.values,this.itemCount);
 
+        this.showLoading=false;
         let g = _.groupBy(this.values,'point');
         let col=[];
         for(let i in g){
@@ -163,6 +167,9 @@ export class JewelPage implements OnInit, AfterViewInit {
         }
         this.points= col;
 
+      },q=>{
+        this.showLoading=false;
+        this.util.handleError(q);
       })
     } else {
 
@@ -1022,10 +1029,12 @@ export class JewelPage implements OnInit, AfterViewInit {
         if (this.isValidDrag(draggedIndex, index)) {
 
           this.startIndex = draggedIndex;
-          this.endIndex = dropIndex;
+          this.endIndex = index;
 
           this.swapItemsAndVerification();
 
+        } else {
+          //this.util.doToast(draggedIndex+'|'+index,1000);
         }
       }
 
@@ -1087,11 +1096,6 @@ export class JewelPage implements OnInit, AfterViewInit {
     let bonus = 0;
     // Appliquer fade-out et changer l'image avec un délai
     this.positions.forEach((pos, index) => {
-      if(pos.length==4){
-        bonus=10;
-      } else if(pos.length>=5){
-        bonus=20;
-      }
       pos.forEach((i, itemIndex) => {
         const gridItem = document.getElementById('grid' + i);
         if (gridItem) {
@@ -1256,24 +1260,29 @@ export class JewelPage implements OnInit, AfterViewInit {
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
       this.items = this.getRandomItems(this.values,this.itemCount);
-      /*this.items[0]={
-        point:1,
+      /*this.items[8]={
+        point:500,
         name:'STAR',
         percent:15
       };
       this.items[9]={
-        point:1,
+        point:500,
         name:'STAR',
         percent:15
       };
-      this.items[10]={
-        point:1,
+      this.items[18]={
+        point:500,
         name:'STAR',
         percent:15
       };
       this.items[11]={
-        point:1,
-        name:'CYAN',
+        point:500,
+        name:'STAR',
+        percent:15
+      };
+      this.items[12]={
+        point:500,
+        name:'STAR',
         percent:15
       };*/
       // debit

@@ -33,6 +33,8 @@ export class AccountPage implements OnInit {
 
   promo_code:any={};
 
+  showLoading=true;
+
   constructor(
     private router:Router,
     private util:UtilProvider,
@@ -81,6 +83,9 @@ export class AccountPage implements OnInit {
       this.api.getList('auth/me',{id:user.id}).then((a:any)=>{
         this.user = a.data.user;
         this.getPromoCode(user.id);
+      },q=>{
+        this.util.handleError(q);
+        this.showLoading=false;
       });
     } else {
       this.util.doToast('Vous n\'êtes pas connecté',2000,'light');
@@ -102,8 +107,10 @@ export class AccountPage implements OnInit {
           amount:0
         }
       }
+      this.showLoading=false;
     },q=>{
       this.util.handleError(q);
+      this.showLoading=false;
     })
   }
 

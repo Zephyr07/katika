@@ -9,6 +9,7 @@ import { PuzzlePageRoutingModule } from './puzzle-routing.module';
 import { PuzzlePage } from './puzzle.page';
 import {PipeModule} from "../../../pipe/pipe.module";
 import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {ModalMessageModule} from "../../../components/modal-message/modal-messag
     IonicModule,
     PuzzlePageRoutingModule,
     PipeModule,
-    ModalMessageModule
+    ModalMessageModule,
+    ModalLoadingModule
 
   ],
   declarations: [PuzzlePage]

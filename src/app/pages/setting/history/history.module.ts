@@ -8,6 +8,7 @@ import { HistoryPageRoutingModule } from './history-routing.module';
 
 import { HistoryPage } from './history.page';
 import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {PipeModule} from "../../../pipe/pipe.module";
     FormsModule,
     IonicModule,
     HistoryPageRoutingModule,
-    PipeModule
+    PipeModule,
+    ModalLoadingModule
   ],
   declarations: [HistoryPage]
 })

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiProvider} from "../../../providers/api/api";
 import * as _ from "lodash";
+import {UtilProvider} from "../../../providers/util/util";
 
 @Component({
   selector: 'app-history',
@@ -10,8 +11,10 @@ import * as _ from "lodash";
 export class HistoryPage implements OnInit {
   scores=[];
   items=[];
+  showLoading=true;
   constructor(
-    private api:ApiProvider
+    private api:ApiProvider,
+    private util : UtilProvider
   ) { }
 
   ngOnInit() {
@@ -35,6 +38,9 @@ export class HistoryPage implements OnInit {
         })
       });
       this.getPayment(user.id);
+    },q=>{
+      this.showLoading=false;
+      this.util.handleError(q);
     })
   }
 
@@ -55,6 +61,10 @@ export class HistoryPage implements OnInit {
       });
 
       this.items = _.sortBy(this.items,'date').reverse();
+      this.showLoading=false;
+    },q=>{
+      this.showLoading=false;
+      this.util.handleError(q);
     })
   }
 

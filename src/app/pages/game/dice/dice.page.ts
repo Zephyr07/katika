@@ -30,6 +30,7 @@ export class DicePage implements OnInit {
   isLoose = false;
 
   isConnected = true;
+  showLoading=true;
   showFooter=true;
   titre="";
   message="";
@@ -72,6 +73,7 @@ export class DicePage implements OnInit {
         this.percent = d.game_settings.dice.percent;
         this.milestone.push(this.game.jackpot - 24650);
         this.finals= this.genererTableau(100);
+        this.showLoading=false;
       }
     })
   }
@@ -344,9 +346,11 @@ export class DicePage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
       this.util.handleError(q);
+      this.showLoading=false;
     })
   }
 

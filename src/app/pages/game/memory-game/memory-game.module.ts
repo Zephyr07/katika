@@ -9,6 +9,7 @@ import { MemoryGamePageRoutingModule } from './memory-game-routing.module';
 import { MemoryGamePage } from './memory-game.page';
 import {PipeModule} from "../../../pipe/pipe.module";
 import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {ModalMessageModule} from "../../../components/modal-message/modal-messag
     IonicModule,
     MemoryGamePageRoutingModule,
     PipeModule,
-    ModalMessageModule
+    ModalMessageModule,
+    ModalLoadingModule
   ],
   declarations: [MemoryGamePage]
 })

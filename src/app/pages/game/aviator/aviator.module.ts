@@ -9,6 +9,7 @@ import { AviatorPageRoutingModule } from './aviator-routing.module';
 import { AviatorPage } from './aviator.page';
 import {PipeModule} from "../../../pipe/pipe.module";
 import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {ModalMessageModule} from "../../../components/modal-message/modal-messag
     IonicModule,
     AviatorPageRoutingModule,
     PipeModule,
-    ModalMessageModule
+    ModalMessageModule,
+    ModalLoadingModule
   ],
   declarations: [AviatorPage]
 })

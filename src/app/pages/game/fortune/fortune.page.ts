@@ -36,6 +36,7 @@ export class FortunePage implements OnInit,AfterViewInit {
   win_p=[];
   lost_p=[];
 
+  showLoading=true;
   is_katika=true;
 
   private prices = [];
@@ -106,6 +107,8 @@ export class FortunePage implements OnInit,AfterViewInit {
         }
       }
 
+      this.showLoading=false;
+
     });
   }
 
@@ -152,8 +155,10 @@ export class FortunePage implements OnInit,AfterViewInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
+      this.showLoading=false;
       this.util.handleError(q);
     })
   }

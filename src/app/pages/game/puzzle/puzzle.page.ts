@@ -24,6 +24,7 @@ export class PuzzlePage implements OnInit {
   titre="";
   message="";
   showMessage=false;
+  showLoading=true;
   isFirstTime=true;
   showFooter=true;
 
@@ -64,6 +65,7 @@ export class PuzzlePage implements OnInit {
   ionViewWillEnter(){
     this.api.getSettings().then((d:any)=>{
       this.price_life = d.game_settings.crystal.price_life
+      this.showLoading=false;
     });
 
     this.getGame();
@@ -134,6 +136,7 @@ export class PuzzlePage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+        this.showLoading=false;
       }
     },q=>{
       this.util.handleError(q);

@@ -10,6 +10,7 @@ import { TripleChoicePage } from './triple-choice.page';
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../../pipe/pipe.module";
 import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
+import {ModalLoadingModule} from "../../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import {ModalMessageModule} from "../../../components/modal-message/modal-messag
     TripleChoicePageRoutingModule,
     TranslateModule,
     PipeModule,
-    ModalMessageModule
+    ModalMessageModule,
+    ModalLoadingModule
   ],
   declarations: [TripleChoicePage]
 })
