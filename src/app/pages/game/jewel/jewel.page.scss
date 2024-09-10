@@ -40,3 +40,70 @@ ion-content{
   opacity: 1;
   transform: scale(1);
 }
+
+.leader{
+  text-align: center;
+  font-family: Rapier;
+  font-size: 20px;
+
+  img{
+    width: 20px;
+    margin-left: 3px;
+    padding: 1px;
+  }
+}
+
+h3,h4{
+  font-family: Rapier;
+  text-align: center;
+}
+
+.board{
+  background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
+  border-radius: 20px;
+
+  h4{
+    margin:0;
+  }
+}
+
+.leader-board{
+  margin: 0 10%;
+  max-width: 400px;
+  background: url('/assets/img/apple/default_snow.png') no-repeat center/cover fixed !important;
+  border: 2px solid rgb(108, 73, 41);
+  border-radius: 10px;
+  padding: 5px;
+  max-height: 400px;
+  overflow: auto;
+  font-family: Rapier;
+  letter-spacing: 1px;
+
+  h3{
+    padding: 0;
+    margin-bottom: 20px;
+  }
+
+  ion-col{
+    padding: 0;
+  }
+
+  .rank1{
+    color: var(--ion-color-primary);
+  }
+  .rank2{
+    color: var(--ion-color-tertiary);
+  }
+  .rank3{
+    color: var(--ion-color-danger);
+  }
+
+  .my-position{
+    margin: 5px;
+    background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
+    padding: 5px 10px;
+    border-radius: 8px;
+  }
+}
+
+

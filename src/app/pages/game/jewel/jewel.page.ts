@@ -1,7 +1,9 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import * as _ from "lodash";
 import {UtilProvider} from "../../../providers/util/util";
-import {all} from "axios";
+import {ApiProvider} from "../../../providers/api/api";
+import {AlertController, NavController} from "@ionic/angular";
+import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 
 @Component({
   selector: 'app-jewel',
@@ -11,17 +13,35 @@ import {all} from "axios";
 export class JewelPage implements OnInit, AfterViewInit {
 
   items:any = [];
-
-  mouvementLeft=10;
-  touchStartX: number | null = null;
-  touchStartY: number | null = null;
-
+  mouvementLeft=0;
+  private mouvement=50;
+  private touchStartX: number | null = null;
+  private touchStartY: number | null = null;
   score=0;
-  itemCount=64;
-  
-  startIndex=-1;
-  endIndex=-1;
-  direction="";
+  private itemCount=64;
+  private startIndex=-1;
+  private endIndex=-1;
+
+  private recursion=0;
+  board:any={
+    index:-1,
+    scores:[]
+  };
+  mise=0;
+  jackpot=0;
+
+  my_score:any={};
+
+  titre="";
+  message="";
+  showMessage=false;
+  private isFirstTime=true;
+  showFooter=true;
+  user:any={};
+  is_user = false;
+  game:any={};
+  isLoose=false;
+  isStarted=false;
 
   private values = [
     {
@@ -94,33 +114,90 @@ export class JewelPage implements OnInit, AfterViewInit {
     'PURPLE': 'assets/img/jewel/purple.png',
     'BROWN': 'assets/img/jewel/brown.png',
     'ORANGE': 'assets/img/jewel/orange.png',
-    'CYAN': 'assets/img/jewel/cyan.png',
+    'CYAN': 'assets/img/jewel/diamond.png',
+    'STAR': 'assets/img/jewel/star.png',
+    'TRIANGLE': 'assets/img/jewel/triangle.png',
   };
 
+  points=[];
+
   constructor(
-    private util:UtilProvider
+    private api:ApiProvider,
+    private util:UtilProvider,
+    public alertController:AlertController,
+    public navCtrl:NavController,
+    private admob:AdmobProvider
   ) {
 
   }
 
   ngOnInit() {
-    this.items = this.getRandomItems(this.values,this.itemCount);
-    console.log(this.items);
+
+  }
+
+  ionViewWillEnter(){
+    if(this.isFirstTime){
+      this.api.getSettings().then((d:any)=>{
+        this.values = d.game_settings.jewel.values;
+        this.mouvement = d.game_settings.jewel.mouvement;
+        this.mouvementLeft = this.mouvement;
+        this.jackpot = d.game_settings.jewel.jackpot;
+
+        this.items = this.getRandomItems(this.values,this.itemCount);
+
+        let g = _.groupBy(this.values,'point');
+        let col=[];
+        for(let i in g){
+          let items=[];
+          g[i].forEach(v=>{
+            items.push({
+              name:v.name,
+              percent:v.percent,
+              image:this.getImageForItem(v)
+            });
+          });
+          col.push({
+            point:i,
+            items:items
+          });
+        }
+        this.points= col;
+
+      })
+    } else {
+
+    }
+
+    this.getGame();
+
+    if(this.api.checkUser()){
+      this.is_user=true;
+      this.user=JSON.parse(localStorage.getItem('user_ka'));
+      this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
+        this.user = a.data.user;
+        localStorage.setItem('user_ka',JSON.stringify(this.user));
+      },q=>{
+        this.util.handleError(q);
+      });
+    } else {
+      this.is_user=false;
+    }
+  }
+
+  ionViewWillLeave(){
+    this.admob.showInterstitial();
   }
 
   ngAfterViewInit(){
-    setTimeout(()=>{
-      this.getAllValidePositions();
-      //this.checkAlignments();
-      //this.possibleMouvement = this.getPossibleAlignments();
-    },1500)
+
   }
 
   getRandomElements(arr: any[], numElements: number): string[] {
     const result: string[] = [];
 
     for (let i = 0; i < numElements; i++) {
-      const randomIndex = Math.floor(Math.random() * arr.length); // Sélectionner un indice aléatoire
+      let randomIndex =0;
+      randomIndex = Math.floor(Math.random() * arr.length); // Sélectionner un indice aléatoire
       result.push(arr[randomIndex]);
     }
 
@@ -157,17 +234,24 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   // Desktop Drag Start
   onDragStart(event: DragEvent, index: number) {
-    this.draggedItemIndex = index;
-    const target = event.target as HTMLElement;
-    target.classList.add('dragging');
-    event.dataTransfer?.setData('text/plain', index.toString());
-    event.dataTransfer!.effectAllowed = "move";
+    if(this.isStarted){
+      console.log('onDragStart',index);
+      this.draggedItemIndex = index;
+      const target = event.target as HTMLElement;
+      target.classList.add('dragging');
+      event.dataTransfer?.setData('text/plain', index.toString());
+      event.dataTransfer!.effectAllowed = "move";
+    } else {
+      this.util.doToast('Cliquer sur Jouer pour commencer la partie',2000,'light');
+    }
+
   }
 
   // Desktop Drag Over
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.dataTransfer!.dropEffect = "move";
+    console.log('onDragOver');
   }
 
   // Desktop Drop
@@ -175,58 +259,234 @@ export class JewelPage implements OnInit, AfterViewInit {
     event.preventDefault();
     const draggedIndex = this.draggedItemIndex;
 
+    console.log('onDragOver',draggedIndex,dropIndex);
+
     const target = event.target as HTMLElement;
     target.classList.remove('dragging');
-    
+
     if (draggedIndex === null || draggedIndex === dropIndex) {
       return;
     }
-    if (this.isValidMove(draggedIndex, dropIndex)) {
-
+    if (this.isValidDrag(draggedIndex, dropIndex)) {
       this.startIndex = draggedIndex;
       this.endIndex = dropIndex;
-
       this.swapItemsAndVerification();
-
-      //this.swapItems(draggedIndex, dropIndex);
-
-      //this.checkAlignments(); // Vérifie les alignements après chaque déplacement
-
-    }
-
-    this.draggedItemIndex = null;
-  }
-  
-  swapItemsAndVerification(){
-    this.swapItems(this.startIndex,this.endIndex);
-    let start = this.startIndex;
-    let end = this.endIndex;
-    let name_start = this.items[start].name;
-    let name_end = this.items[end].name;
-    // recuperation des elements autour de startindex
-    let grid_start = this.getGrid(start);
-    let grid_end = this.getGrid(end);
-
-
-    let positionStart = this.getValidePosition(grid_start[0],name_start);
-    let positionEnd = this.getValidePosition(grid_end[0],name_end);
-
-    this.changeItemByPosition(positionStart,grid_start[1]);
-    this.changeItemByPosition(positionEnd,grid_end[1]);
-    this.mouvementLeft--;
-    this.getAllValidePositions();
-    const mouv = this.getPossibleAlignments();
-    if(mouv.length==0){
-      this.util.doToast('Aucun mouvement disponible',2000);
-      this.mouvementLeft=-20;
     } else {
-      //console.log('mouv possible',mouv);
-
+      console.log("azeaze");
     }
-    //la fonction getValidatePosition ne marche pas
   }
 
-  getGrid(index){
+  swapItemsAndVerification(){
+    if(this.mouvementLeft>0){
+      this.swapItems(this.startIndex,this.endIndex);
+      this.mouvementLeft--;
+      this.isMouvement(true);
+      if(this.mouvementLeft==0){
+        this.endGame();
+      }
+    } else {
+
+    }
+  }
+
+  isMouvement(isChange:boolean){
+    const mouv = this.getAllValideNextPositions();
+    //console.log(mouv);
+    if(mouv[0].length==0 && mouv[1].length==0){
+      this.util.doToast('Actualisation de la grille',1000);
+      setTimeout(()=>{
+        this.items = this.getRandomItems(this.values,this.itemCount);
+        this.getAllValidePositions();
+      },700);
+      //this.mouvementLeft=0;
+      //this.endGame();
+    } else {
+      if(isChange){
+        this.positions = mouv[1];
+        this.changeItem();
+      } else {
+        this.getAllValidePositions();
+      }
+    }
+  }
+
+  getGridCarre(index){
+    const ligne = Math.trunc(index/8);
+    const colonne = index%8;
+    // recuperation des elements autour de startindex
+    let g1 = -1;
+    let g2 = -1;
+    let g3 = -1;
+    let d1 = -1;
+    let d2 = -1;
+    let d3 = -1;
+    let h1 = -1;
+    let h2 = -1;
+    let h3 = -1;
+    let b1 = -1;
+    let b2 = -1;
+    let b3 = -1;
+    let gh11 = -1;
+    let gh12 = -1;
+    let gh21 = -1;
+    let gb11 = -1;
+    let gb12 = -1;
+    let gb21 = -1;
+    let dh11 = -1;
+    let dh12 = -1;
+    let dh21 = -1;
+    let db11 = -1;
+    let db12 = -1;
+    let db21 = -1;
+
+    let ish1 = false;
+    let ish2 = false;
+    let isb1 = false;
+    let isb2 = false;
+    if(ligne>0){
+      ish1=true;
+      h1=index-8;
+      if(ligne>1){
+        ish2 = true;
+        h2=index-16;
+      }
+      if(ligne>2){
+        h3=index-24;
+      }
+    }
+    if(ligne<7){
+      isb1 = true;
+      b1=index+8;
+      if(ligne<6){
+        b2=index+16;
+        isb2 = true;
+      }
+      if(ligne<5){
+        b3=index+24;
+      }
+    }
+
+    let name = this.items[index].name;
+
+    if(colonne>=0 && colonne<8){
+      if(colonne==0){
+        // pas de gauche 1 ni 2
+      } else if(colonne>0){
+        // gauche 1
+        g1=index-1;
+        if(isb1){
+          gb11 = g1+8
+        }
+        if(isb2){
+          gb12 = g1+16
+        }
+        if(ish1){
+          gh11 = g1-8;
+        }
+        if(ish2){
+          gh12 = g1-16;
+        }
+        if(colonne>1){
+          // gauche 2
+          g2=index-2;
+          if(isb1){
+            gb21= g2+8
+          }
+          if(ish1){
+            gh21= g2-8
+          }
+        }
+        if(colonne>2){
+          // gauche 3
+          g3=index-3;
+        }
+      }
+
+      if(colonne==7){
+        // pas de droite 1 pas de droite 2
+      } else if(colonne<7){
+        // droite 1
+        d1=index+1;
+        if(isb1){
+          db11 = d1+8
+        }
+        if(isb2){
+          db12 = d1+16
+        }
+        if(ish1){
+          dh11 = d1-8;
+        }
+        if(ish2){
+          dh12 = d1-16;
+        }
+
+        if(colonne<6){
+          // droite 2
+          d2=index+2;
+          if(isb1){
+            db21= d2+8
+          }
+          if(ish1){
+            dh21= d2-8
+          }
+        }
+        if(colonne<5){
+          // droite 2
+          d3=index+3;
+        }
+      }
+
+    }
+
+    let nb1 = this.getItemName(b1);
+    let nb2 = this.getItemName(b2);
+    let nb3 = this.getItemName(b3);
+    let nd1 = this.getItemName(d1);
+    let nd2 = this.getItemName(d2);
+    let nd3 = this.getItemName(d3);
+    let nh1 = this.getItemName(h1);
+    let nh2 = this.getItemName(h2);
+    let nh3 = this.getItemName(h3);
+    let ng1 = this.getItemName(g1);
+    let ng2 = this.getItemName(g2);
+    let ng3 = this.getItemName(g3);
+    let ngh11 = this.getItemName(gh11);
+    let ngh12 = this.getItemName(gh12);
+    let ngh21 = this.getItemName(gh21);
+    let ndh11 = this.getItemName(dh11);
+    let ndh12 = this.getItemName(dh12);
+    let ndh21 = this.getItemName(dh21);
+    let ngb11 = this.getItemName(gb11);
+    let ngb12 = this.getItemName(gb12);
+    let ngb21 = this.getItemName(gb21);
+    let ndb11 = this.getItemName(db11);
+    let ndb12 = this.getItemName(db12);
+    let ndb21 = this.getItemName(db21);
+
+
+    return [[
+      '','','',nh3,'','','',
+      '','',ngh12,nh2,ndh12,'','',
+      '',ngh21,ngh11,nh1,ndh11,ndh21,'',
+      ng3,ng2,ng1,name,nd1,nd2,nd3,
+      '',ngb21,ngb11,nb1,ndb11,ndb21,'',
+      '','',ngb12,nb2,ndb12,'','',
+      '','','',nb3,'','','',
+    ],
+    [
+      '','','',h3,'','','',
+      '','',gh12,h2,dh12,'','',
+      '',gh21,gh11,h1,dh11,dh21,'',
+      g3,g2,g1,index,d1,d2,d3,
+      '',gb21,gb11,b1,db11,db21,'',
+      '','',gb12,b2,db12,'','',
+      '','','',b3,'','','',
+    ]
+    ]
+  }
+
+
+  getGridCroix(index){
     // recuperation des elements autour de startindex
     let g1 = -1;
     let g2 = -1;
@@ -238,21 +498,29 @@ export class JewelPage implements OnInit, AfterViewInit {
     let b2 = -1;
 
     let name = this.items[index].name;
-    
+
+    const colonne=index%8;
+
     //gauche
-    if(index!=0 && index!=8 && index!=16 && index!=24 && index!=32 && index!=40 && index!=48 && index!=56){
+    if(colonne!=0){
       g1=index-1;
-      if(index!=1 && index!=9 && index!=17 && index!=25 && index!=33 && index!=41 && index!=49 && index!=57){
+      if(index!=1){
         g2=index-2;
       }
+    } else {
+      d1=index+1;
+      d2=index+2;
     }
 
     //droit
-    if(index!=7 && index!=8 && index!=15 && index!=23 && index!=31 && index!=39 && index!=47 && index!=55){
+    if(index!=7){
       d1=index+1;
-      if(index!=7 && index!=15 && index!=23 && index!=31 && index!=39 && index!=47 && index!=55 && index!=63){
+      if(index!=6){
         d2=index+2;
       }
+    } else {
+      g1=index-1;
+      g2=index-2;
     }
 
     //haut
@@ -261,6 +529,9 @@ export class JewelPage implements OnInit, AfterViewInit {
       if(index>15){
         h2=index-16;
       }
+    } else {
+      b1=index+8;
+      b2=index+16;
     }
 
     //bas
@@ -269,6 +540,9 @@ export class JewelPage implements OnInit, AfterViewInit {
       if(index<48){
         b2=index+16;
       }
+    } else {
+      h1=index-8;
+      h2=index-16;
     }
 
     let nb1 = this.getItemName(b1);
@@ -287,13 +561,13 @@ export class JewelPage implements OnInit, AfterViewInit {
       '','',nb1,'','',
       '','',nb2,'',''
     ],
-    [
-      '','',h2,'','',
-      '','',h1,'','',
-      g2,g1,index,d1,d2,
-      '','',b1,'','',
-      '','',b2,'',''
-    ]
+      [
+        '','',h2,'','',
+        '','',h1,'','',
+        g2,g1,index,d1,d2,
+        '','',b1,'','',
+        '','',b2,'',''
+      ]
     ]
   }
 
@@ -304,94 +578,48 @@ export class JewelPage implements OnInit, AfterViewInit {
       return '';
     }
   }
-  
-  validateMouvement(gridIndex,positions,index){
-    console.log(positions);
-    // Supprimer les doublons
-    let uniquePosition:any = positions.reduce((acc, curr) => {
-      curr.forEach(item => {
-        if (!acc.includes(gridIndex[item])) {
-          acc.push(gridIndex[item]);
-        }
-      });
-      return acc;
-    }, []);
-
-    console.log(uniquePosition);
-
-    uniquePosition.forEach(v=>{
-      const gridItem = document.getElementById('grid' + v);
-      if(gridItem){
-        gridItem.classList.add('fade-out');
-        setTimeout(()=>{
-
-        },500);
-        this.score+=this.items[v].point;
-        console.log(this.items[v].name,this.items[index].name);
-        if(this.items[v].name == this.items[index].name){
-          this.items[v] = this.getRandomElements(this.values, 1)[0];
-        }
-
-        // Supprimer la classe fade-out et ajouter la classe fade-in
-        gridItem.classList.remove('fade-out');
-        gridItem.classList.add('fade-in');
-      }
-    });
-    this.items[index] = this.getRandomElements(this.values, 1)[0];
-    this.score+=this.items[index].point;
-  }
-  
-  getCount(tab,item){
-    let count=0;
-    for(let i=0;i<tab.length;i++){
-      if(item==tab[i]){
-        count++;
-      }
-    }
-    return count;
-  }
 
   getValidePosition(grid: string[], target: string): number[][] {
     let position = [];
     //vertical
-    if(grid[2]===grid[7] && grid[7]===target){
+    if(grid[2]===target && grid[7]===target){
       position.push([2,7,12]);
     }
-    if(grid[17]==grid[7] && grid[7]==target){
+    if(grid[17]==target && grid[7]==target){
       position.push([17,7,12]);
     }
-    if(grid[17]==grid[7] && grid[2]==grid[7] && grid[7]==target){
+    if(grid[17]==target && grid[2]==target && grid[7]==target){
       position.push([17,7,12,2]);
     }
 
-    if(grid[22]===grid[17] && grid[17]===target){
+    if(grid[22]===target && grid[17]===target){
       position.push([22,17,12]);
     }
-    if(grid[17]==grid[22] && grid[7]==grid[22] && grid[22]==target){
+    if(grid[17]==target && grid[7]==target && grid[22]==target){
       position.push([22,17,12,7]);
     }
 
-    if(grid[2]===grid[17] && grid[22]===grid[17] && grid[7]===grid[17] && grid[17]===target){
+    if(grid[2]===target && grid[22]===target && grid[7]===target && grid[17]===target){
       position.push([22,17,7,2,12]);
     }
 
     // horizontal
-    if(grid[10]==grid[11] && grid[11]==target){
+    if(grid[10]==target && grid[11]==target){
       position.push([10,11,12]);
     }
-    if(grid[11]==grid[13] && grid[11]==target){
+    if(grid[13]==target && grid[11]==target){
       position.push([11,13,12]);
     }
-    if(grid[13]==grid[14] && grid[13]==target){
+    if(grid[14]==target && grid[13]==target){
       position.push([14,13,12]);
     }
-    if(grid[10]==grid[13] && grid[11]==grid[13] && grid[13]==target){
+    if(grid[10]==target && grid[11]==target && grid[13]==target){
       position.push([11,10,13,12]);
     }
-    if(grid[11]==grid[13] && grid[14]==grid[13] && grid[13]==target){
+    if(grid[11]==target && grid[14]==target && grid[13]==target){
       position.push([11,14,13,12]);
     }
-    if(grid[10]==grid[14] &&grid[11]==grid[14] && grid[13]==grid[14] && grid[14]==target){
+    if(grid[10]==target &&grid[11]==target && grid[13]==target && grid[14]==target){
       position.push([10,11,13,14,12]);
     }
 
@@ -401,7 +629,69 @@ export class JewelPage implements OnInit, AfterViewInit {
   getAllValidePositions(){
     let allPositions=[];
     for(let i=0;i<64;i++){
-      const grid = this.getGrid(i);
+      const grid = this.getGridCroix(i);
+      let positions = this.getValidePosition(grid[0],this.items[i].name);
+      if(positions.length>0){
+        positions.forEach(pos=>{
+          let po =[];
+          pos.forEach(v=>{
+            po.push(grid[1][v]);
+          });
+          allPositions.push(po);
+        });
+      }
+    }
+    if(allPositions.length>0){
+      const flatArray = allPositions.flat();
+
+      // Utiliser Set pour avoir des valeurs uniques
+      const uniqueArray = Array.from(new Set(flatArray));
+
+      // Optionnel : trier le tableau si l'ordre est important
+      uniqueArray.sort(); // Cela donnera ['a', 'b', 'c']
+
+      // Mettre le tableau dans une structure 2D
+      let r = [uniqueArray];
+      this.positions = r;
+
+      if(r.length>0){
+        if(this.recursion<5){
+          this.changeItem();
+          this.recursion++;
+        } else {
+          this.recursion=0;
+        }
+      }
+    }
+
+  }
+
+  getAllValideNextPositions(){
+    let allNextPositions=[];
+    for(let i=0;i<64;i++){
+      const grid = this.getGridCarre(i);
+      const positions = this.getValideNextPosition(grid[0],this.items[i].name);
+      let is_null = false;
+      positions.forEach(pos=>{
+        let po =[];
+        pos.forEach(v=>{
+          if(grid[1][v]==-1){
+            is_null=true;
+          }
+          po.push(grid[1][v]);
+        });
+        if(!is_null){
+          allNextPositions.push(po);
+        } else {
+          is_null=false;
+        }
+      });
+    }
+
+    // possition possible actuellement
+    let allPositions=[];
+    for(let i=0;i<64;i++){
+      const grid = this.getGridCroix(i);
       const positions = this.getValidePosition(grid[0],this.items[i].name);
       positions.forEach(pos=>{
         let po =[];
@@ -411,10 +701,255 @@ export class JewelPage implements OnInit, AfterViewInit {
         allPositions.push(po);
       });
     }
-    this.positions = allPositions;
-    if(allPositions.length>0){
-      this.changeItem();
+
+    if(allNextPositions.length>0){
+      const flatArray = allNextPositions.flat();
+
+      // Utiliser Set pour avoir des valeurs uniques
+      const uniqueArray = Array.from(new Set(flatArray));
+
+      // Optionnel : trier le tableau si l'ordre est important
+      uniqueArray.sort(); // Cela donnera ['a', 'b', 'c']
+
+      // Mettre le tableau dans une structure 2D
+      let r = [uniqueArray];
+      allNextPositions = r;
+
     }
+
+    if(allPositions.length>0){
+      const flatArray = allPositions.flat();
+
+      // Utiliser Set pour avoir des valeurs uniques
+      const uniqueArray = Array.from(new Set(flatArray));
+
+      // Optionnel : trier le tableau si l'ordre est important
+      uniqueArray.sort(); // Cela donnera ['a', 'b', 'c']
+
+      // Mettre le tableau dans une structure 2D
+      let r = [uniqueArray];
+      allPositions = r;
+
+    }
+
+    return [allNextPositions,allPositions];
+  }
+
+  getValideNextPosition(grid: string[], target: string): number[][] {
+    let position = [];
+    // haut
+    if(grid[10]=== target){
+      if(grid[16]===target){
+        position.push([10,16,24]);
+      }
+      if(grid[18]===target){
+        position.push([10,18,24]);
+      }
+    }
+    if(grid[17]=== target){
+      if(grid[9]===target){
+        position.push([17,9,24]);
+      }
+      if(grid[11]===target){
+        position.push([11,17,24]);
+      }
+    }
+
+    if(grid[3]==target && grid[10]==target){
+      position.push([3,10,24]);
+      if(grid[16]==target){
+        position.push([3,10,16,24]);
+      }
+      if(grid[18]==target){
+        position.push([3,10,18,24]);
+      }
+    }
+    if(grid[3]==target && grid[17]==target){
+      position.push([3,17,24]);
+      if(grid[9]==target){
+        position.push([3,17,9,24]);
+      }
+      if(grid[11]==target){
+        position.push([3,17,11,24]);
+      }
+    }
+
+    // droit
+    if(grid[26]=== target){
+      if(grid[32]===target){
+        position.push([32,26,24]);
+      }
+      if(grid[18]===target){
+        position.push([26,18,24]);
+      }
+    }
+    if(grid[25]=== target){
+      if(grid[19]===target){
+        position.push([25,19,24]);
+      }
+      if(grid[33]===target){
+        position.push([33,25,24]);
+      }
+    }
+
+
+    if(grid[25]==target && grid[27]==target){
+      position.push([25,27,24]);
+      if(grid[19]==target){
+        position.push([25,27,19,24]);
+      }
+      if(grid[33]==target){
+        position.push([25,127,33,24]);
+      }
+    }
+    if(grid[26]==target && grid[27]==target){
+      position.push([26,27,24]);
+      if(grid[18]==target){
+        position.push([26,27,18,24]);
+      }
+      if(grid[32]==target){
+        position.push([26,27,32,24]);
+      }
+    }
+
+    //gauche
+    if(grid[23]=== target){
+      if(grid[15]===target){
+        position.push([23,15,24]);
+      }
+      if(grid[29]===target){
+        position.push([23,29,24]);
+      }
+    }
+    if(grid[22]=== target){
+      if(grid[16]===target){
+        position.push([22,16,24]);
+      }
+      if(grid[30]===target){
+        position.push([22,30,24]);
+      }
+    }
+
+    if(grid[21]==target && grid[22]==target){
+      position.push([21,22,24]);
+      if(grid[16]==target){
+        position.push([16,21,22,24]);
+      }
+      if(grid[30]==target){
+        position.push([30,21,22,24]);
+      }
+    }
+
+    if(grid[21]==target && grid[23]==target){
+      position.push([21,23,24]);
+      if(grid[15]==target){
+        position.push([15,21,23,24]);
+      }
+      if(grid[29]==target){
+        position.push([29,21,23,24]);
+      }
+    }
+
+    // bas
+    if(grid[31]=== target){
+      if(grid[37]===target){
+        position.push([31,37,24]);
+      }
+      if(grid[39]===target){
+        position.push([31,39,24]);
+      }
+    }
+    if(grid[38]=== target){
+      if(grid[30]===target){
+        position.push([30,38,24]);
+      }
+      if(grid[32]===target){
+        position.push([38,32,24]);
+      }
+    }
+
+    if(grid[31]==target && grid[45]==target){
+      position.push([31,45,24]);
+      if(grid[37]==target){
+        position.push([37,31,45,24]);
+      }
+      if(grid[39]==target){
+        position.push([39,31,45,24]);
+      }
+    }
+
+    if(grid[38]==target && grid[45]==target){
+      position.push([38,45,24]);
+      if(grid[30]==target){
+        position.push([30,38,45,24]);
+      }
+      if(grid[32]==target){
+        position.push([32,38,45,24]);
+      }
+    }
+
+    // milieu
+    if(grid[17]==target){
+      if(grid[32]==target){
+        position.push([17,32,24])
+      }
+      if(grid[30]==target){
+        position.push([17,30,24])
+      }
+    }
+    if(grid[31]==target){
+      if(grid[16]==target){
+        position.push([16,31,24])
+      }
+      if(grid[18]==target){
+        position.push([18,31,24])
+      }
+    }
+    if(grid[25]==target){
+      if(grid[16]==target){
+        position.push([16,25,24])
+      }
+      if(grid[30]==target){
+        position.push([30,25,24])
+      }
+    }
+    if(grid[23]==target){
+      if(grid[18]==target){
+        position.push([18,23,24])
+      }
+      if(grid[32]==target){
+        position.push([32,23,24])
+      }
+    }
+
+    // autre
+    if(grid[16]==target && grid[9]==target){
+      position.push([16,9,24])
+    }
+    if(grid[11]==target && grid[18]==target){
+      position.push([11,18,24])
+    }
+    if(grid[30]==target && grid[37]==target){
+      position.push([30,37,24])
+    }
+    if(grid[32]==target && grid[39]==target){
+      position.push([32,39,24])
+    }
+
+    if(grid[15]==target && grid[16]==target){
+      position.push([15,16,24])
+    }
+    if(grid[29]==target && grid[30]==target){
+      position.push([29,30,24])
+    }
+    if(grid[18]==target && grid[19]==target){
+      position.push([18,19,24])
+    }
+    if(grid[32]==target && grid[33]==target){
+      position.push([32,33,24])
+    }
+
+    return position;
   }
 
   // Desktop Drag End
@@ -425,12 +960,17 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   // Touch Start
   onTouchStart(event: TouchEvent, index: number) {
-    const touch = event.touches[0];
-    this.touchStartX = touch.clientX;
-    this.touchStartY = touch.clientY;
-    this.touchedItemIndex = index;
-    const target = event.target as HTMLElement;
-    target.classList.add('dragging');
+    if(this.isStarted){
+      const touch = event.touches[0];
+      this.touchStartX = touch.clientX;
+      this.touchStartY = touch.clientY;
+      this.touchedItemIndex = index;
+      const target = event.target as HTMLElement;
+      target.classList.add('dragging');
+    } else {
+      this.util.doToast('Cliquer sur Jouer pour commencer la partie',2000,'light');
+    }
+
   }
 
   // Touch Move
@@ -444,45 +984,72 @@ export class JewelPage implements OnInit, AfterViewInit {
       return;
     }
 
-    const touch = event.changedTouches[0];
-    const touchEndX = touch.clientX;
-    const touchEndY = touch.clientY;
+    if(this.mouvementLeft>0 && this.isStarted){
+      const touch = event.changedTouches[0];
+      const touchEndX = touch.clientX;
+      const touchEndY = touch.clientY;
 
-    const distanceX = touchEndX - this.touchStartX;
-    const distanceY = touchEndY - this.touchStartY;
+      const distanceX = touchEndX - this.touchStartX;
+      const distanceY = touchEndY - this.touchStartY;
 
-    const draggedIndex = this.touchedItemIndex;
+      const draggedIndex = this.touchedItemIndex;
 
-    const target = event.target as HTMLElement;
-    target.classList.remove('dragging');
+      const target = event.target as HTMLElement;
+      target.classList.remove('dragging');
 
-    if(distanceX != 0 && distanceY != 0){
-      //this.util.doToast(distanceX+'|'+distanceY,1000);
-      const direction = this.getDirectionMove(distanceX,distanceY);
-      this.swapItemsByDirection(draggedIndex, direction);
-      //this.swapItemsAndVerification();
-      //this.checkAlignments(); // Vérifie les alignements après chaque déplacement
+      if(distanceX != 0 && distanceY != 0){
+        const direction = this.getDirectionMove(distanceX,distanceY);
+
+        let index=-1;
+        if(direction=='up'){
+          if(draggedIndex>7){ // pour ne rien faire quand il s'agit de la permière ligne
+            index = draggedIndex-8;
+          }
+        } else if (direction == 'down'){
+          if(draggedIndex<55){
+            index = draggedIndex+8;
+          }
+        } else if (direction == 'left'){
+          if(draggedIndex!=0 && draggedIndex!=8 && draggedIndex!=16 && draggedIndex!=24 && draggedIndex!=32 && draggedIndex!=40 && draggedIndex!=48 && draggedIndex!=56){
+            index = draggedIndex-1;
+          }
+        } else if (direction == 'right'){
+          if(draggedIndex!=7 && draggedIndex!=15 && draggedIndex!=23 && draggedIndex!=31 && draggedIndex!=39 && draggedIndex!=47 && draggedIndex!=55 && draggedIndex!=63){
+            index = draggedIndex+1;
+          }
+        }
+
+        if (this.isValidDrag(draggedIndex, index)) {
+
+          this.startIndex = draggedIndex;
+          this.endIndex = dropIndex;
+
+          this.swapItemsAndVerification();
+
+        }
+      }
+
+      this.touchedItemIndex = null;
+    } else {
+
     }
-
-    this.touchedItemIndex = null;
   }
 
   // Vérifie si le mouvement est valide (à une case seulement)
-  isValidMove(start: number, end: number): boolean {
+  isValidDrag(start: number, end: number): boolean {
     if(start!=-1 && end!=-1){
-      //this.swapItems(start,end);
+      this.swapItems(start,end);
 
       let name_start = this.items[start].name;
       let name_end = this.items[end].name;
 
       // recuperation des elements autour
-      let grid_start = this.getGrid(start);
-      let grid_end = this.getGrid(end);
+      let grid_start = this.getGridCroix(start);
+      let grid_end = this.getGridCroix(end);
 
       const valideStart = this.getValidePosition(grid_start[0],name_start);
       const valideEnd = this.getValidePosition(grid_end[0],name_end);
-      //console.log(valideStart,valideEnd);
-      //this.swapItems(start,end);
+      this.swapItems(start,end);
       return valideStart.length > 0 || valideEnd.length > 0;
     } else {
       return false;
@@ -516,110 +1083,6 @@ export class JewelPage implements OnInit, AfterViewInit {
     this.items[dropIndex] = temp;
   }
 
-  // Permute les éléments
-  swapItemsByDirection(draggedIndex: number, direction: string) {
-    let index=-1;
-    if(direction=='up'){
-      if(draggedIndex>7){ // pour ne rien faire quand il s'agit de la permière ligne
-        index = draggedIndex-8;
-      }
-    } else if (direction == 'down'){
-      if(draggedIndex<55){
-        index = draggedIndex+8;
-      }
-    } else if (direction == 'left'){
-      if(draggedIndex!=0 && draggedIndex!=8 && draggedIndex!=16 && draggedIndex!=24 && draggedIndex!=32 && draggedIndex!=40 && draggedIndex!=48 && draggedIndex!=56){
-        index = draggedIndex-1;
-      }
-    } else if (direction == 'right'){
-      if(draggedIndex!=7 && draggedIndex!=15 && draggedIndex!=23 && draggedIndex!=31 && draggedIndex!=39 && draggedIndex!=47 && draggedIndex!=55 && draggedIndex!=63){
-        index = draggedIndex+1;
-      }
-    }
-
-    this.swapItems(draggedIndex,index);
-
-    if(this.isValidMove(draggedIndex,index)){
-      this.swapItems(draggedIndex,index);
-      this.startIndex=draggedIndex;
-      this.endIndex=index;
-      this.swapItemsAndVerification();
-    } else {
-      this.swapItems(draggedIndex,index);
-    }
-
-
-  }
-
-  checkAlignments() {
-    this.alignedItemCount = 0;
-    this.positions = []; // Réinitialiser la variable positions
-
-    const rowCount = this.gridColumns;
-    const colCount = this.items.length / this.gridColumns;
-
-    // Vérifie les alignements horizontaux
-    for (let row = 0; row < colCount; row++) {
-      let count = 1;
-      let startIndex = row * rowCount;
-      let alignGroup: number[] = [startIndex];
-      for (let col = 1; col < rowCount; col++) {
-        const currentIndex = startIndex + col;
-        const prevIndex = startIndex + col - 1;
-        if (this.items[currentIndex] === this.items[prevIndex]) {
-          count++;
-          alignGroup.push(currentIndex);
-        } else {
-          if (count >= 3) {
-            this.positions.push([...alignGroup]);
-            this.alignedItemCount++;
-          }
-          count = 1;
-          alignGroup = [currentIndex];
-        }
-      }
-      // Vérifie la dernière séquence dans la ligne
-      if (count >= 3) {
-        this.positions.push([...alignGroup]);
-        this.alignedItemCount++;
-      }
-    }
-
-
-    // Vérifie les alignements verticaux
-    for (let col = 0; col < rowCount; col++) {
-      let count = 1;
-      let startIndex = col;
-      let alignGroup: number[] = [startIndex];
-      for (let row = 1; row < colCount; row++) {
-        const currentIndex = startIndex + row * rowCount;
-        const prevIndex = startIndex + (row - 1) * rowCount;
-        if (this.items[currentIndex] === this.items[prevIndex]) {
-          count++;
-          alignGroup.push(currentIndex);
-        } else {
-          if (count >= 3) {
-            this.positions.push([...alignGroup]);
-            this.alignedItemCount++;
-          }
-          count = 1;
-          alignGroup = [currentIndex];
-        }
-      }
-      // Vérifie la dernière séquence dans la colonne
-      if (count >= 3) {
-        this.positions.push([...alignGroup]);
-        this.alignedItemCount++;
-      }
-    }
-
-    console.log(`Nombre d'éléments alignés : ${this.alignedItemCount}`);
-    console.log('Indices des éléments alignés :', this.positions);
-    if(this.alignedItemCount>0){
-      this.changeItem();
-    }
-  }
-
   changeItem() {
     let bonus = 0;
     // Appliquer fade-out et changer l'image avec un délai
@@ -633,33 +1096,16 @@ export class JewelPage implements OnInit, AfterViewInit {
         const gridItem = document.getElementById('grid' + i);
         if (gridItem) {
           this.score+=this.items[i].point+bonus;
-          this.items[i] = this.getRandomElements(this.values, 1)[0];
+// probleme de get image          console.log(i);
+          let v = this.values;
+          v.splice(i,1);
+          this.items[i] = this.getRandomElements(v, 1)[0];
         }
       });
     });
 
     this.getAllValidePositions();
-  }
-
-  changeItemByPosition(positions,gridIndex) {
-    positions = positions.reduce((acc, curr) => {
-      curr.forEach(item => {
-        if (!acc.includes(gridIndex[item])) {
-          acc.push(gridIndex[item]);
-        }
-      });
-      return acc;
-    }, []);
-    let bonus = 0;
-
-    // Appliquer fade-out et changer l'image avec un délai
-    positions.forEach((i, itemIndex) => {
-      const gridItem = document.getElementById('grid' + i);
-      if (gridItem) {
-        this.score+=this.items[i].point+bonus;
-        this.items[i] = this.getRandomElements(this.values, 1)[0];
-      }
-    });
+    this.isMouvement(false);
   }
 
   checkIfMouvementAvaible(): boolean {
@@ -703,47 +1149,6 @@ export class JewelPage implements OnInit, AfterViewInit {
     return hasAlignment;
   }
 
-  getPossibleAlignments(): { positions: number[][], type: 'horizontal' | 'vertical' }[] {
-    const possibleAlignments = [];
-    
-    let items = this.items;
-
-    for (let i = 0; i < items.length; i++) {
-      const rowIndex = Math.floor(i / this.gridColumns);
-      const colIndex = i % this.gridColumns;
-
-      // Vérifier les mouvements vers la droite
-      if (colIndex < this.gridColumns - 1) {
-        if (this.canAlignAfterSwap(i, i + 1)) {
-          possibleAlignments.push({ position: i, direction: 'right' });
-        }
-      }
-
-      // Vérifier les mouvements vers la gauche
-      if (colIndex > 0) {
-        if (this.canAlignAfterSwap(i, i - 1)) {
-          possibleAlignments.push({ position: i, direction: 'left' });
-        }
-      }
-
-      // Vérifier les mouvements vers le bas
-      if (rowIndex < items.length / this.gridColumns - 1) {
-        if (this.canAlignAfterSwap(i, i + this.gridColumns)) {
-          possibleAlignments.push({ position: i, direction: 'down' });
-        }
-      }
-
-      // Vérifier les mouvements vers le haut
-      if (rowIndex > 0) {
-        if (this.canAlignAfterSwap(i, i - this.gridColumns)) {
-          possibleAlignments.push({ position: i, direction: 'up' });
-        }
-      }
-    }
-
-    return possibleAlignments;
-  }
-
   canAlignAfterSwap(index1: number, index2: number): boolean {
     // Swap the items
     this.swapItems(index1, index2);
@@ -754,4 +1159,144 @@ export class JewelPage implements OnInit, AfterViewInit {
     return alignmentPossible;
   }
 
+  getGame(){
+    const opt={
+      name:'Jewel'
+    };
+    this.api.getList('games',opt).then((d:any)=>{
+      this.game=d[0];
+      const user=JSON.parse(localStorage.getItem('user_ka'));
+      this.getLeaderBoard(user.id);
+      this.mise = this.game.fees;
+      if(this.isFirstTime){
+        this.showRule();
+        this.message = this.game.rule;
+        this.isFirstTime=false;
+      }
+    },q=>{
+      this.util.handleError(q);
+    })
+  }
+
+  showRule(){
+    this.titre=this.game.name;
+    this.message=this.game.rule;
+    this.showMessage=true;
+  }
+
+  async endGame(){
+    const opt ={
+      user_id:this.user.id,
+      game_id:this.game.id,
+      points:this.score,
+    };
+
+    this.api.post('leader_scores',opt).then(d=>{
+      this.titre = "Partie terminée";
+      this.message ="Plus aucune mouvement disponible pour cette partie. Vos points ont été actualisés et votre classement mis à jour.";
+      this.showMessage=true;
+      this.showFooter=true;
+      this.isLoose=false;
+      this.isStarted=false;
+      this.ionViewWillEnter();
+    },q=>{
+      this.util.handleError(q);
+    });
+  }
+
+  getLeaderBoard(user_id){
+    const opt = {
+      user_id,
+      game_id:this.game.id
+    };
+
+    this.api.post('show_leaders',opt).then((d:any)=>{
+      let i = 1;
+      let scores =[];
+      for (const s in d.result) {
+        if (d.result.hasOwnProperty(s)) {
+          scores.push(
+            {
+              rank:i,
+              user_name:s,
+              point:d.result[s]
+            }
+          );
+          i++;
+        }
+      }
+      this.board.scores = scores;
+      this.board.index = d.index;
+      if(d.index!=-1){
+        for (const s in d.u) {
+          if (d.u.hasOwnProperty(s)) {
+            this.my_score = {
+              rank:d.index,
+              user_name:s,
+              point:d.u[s]
+            };
+          }
+        }
+      }
+    })
+  }
+
+  closeMessage(event: string){
+    this.showMessage=false;
+    if(!this.isStarted||this.isLoose){
+    }
+  }
+
+  startGame(){
+    if(this.showMessage){
+      this.showMessage=false;
+    }
+
+    if(this.user.point==undefined || this.user.point<this.mise){
+      this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
+    } else {
+      this.items = this.getRandomItems(this.values,this.itemCount);
+      /*this.items[0]={
+        point:1,
+        name:'STAR',
+        percent:15
+      };
+      this.items[9]={
+        point:1,
+        name:'STAR',
+        percent:15
+      };
+      this.items[10]={
+        point:1,
+        name:'STAR',
+        percent:15
+      };
+      this.items[11]={
+        point:1,
+        name:'CYAN',
+        percent:15
+      };*/
+      // debit
+      const opt ={
+        user_id:this.user.id,
+        game_id:this.game.id
+      };
+      this.api.post('start_game',opt).then(a=>{
+        this.score=0;
+        this.mouvementLeft = this.mouvement;
+        this.isStarted=true;
+        this.user.point-=this.mise;
+        this.showFooter=false;
+        this.getAllValidePositions();
+        this.isMouvement(false);
+      },q=>{
+        this.util.handleError(q);
+      });
+    }
+  }
+
+  close(){
+    this.admob.showInterstitial();
+    this.navCtrl.navigateRoot('/game');
+  }
 }

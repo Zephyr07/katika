@@ -1,24 +1,38 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>jewel</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip style="background: white" slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" slot="end" >
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-grid>
     <ion-row class="white">
-      <ion-col>
+      <ion-col class="rapier ion-text-center" style="font-size: 20px">
         Points <br>
         <span>{{score}}</span>
       </ion-col>
-      <ion-col>
-        Mouvement <br>
-        <span>{{mouvementLeft}}</span>
+      <ion-col class="rapier ion-text-center" style="font-size: 20px">
+        Mouvements <br>
+        <span *ngIf="isStarted">{{mouvementLeft}}</span>
+        <span *ngIf="!isStarted">0</span>
       </ion-col>
     </ion-row>
   </ion-grid>
   <div class="middle" style="margin-top: 20px;">
-    <div class="grid-container"
+    <div class="grid-container" id="grille"
     >
       <!-- Créez 48 éléments (6x8) -->
       <div class="grid-item" *ngFor="let item of items; let i = index"
@@ -35,14 +49,60 @@
       </div>
     </div>
   </div>
-  <ion-grid class="ion-margin white">
-    {{score}}
-  </ion-grid>
-  <ion-grid>
+  <ion-grid class="ion-margin board shadow">
+    <h4>Points</h4>
     <ion-row>
-      <ion-col>
-        <ion-button (click)="checkAlignments()">Verification auto</ion-button>
+      <ion-col *ngFor="let p of points" class="leader">
+        <img *ngFor="let i of p.items" src="{{i.image}}" alt=""> <br> {{p.point}}
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-grid *ngIf="showFooter">
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" class="pulsate-bck" *ngIf="!isStarted" (click)="startGame()" color="medium">Jouer</ion-button>
+        <ion-button expand="block" *ngIf="isStarted" (click)="startGame()" color="light">Rejouer</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="leader-board">
+    <h3>Leader Board
+      <br>
+      <span>Jackpot : {{jackpot|priceFormat}} W</span>
+    </h3>
+
+    <ion-row *ngFor="let s of board.scores" class="rank{{s.rank}}">
+      <ion-col size="1">
+        <span *ngIf="s.rank>3">{{s.rank}}</span>
+        <span name="crown" *ngIf="s.rank==1">🥇</span><span name="crown" *ngIf="s.rank==2">🥈</span><span name="crown" *ngIf="s.rank==3">🥉</span>
+      </ion-col>
+      <ion-col size="7">
+        {{s.user_name|limitTo:10}}
+      </ion-col>
+      <ion-col size="4" class="ion-text-right">{{s.point|priceFormat}} W</ion-col>
+    </ion-row>
+
+    <h6 *ngIf="board.index!=-1" class="ion-text-center">Ma position</h6>
+    <ion-row *ngIf="board.index!=-1" class="my-position">
+      <ion-col size="1">
+        <span *ngIf="board.index+1>3">{{board.index+1}}</span>
+        <span name="crown" *ngIf="board.index+1==1">🥇</span>
+        <span name="crown" *ngIf="board.index+1==2">🥈</span>
+        <span name="crown" *ngIf="board.index+1==3">🥉</span>
+      </ion-col>
+      <ion-col size="7">
+        {{my_score.user_name|limitTo:10}}
+      </ion-col>
+      <ion-col size="4" class="ion-text-right">{{my_score.point|priceFormat}} W</ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
 </ion-content>

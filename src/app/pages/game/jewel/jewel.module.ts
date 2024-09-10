@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { JewelPageRoutingModule } from './jewel-routing.module';
 
 import { JewelPage } from './jewel.page';
+import {PipeModule} from "../../../pipe/pipe.module";
+import {ModalMessageModule} from "../../../components/modal-message/modal-message.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    JewelPageRoutingModule
+    JewelPageRoutingModule,
+    PipeModule,
+    ModalMessageModule
   ],
   declarations: [JewelPage]
 })
