@@ -1,16 +1,42 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/jewel.png') no-repeat center/cover fixed !important;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(8, 1fr); /* 8 colonnes de taille égale */
   grid-template-rows: repeat(6, 1fr);    /* 6 rangées de taille égale */
   gap: 1px; /* Espacement de 1 pixel entre les éléments */
-  width: 100vw; /* Largeur de la grille à 100% de la largeur de la vue */
-  height: 100vh; /* Hauteur de la grille à 100% de la hauteur de la vue */
+  width: 336px; /* Largeur de la grille à 100% de la largeur de la vue */
+  height: 336px; /* Hauteur de la grille à 100% de la hauteur de la vue */
 }
 
 .grid-item {
-  background-color: lightblue; /* Couleur d'exemple, vous pouvez la modifier */
+  background: rgb(108, 73, 41);
+  border-radius: 5px;
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #000; /* Bordure pour visualiser les éléments */
+  width: 39px;
+  height: 39px;
+  user-select: none; /* Désactive la sélection de texte lors du drag */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Assure une transition fluide pour l'opacité et la transformation */
+  touch-action: none; /* Pour désactiver les gestes tactiles par défaut */
+}
+
+.grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Pour ajuster l'image à l'intérieur de la case */
+}
+
+.fade-out {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.fade-in {
+  opacity: 1;
+  transform: scale(1);
 }

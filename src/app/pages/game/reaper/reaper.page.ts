@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import {UtilProvider} from "../../../providers/util/util";
 import {ApiProvider} from "../../../providers/api/api";
+import {UtilProvider} from "../../../providers/util/util";
 import {AlertController, NavController} from "@ionic/angular";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 import * as _ from "lodash";
 
 @Component({
-  selector: 'app-apple',
-  templateUrl: './apple.page.html',
-  styleUrls: ['./apple.page.scss'],
+  selector: 'app-reaper',
+  templateUrl: './reaper.page.html',
+  styleUrls: ['./reaper.page.scss'],
 })
-export class ApplePage implements OnInit {
+export class ReaperPage implements OnInit {
+
   private screenHeight: number = window.innerHeight;
   private countRow=10;
   private finals=[];
@@ -32,6 +33,8 @@ export class ApplePage implements OnInit {
   game:any={};
 
   gain_tmp = 0;
+
+  mise=0;
 
   titre="";
   message="";
@@ -78,7 +81,7 @@ export class ApplePage implements OnInit {
 
     this.admob.loadInterstitial();
     this.hauteur = (this.screenHeight-this.header)*0.8;
-    this.hauteur=this.hauteur/10; //10 lignes
+    this.hauteur=(this.hauteur/10)-100; //10 lignes
     if(this.hauteur<50){
       this.hauteur=50;
     }
@@ -97,7 +100,7 @@ export class ApplePage implements OnInit {
       this.showMessage=false;
     }
 
-    if(this.user.point==undefined || this.user.point<50){
+    if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
       // debit
@@ -108,7 +111,7 @@ export class ApplePage implements OnInit {
       this.api.post('start_game',opt).then(a=>{
         this.gain_tmp=0;
         this.isStarted=true;
-        this.user.point-=50;
+        this.user.point-=this.mise;
         this.showFooter=false;
         this.initializeGame(reset_row);
       },q=>{
@@ -128,7 +131,10 @@ export class ApplePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
-      this.rows[0].gain = 3000+(this.game.jackpot-10000);
+      this.mise = this.game.fees;
+      if(this.rows[0]){
+        this.rows[0].gain = 3000+(this.game.jackpot-10000);
+      }
       this.jackpot = 3000+(this.game.jackpot-10000);
       if(this.isFirstTime){
         this.showRule();
@@ -149,7 +155,7 @@ export class ApplePage implements OnInit {
   initializeGame(reset_row:boolean) {
     this.level = 0;
     this.isLoose = false;
-    
+
     if(reset_row){
       this.api.getSettings().then((d:any)=>{
         if(d){
@@ -200,14 +206,14 @@ export class ApplePage implements OnInit {
           this.rows[8].gain = d.game_settings.repear.points[4];
           this.rows[9].gain = this.jackpot;
           this.rows= this.rows.reverse();
-          
+
         } else {
           alert("Setting absent");
         }
       },q=>{
         this.util.handleError(q);
       })
-      
+
 
     }
 
@@ -404,7 +410,7 @@ export class ApplePage implements OnInit {
 
     return tableau;
   }
-  
+
   setRow(row_id:number,id:number){
     let row = _.find(this.rows,{id:row_id});
     this.rows=this.rows.reverse();
@@ -600,4 +606,5 @@ export class ApplePage implements OnInit {
     this.rows=this.rows.reverse();
     this.loose();
   }
+
 }

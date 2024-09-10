@@ -39,6 +39,10 @@ const routes: Routes = [
   {
     path: 'jewel',
     loadChildren: () => import('./jewel/jewel.module').then( m => m.JewelPageModule)
+  },
+  {
+    path: 'reaper',
+    loadChildren: () => import('./reaper/reaper.module').then( m => m.ReaperPageModule)
   }
 
 ];

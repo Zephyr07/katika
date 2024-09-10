@@ -20,7 +20,6 @@ export class PuzzlePage implements OnInit {
   totalGains: number = 0;
   totalLosses: number = 0;
 
-  price_life=1000;
   gridGap="";
   titre="";
   message="";
@@ -29,7 +28,9 @@ export class PuzzlePage implements OnInit {
   showFooter=true;
 
   private indexLife=0;
-  private tab_life = [0.5,1,1.5,2,3,4,5];
+  private price_life = [0.5,1,1.5,2,3,4,5];
+
+  mise=0;
 
   isStarted=false;
   isConnected=true;
@@ -61,6 +62,10 @@ export class PuzzlePage implements OnInit {
   }
 
   ionViewWillEnter(){
+    this.api.getSettings().then((d:any)=>{
+      this.price_life = d.game_settings.crystal.price_life
+    });
+
     this.getGame();
 
     if(this.api.checkUser()){
@@ -87,7 +92,7 @@ export class PuzzlePage implements OnInit {
       this.showMessage=false;
     }
 
-    if(this.user.point==undefined || this.user.point<50){
+    if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
       // debit
@@ -96,7 +101,7 @@ export class PuzzlePage implements OnInit {
         game_id:this.game.id
       };
       this.api.post('start_game',opt).then(a=>{
-        this.user.point-=50;
+        this.user.point-=this.mise;
         this.gameOver=false;
         this.showFooter=false;
         this.isStarted=true;
@@ -124,6 +129,7 @@ export class PuzzlePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
         this.message = this.game.rule;
@@ -147,16 +153,49 @@ export class PuzzlePage implements OnInit {
     this.totalGains = 0;
     //this.gameOver = bool;
 
+    let countGain=0;
+    let countNeutral=0;
+
     for (let i = 0; i < this.gridSize * this.gridSize; i++) {
-      this.crystals.push({
-        revealed: false,
-        type: this.getRandomOutcome(),
-      });
+      const type = this.getRandomOutcome();
+      if(type=='gain'){
+        if(countGain>4){
+          this.crystals.push({
+            revealed: false,
+            type:'loss',
+          });
+        } else {
+          this.crystals.push({
+            revealed: false,
+            type,
+          });
+        }
+        countGain++;
+      } else if(type=='neutral'){
+        if(countNeutral>8){
+          this.crystals.push({
+            revealed: false,
+            type:'loss',
+          });
+        } else {
+          this.crystals.push({
+            revealed: false,
+            type,
+          });
+        }
+        countNeutral++;
+      } else {
+        this.crystals.push({
+          revealed: false,
+          type
+        });
+      }
     }
   }
 
   getRandomOutcome() {
     const outcomes = ['gain', 'loss', 'neutral']; // Exemples de types de cristaux
+    console.log(outcomes[Math.floor(Math.random() * outcomes.length)]);
     return outcomes[Math.floor(Math.random() * outcomes.length)];
   }
 
@@ -176,7 +215,7 @@ export class PuzzlePage implements OnInit {
               //this.score -= 5;
               this.totalLosses++;
               if (this.totalLosses >= 2) {
-                if(this.user.point>this.tab_life[this.indexLife]*this.price_life){
+                if(this.user.point>this.price_life[this.indexLife]){
                   this.buyLive();
                 } else {
                   this.showFooter=true;
@@ -262,7 +301,7 @@ export class PuzzlePage implements OnInit {
     const alert = await this.alertController.create({
       //cssClass: 'my-custom-class',
       header: 'Acheter une vie?',
-      message:"Continuer à jouer pour "+(this.tab_life[this.indexLife]*this.price_life)+" W",
+      message:"Continuer à jouer pour "+(this.price_life[this.indexLife])+" W",
       buttons: [
         {
           text: 'Non',
@@ -276,7 +315,7 @@ export class PuzzlePage implements OnInit {
           handler: (data:any) => {
             // reduction
             const opt ={
-              multiplier:this.tab_life[this.indexLife]*this.price_life
+              multiplier:this.price_life[this.indexLife]
             };
 
             this.api.post('get_life',opt).then(d=>{
@@ -285,7 +324,7 @@ export class PuzzlePage implements OnInit {
               this.isCrashed=false;
               this.canPlay = true;
               this.gameOver = false;
-              this.user.point-=this.tab_life[this.indexLife]*this.price_life
+              this.user.point-=this.price_life[this.indexLife];
               this.totalLosses=1;
               this.indexLife++;
             })

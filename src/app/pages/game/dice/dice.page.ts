@@ -43,6 +43,8 @@ export class DicePage implements OnInit {
   user:any={};
   game:any={};
 
+  percent=0.6;
+
   cube: HTMLElement;
   cube2: HTMLElement;
 
@@ -54,7 +56,6 @@ export class DicePage implements OnInit {
     private admob:AdmobProvider,
     private alertController:AlertController
   ) {
-    this.finals= this.genererTableau(100);
     // Assurez-vous que l'élément cube est chargé après l'initialisation du composant
     setTimeout(() => {
       this.cube = document.getElementById('cube') as HTMLElement;
@@ -67,8 +68,10 @@ export class DicePage implements OnInit {
     this.getGame();
     this.api.getSettings().then((d:any)=>{
       if(d){
-        this.milestone = d.dice_points;
+        this.milestone = d.game_settings.dice.points;
+        this.percent = d.game_settings.dice.percent;
         this.milestone.push(this.game.jackpot - 24650);
+        this.finals= this.genererTableau(100);
       }
     })
   }
@@ -232,24 +235,6 @@ export class DicePage implements OnInit {
     // Lancer l'animation
     window.requestAnimationFrame(animate);
 
-    /*/ Animation du dé
-    cube.style.transition = `transform ${duration}s cubic-bezier(0.52, -0.08, 0.56, 0.98)`;
-    cube.style.transform = `rotateX(${x + spins * 360}deg) rotateY(${y + spins * 360}deg)`;
-
-    // Animation du dé 2
-    cube2.style.transition = `transform ${duration+0.5}s cubic-bezier(0.52, -0.08, 0.56, 0.98)`;
-    cube2.style.transform = `rotateX(${f.x + (spins+1) * 360}deg) rotateY(${f.y + (spins+1) * 360}deg)`;
-
-    // Réinitialiser la transformation après la durée
-    setTimeout(() => {
-      cube.style.transition = '';
-      cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
-
-      cube2.style.transition = '';
-      cube2.style.transform = `rotateX(${f.x}deg) rotateY(${f.y}deg)`;
-      this.checkState();
-    }, (duration+1) * 1000); // Correspond à la durée de l'animation
-    */
     this.index++;
   }
 
@@ -329,8 +314,6 @@ export class DicePage implements OnInit {
     this.isStarted=false;
     this.showFooter=true;
     this.gain_tmp=0;
-    //this.choix_result=0;
-    //this.choix_decision="";
     this.level=1;
     this.ionViewWillEnter();
   }
@@ -370,7 +353,7 @@ export class DicePage implements OnInit {
   genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    let nbZeros = Math.floor(X * 0.6); // Calcul du nombre de 0 (70%)
+    let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
     if(mise){
       nbZeros = Math.floor(X * 0.8)
     }

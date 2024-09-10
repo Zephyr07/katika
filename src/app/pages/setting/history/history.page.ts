@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiProvider} from "../../../providers/api/api";
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-history',
@@ -8,6 +9,7 @@ import {ApiProvider} from "../../../providers/api/api";
 })
 export class HistoryPage implements OnInit {
   scores=[];
+  items=[];
   constructor(
     private api:ApiProvider
   ) { }
@@ -25,7 +27,34 @@ export class HistoryPage implements OnInit {
     }
 
     this.api.getList('scores',opt).then((d:any)=>{
-      this.scores =d;
+      d.forEach(v=>{
+        this.items.push({
+          name:v.game.name,
+          amount:v.jackpot,
+          date:v.created_at
+        })
+      });
+      this.getPayment(user.id);
+    })
+  }
+
+  getPayment(user_id){
+    const opt = {
+      user_id:user_id,
+      status:3,
+      should_paginate: false
+    };
+
+    this.api.getList('payments',opt).then((d:any)=>{
+      d.forEach(v=>{
+        this.items.push({
+          name:'Recharge du compte',
+          amount:v.amount,
+          date:v.created_at
+        })
+      });
+
+      this.items = _.sortBy(this.items,'date').reverse();
     })
   }
 

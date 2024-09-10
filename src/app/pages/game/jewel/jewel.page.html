@@ -5,10 +5,44 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="grid-container">
-    <!-- Créez 48 éléments (6x8) -->
-    <div class="grid-item" *ngFor="let item of [].constructor(48); let i = index">
-      {{ i + 1 }}
+  <ion-grid>
+    <ion-row class="white">
+      <ion-col>
+        Points <br>
+        <span>{{score}}</span>
+      </ion-col>
+      <ion-col>
+        Mouvement <br>
+        <span>{{mouvementLeft}}</span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="middle" style="margin-top: 20px;">
+    <div class="grid-container"
+    >
+      <!-- Créez 48 éléments (6x8) -->
+      <div class="grid-item" *ngFor="let item of items; let i = index"
+           draggable="true"
+           (dragstart)="onDragStart($event, i)"
+           (dragover)="onDragOver($event)"
+           (drop)="onDrop($event, i)"
+           (touchstart)="onTouchStart($event, i)"
+           (touchmove)="onTouchMove($event)"
+           (touchend)="onTouchEnd($event, i)"
+           id="grid{{i}}"
+      >
+        <img [src]="getImageForItem(item)" />
+      </div>
     </div>
   </div>
+  <ion-grid class="ion-margin white">
+    {{score}}
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="checkAlignments()">Verification auto</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

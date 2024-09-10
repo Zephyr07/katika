@@ -24,6 +24,8 @@ export class TripleChoicePage implements OnInit {
 
   game:any={};
 
+  mise = 0;
+
   isStarted=false;
   isConnected=true;
   showFooter=true;
@@ -70,7 +72,7 @@ export class TripleChoicePage implements OnInit {
 
   startGame(){
     if(this.isConnected){
-      if(this.user.point<50){
+      if(this.user.point<this.mise){
         this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
       } else {
         // debit
@@ -79,7 +81,7 @@ export class TripleChoicePage implements OnInit {
           game_id:this.game.id
         };
         this.api.post('start_game',opt).then(a=>{
-          this.user.point-=50;
+          this.user.point-=this.mise;
           this.level = 1;
           this.choice=99999;
           this.setAnswer();
@@ -160,7 +162,7 @@ export class TripleChoicePage implements OnInit {
   }
 
   async win(){
-    this.game.jackpot+=50;
+    this.game.jackpot+=this.mise;
     const opt ={
       level:this.level,
       user_id:this.user.id,
@@ -207,6 +209,7 @@ export class TripleChoicePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
         this.message = this.game.rule;

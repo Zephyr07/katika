@@ -132,7 +132,7 @@ export class SettingPage implements OnInit {
   }
 
   contactUs(){
-    window.location.href="http://t.me/holyghost777?text=Bonjour+Katika";
+    window.location.href="http://t.me/katika_games?text=Bonjour Katika";
   }
 
   async sharePromoCode(){
@@ -171,7 +171,7 @@ export class SettingPage implements OnInit {
     if(this.can_recharge){
       const alert = await this.alertController.create({
         header: this.TEXT,
-        message:"Entrez le numéro mobile money et le montant que vous souhaitez recharger. La recharge minimum est de 50 W, soit 50 Francs.",
+        message:"Entrez le numéro mobile money et le nombre de point que vous souhaitez recharger. La recharge minimum est de 50.",
         buttons: [
           {
             text: this.CANCEL,
@@ -243,7 +243,7 @@ export class SettingPage implements OnInit {
 
       await alert.present();
     } else {
-      window.location.href="http://t.me/holyghost777?text=Bonjour+je+souhaite+recharger+mon+compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
+      window.location.href="http://t.me/katika_games?text=Bonjour je souhaite recharger mon compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
     }
 
   }

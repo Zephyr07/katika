@@ -24,6 +24,8 @@ export class FortunePage implements OnInit,AfterViewInit {
   private count = 50;
   isStarted=false;
 
+  mise = 50;
+
   isConnected=true;
   showFooter=true;
   titre="";
@@ -36,41 +38,8 @@ export class FortunePage implements OnInit,AfterViewInit {
 
   is_katika=true;
 
-  private prices = [
-    '0 W',
-    '300 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '200 W',
-    'Jackpot',
-    '2000 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '700 W',
-    'Jackpot',
-    '100 W',
-    '1 W',
-    '50 W',
-    '1000 W',
-    '0 W',
-    '0 W',
-    '25 W',
-    '40 W',
-    '35 W',
-    '200 W',
-    '500 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W',
-    '0 W'
-  ];
+  private prices = [];
+  private percent = 0;
 
   result:any={};
   highlightedIndex: number | null = null; // Variable pour le segment en surbrillance
@@ -87,45 +56,68 @@ export class FortunePage implements OnInit,AfterViewInit {
     public navCtrl:NavController,
     private admob:AdmobProvider
   ) {
-    this.api.getSettings().then((d:any)=>{
-      this.is_katika = d.katika == 'true';
-    })
-    for(let i =0;i<this.segmentCount;i++){
-      this.segments.push({
-        text: i + 1,
-        color: this.getSegmentColor(i),
-        prize: this.getPrice(i),
-        }
-      )
-    }
-    this.util.initializeNetworkListener();
-    this.finals = this.genererTableau(this.count);
+      this.util.initializeNetworkListener();
+
   }
 
   ngOnInit() {
     this.admob.loadInterstitial();
-    for(let i=0; i<this.prices.length;i++){
-      if(this.prices[i]!='0 W'){
-        this.win_p.push(
-          {
-            index:i,
-            text: `${(i + 1)}`,
-            prize: this.prices[i],
+    this.api.getSettings().then((d:any)=>{
+      this.is_katika = d.katika == 'true';
+      this.prices = d.game_settings.fortune.prices;
+      this.percent = d.game_settings.fortune.percent;
+      this.finals = this.genererTableau(this.count);
+
+      for(let i=0; i<this.prices.length;i++){
+        const x = parseInt(this.prices[i].split(' ')[0]);
+        if(this.prices[i]!='0 W' && x>this.mise){
+          this.win_p.push(
+            {
+              index:i,
+              text: `${(i + 1)}`,
+              prize: this.prices[i],
+            }
+          );
+        } else if(this.prices[i]=='Jackpot'){
+          this.win_p.push(
+            {
+              index:i,
+              text: `${(i + 1)}`,
+              prize: this.prices[i],
+            }
+          );
+        } else {
+          if(x>0){
+            this.win_p.push(
+              {
+                index:i,
+                text: `${(i + 1)}`,
+                prize: this.prices[i],
+              }
+            );
           }
-        );
-      } else {
-        this.lost_p.push(
-          {
-            index:i,
-            text: `${(i + 1)}`,
-            prize: this.prices[i],
-          }
-        );
+          this.lost_p.push(
+            {
+              index:i,
+              text: `${(i + 1)}`,
+              prize: this.prices[i],
+            }
+          );
+        }
       }
-    }
+
+    });
   }
 
   ngAfterViewInit() {
+    for(let i =0;i<this.segmentCount;i++){
+      this.segments.push({
+          text: i + 1,
+          color: this.getSegmentColor(i),
+          prize: this.getPrice(i),
+        }
+      )
+    }
     this.initializeWheel();
   }
 
@@ -155,6 +147,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
         this.message = this.game.rule;
@@ -204,7 +197,7 @@ export class FortunePage implements OnInit,AfterViewInit {
 
   startGame(){
     this.showMessage=false;
-    if(this.user.point==undefined || this.user.point<50){
+    if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
 
@@ -215,7 +208,7 @@ export class FortunePage implements OnInit,AfterViewInit {
           game_id:this.game.id
         };
         this.api.post('start_game',opt).then(a=>{
-          this.user.point-=50;
+          this.user.point-=this.mise;
           this.showFooter=false;
           this.isStarted=true;
           this.result.prize=undefined;
@@ -355,7 +348,7 @@ export class FortunePage implements OnInit,AfterViewInit {
         } else {
           if(this.result.prize=='Jackpot'){
             if(this.is_katika){
-              this.win(this.game.jackpot+50);
+              this.win(this.game.jackpot+this.mise);
               this.is_katika=false;
             } else {
               const index = Math.floor(Math.random() * (this.lost_p.length ));
@@ -364,6 +357,10 @@ export class FortunePage implements OnInit,AfterViewInit {
                 this.result.prize=this.prices[this.result.text-1];
               }
               this.highlightedIndex = this.result.text-1;
+              const price = parseInt(this.result.prize.split(' ')[0]);
+              if(price!=0){
+                this.win(price);
+              }
             }
           } else {
             const price = parseInt(this.result.prize.split(' ')[0]);
@@ -440,7 +437,7 @@ export class FortunePage implements OnInit,AfterViewInit {
   genererTableau(X: number): number[] {
     const tableau: number[] = [];
 
-    const nbZeros = Math.floor(X * 0.5); // Calcul du nombre de 0 (70%)
+    const nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau

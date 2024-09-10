@@ -290,6 +290,7 @@ export class AviatorPage implements OnInit {
 
   cancel(){
     this.total_gain=0;
+    this.total_partie=0;
     this.isCountdown=false;
     clearInterval(this.countdownInterval);
     this.chiffre=3;
@@ -364,6 +365,8 @@ export class AviatorPage implements OnInit {
           this.startGame();
         },2000);
       } else {
+        this.total_partie=0;
+        this.total_gain=0;
         this.isStarted=false;
         this.showFooter=true;
       }

@@ -46,10 +46,12 @@ export class GamePage implements OnInit {
       this.router.navigateByUrl('game/puzzle');
     } else if(t=='fortune'){
       this.router.navigateByUrl('game/fortune');
-    } else if(t=='grenade'){
-      this.router.navigateByUrl('game/apple');
+    } else if(t=='reaper'){
+      this.router.navigateByUrl('game/reaper');
     } else if(t=='dices'){
       this.router.navigateByUrl('game/dice');
+    } else if(t=='jewel'){
+      this.router.navigateByUrl('game/jewel');
     }
   }
 }

@@ -302,7 +302,7 @@ export class AccountPage implements OnInit {
   }
 
   recharge(){
-    window.location.href="http://t.me/holyghost777?text=Bonjour+je+souhaite+recharger+mon+compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
+    window.location.href="http://t.me/katika_games?text=Bonjour je souhaite recharger mon compte, ci-apres mon nom d'utilisateur "+this.user.user_name;
   }
 
   joinGroup(){

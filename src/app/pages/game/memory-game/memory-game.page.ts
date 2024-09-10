@@ -4,7 +4,6 @@ import {ApiProvider} from "../../../providers/api/api";
 import * as _ from "lodash";
 import {UtilProvider} from "../../../providers/util/util";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
-import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-memory-game',
@@ -37,6 +36,8 @@ export class MemoryGamePage implements OnInit {
   message="";
   showMessage=false;
   isFirstTime=true;
+
+  mise=0;
 
   pub="disabled";
 
@@ -188,7 +189,7 @@ export class MemoryGamePage implements OnInit {
 
   startGame(){
     if(this.isConnected){
-      if(this.user.point==undefined || this.user.point<50){
+      if(this.user.point==undefined || this.user.point<this.mise){
         this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
       } else {
         this.showFooter=false;
@@ -199,7 +200,7 @@ export class MemoryGamePage implements OnInit {
         };
 
         this.api.post('start_game',opt).then(a=>{
-          this.user.point-=50;
+          this.user.point-=this.mise;
           this.level=1;
           this.isStarted=true;
           this.play_level(this.level);
@@ -282,7 +283,7 @@ export class MemoryGamePage implements OnInit {
       game_id:this.game.id,
       is_winner:true
     };
-    this.game.jackpot+=50;
+    this.game.jackpot+=this.mise;
 
     this.titre = "VOUS AVEZ GAGNEZ !!!";
     this.message ="Vous avez gagnez "+this.game.jackpot+" W. Vos points ont été crédités sur votre compte";
@@ -355,6 +356,7 @@ export class MemoryGamePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
         this.message = this.game.rule;
