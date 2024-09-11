@@ -13,6 +13,7 @@ import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 export class JewelPage implements OnInit, AfterViewInit {
 
   items:any = [];
+  old_items:any = [];
   mouvementLeft=0;
   private mouvement=50;
   private touchStartX: number | null = null;
@@ -147,7 +148,8 @@ export class JewelPage implements OnInit, AfterViewInit {
         this.jackpot = d.game_settings.jewel.jackpot;
 
         this.items = this.getRandomItems(this.values,this.itemCount);
-
+        //console.log("ini",this.items);
+        this.old_items=this.getRandomItems(this.values,this.itemCount);
         this.showLoading=false;
         let g = _.groupBy(this.values,'point');
         let col=[];
@@ -199,16 +201,9 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   }
 
-  getRandomElements(arr: any[], numElements: number): string[] {
-    const result: string[] = [];
-
-    for (let i = 0; i < numElements; i++) {
-      let randomIndex =0;
-      randomIndex = Math.floor(Math.random() * arr.length); // Sélectionner un indice aléatoire
-      result.push(arr[randomIndex]);
-    }
-
-    return result;
+  getRandomElements(arr: any[]): string[] {
+    const randomIndex = Math.floor(Math.random() * arr.length); // Sélectionner un indice aléatoire
+    return arr[randomIndex];
   }
 
   getRandomItems(arr: any[], numElements: number): string[] {
@@ -242,7 +237,7 @@ export class JewelPage implements OnInit, AfterViewInit {
   // Desktop Drag Start
   onDragStart(event: DragEvent, index: number) {
     if(this.isStarted){
-      console.log('onDragStart',index);
+      //console.log('onDragStart',index);
       this.draggedItemIndex = index;
       const target = event.target as HTMLElement;
       target.classList.add('dragging');
@@ -258,7 +253,7 @@ export class JewelPage implements OnInit, AfterViewInit {
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.dataTransfer!.dropEffect = "move";
-    console.log('onDragOver');
+    //console.log('onDragOver');
   }
 
   // Desktop Drop
@@ -266,7 +261,7 @@ export class JewelPage implements OnInit, AfterViewInit {
     event.preventDefault();
     const draggedIndex = this.draggedItemIndex;
 
-    console.log('onDragOver',draggedIndex,dropIndex);
+    //console.log('onDragOver',draggedIndex,dropIndex);
 
     const target = event.target as HTMLElement;
     target.classList.remove('dragging');
@@ -279,7 +274,7 @@ export class JewelPage implements OnInit, AfterViewInit {
       this.endIndex = dropIndex;
       this.swapItemsAndVerification();
     } else {
-      console.log("azeaze");
+      //console.log("azeaze");
     }
   }
 
@@ -296,13 +291,27 @@ export class JewelPage implements OnInit, AfterViewInit {
     }
   }
 
+  refreshGrid(){
+    this.items = this.shuffleArray(this.old_items);
+  }
+
+  shuffleArray(array) {
+    const shuffledArray = [...array]; // Créer une copie du tableau pour éviter de modifier l'original
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); // Index aléatoire
+      // Échange des éléments
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray; // Retourner le tableau mélangé
+  }
+
   isMouvement(isChange:boolean){
     const mouv = this.getAllValideNextPositions();
     //console.log(mouv);
     if(mouv[0].length==0 && mouv[1].length==0){
       this.util.doToast('Actualisation de la grille',1000);
       setTimeout(()=>{
-        this.items = this.getRandomItems(this.values,this.itemCount);
+        this.refreshGrid();
         this.getAllValidePositions();
       },700);
       //this.mouvementLeft=0;
@@ -1100,10 +1109,9 @@ export class JewelPage implements OnInit, AfterViewInit {
         const gridItem = document.getElementById('grid' + i);
         if (gridItem) {
           this.score+=this.items[i].point+bonus;
-// probleme de get image          console.log(i);
           let v = this.values;
           v.splice(i,1);
-          this.items[i] = this.getRandomElements(v, 1)[0];
+          this.items[i] = this.getRandomElements(v);
         }
       });
     });
@@ -1259,7 +1267,8 @@ export class JewelPage implements OnInit, AfterViewInit {
     if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
-      this.items = this.getRandomItems(this.values,this.itemCount);
+      //this.items = this.getRandomItems(this.values,this.itemCount);
+      //this.old_items = this.items;
       /*this.items[8]={
         point:500,
         name:'STAR',

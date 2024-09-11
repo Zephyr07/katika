@@ -32,20 +32,36 @@
     </ion-row>
   </ion-grid>
   <div class="middle" style="margin-top: 20px;">
-    <div class="grid-container" id="grille"
+    <div *ngIf="items.length==0" style="width: 336px; height: 336px">
+
+    </div>
+    <div class="grid-container" id="grille" *ngIf="items.length>0"
     >
       <!-- Créez 48 éléments (6x8) (dragstart)="onDragStart($event, i)"
            (dragover)="onDragOver($event)"
            (drop)="onDrop($event, i)"-->
       <div class="grid-item" *ngFor="let item of items; let i = index"
            draggable="true"
-
+           (dragstart)="onDragStart($event, i)"
+           (dragover)="onDragOver($event)"
+           (drop)="onDrop($event, i)"
            (touchstart)="onTouchStart($event, i)"
            (touchmove)="onTouchMove($event)"
            (touchend)="onTouchEnd($event, i)"
            id="grid{{i}}"
       >
-        <img [src]="getImageForItem(item)" />
+        <img *ngIf="item.name=='RED'" src="../../../../assets/img/jewel/red.png" />
+        <img *ngIf="item.name=='GREEN'" src="../../../../assets/img/jewel/green.png" />
+        <img *ngIf="item.name=='BLUE'" src="../../../../assets/img/jewel/blue.png" />
+        <img *ngIf="item.name=='BROWN'" src="../../../../assets/img/jewel/brown.png" />
+        <img *ngIf="item.name=='STAR'" src="../../../../assets/img/jewel/star.png" />
+        <img *ngIf="item.name=='PINK'" src="../../../../assets/img/jewel/pink.png" />
+        <img *ngIf="item.name=='PURPLE'" src="../../../../assets/img/jewel/purple.png" />
+        <img *ngIf="item.name=='ORANGE'" src="../../../../assets/img/jewel/orange.png" />
+        <img *ngIf="item.name=='TRIANGLE'" src="../../../../assets/img/jewel/triangle.png" />
+        <img *ngIf="item.name=='CYAN'" src="../../../../assets/img/jewel/diamond.png" />
+        <img *ngIf="item.name=='WHITE'" src="../../../../assets/img/jewel/white.png" />
+        <img *ngIf="item.name=='YELLOW'" src="../../../../assets/img/jewel/yellow.png" />
       </div>
     </div>
   </div>
@@ -66,12 +82,13 @@
       </ion-col>
       <ion-col>
         <ion-button expand="block" class="pulsate-bck" *ngIf="!isStarted" (click)="startGame()" color="medium">Jouer</ion-button>
-        <ion-button expand="block" *ngIf="isStarted" (click)="startGame()" color="light">Rejouer</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <div class="middle">
+  <div style="display: flex;
+            align-items: center;
+            justify-content: center;">
     <ion-grid class="leader-board">
       <h3>Leader Board
         <br>
@@ -97,10 +114,10 @@
           <span name="crown" *ngIf="board.index+1==2">🥈</span>
           <span name="crown" *ngIf="board.index+1==3">🥉</span>
         </ion-col>
-        <ion-col size="7">
+        <ion-col size="6">
           {{my_score.user_name|limitTo:10}}
         </ion-col>
-        <ion-col size="4" class="ion-text-right">{{my_score.point|priceFormat}} W</ion-col>
+        <ion-col size="5" class="ion-text-right">{{my_score.point|priceFormat}} W</ion-col>
       </ion-row>
     </ion-grid>
   </div>
