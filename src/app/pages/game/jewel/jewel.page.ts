@@ -293,6 +293,7 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   refreshGrid(){
     this.items = this.shuffleArray(this.old_items);
+    document.getElementById('grille').classList.add('scale-in-center');
   }
 
   shuffleArray(array) {
@@ -309,10 +310,12 @@ export class JewelPage implements OnInit, AfterViewInit {
     const mouv = this.getAllValideNextPositions();
     //console.log(mouv);
     if(mouv[0].length==0 && mouv[1].length==0){
-      this.util.doToast('Actualisation de la grille',1000);
       setTimeout(()=>{
         this.refreshGrid();
-        this.getAllValidePositions();
+        setTimeout(()=>{
+          this.util.doToast('Actualisation de la grille',1000,'light');
+          this.getAllValidePositions();
+        },300);
       },700);
       //this.mouvementLeft=0;
       //this.endGame();
@@ -1102,22 +1105,32 @@ export class JewelPage implements OnInit, AfterViewInit {
   }
 
   changeItem() {
-    let bonus = 0;
     // Appliquer fade-out et changer l'image avec un délai
     this.positions.forEach((pos, index) => {
       pos.forEach((i, itemIndex) => {
         const gridItem = document.getElementById('grid' + i);
         if (gridItem) {
-          this.score+=this.items[i].point+bonus;
-          let v = this.values;
-          v.splice(i,1);
-          this.items[i] = this.getRandomElements(v);
+          this.score+=this.items[i].point;
+          let x = this.values;
+          let index = this.values.findIndex(item => item.name === this.items[i].name);
+          this.items[i] = this.getRandomElements(this.removeElementAtIndex(x,index));
         }
       });
     });
 
     this.getAllValidePositions();
     this.isMouvement(false);
+  }
+
+  removeElementAtIndex(arr: { point: number, name: string, percent: number }[], index: number) {
+    // Créer une copie du tableau
+    let newArray = [...arr];
+
+    // Utiliser splice pour supprimer l'élément à l'indice donné
+    newArray.splice(index, 1);
+
+    // Retourner le nouveau tableau sans l'élément supprimé
+    return newArray;
   }
 
   checkIfMouvementAvaible(): boolean {
