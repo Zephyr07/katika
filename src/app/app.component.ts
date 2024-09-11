@@ -27,8 +27,8 @@ export class AppComponent {
     private admob:AdmobProvider,
     private notif: NotificationProvider,
   ) {
-    this.splash();
     this.admob.initialize();
+    this.splash();
     moment.locale('fr');
     if(isCordovaAvailable()){
       ScreenOrientation.lock({ orientation: 'portrait' });

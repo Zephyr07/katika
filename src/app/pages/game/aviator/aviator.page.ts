@@ -73,10 +73,11 @@ export class AviatorPage implements OnInit {
 
   ngOnInit(){
     this.getGame();
+    this.admob.loadInterstitial();
   }
 
   ionViewWillEnter(){
-    this.admob.loadInterstitial();
+
     if(this.api.checkUser()){
       this.is_user=true;
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
@@ -460,7 +461,7 @@ export class AviatorPage implements OnInit {
   genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    let nbZeros = Math.floor(X * 0.6); // Calcul du nombre de 0 (70%)
+    let nbZeros = Math.floor(X * 0.7); // Calcul du nombre de 0 (70%)
     if(mise){
       nbZeros = Math.floor(X * 0.8)
     }

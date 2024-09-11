@@ -198,7 +198,6 @@ export class PuzzlePage implements OnInit {
 
   getRandomOutcome() {
     const outcomes = ['gain', 'loss', 'neutral']; // Exemples de types de cristaux
-    console.log(outcomes[Math.floor(Math.random() * outcomes.length)]);
     return outcomes[Math.floor(Math.random() * outcomes.length)];
   }
 
