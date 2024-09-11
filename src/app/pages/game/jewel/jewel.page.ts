@@ -1197,7 +1197,7 @@ export class JewelPage implements OnInit, AfterViewInit {
 
     this.api.post('leader_scores',opt).then(d=>{
       this.titre = "Partie terminée";
-      this.message ="Plus aucune mouvement disponible pour cette partie. Vos points ont été actualisés et votre classement mis à jour.";
+      this.message ="Plus aucun mouvement disponible pour cette partie. Vos points ont été actualisés et votre classement mis à jour.";
       this.showMessage=true;
       this.showFooter=true;
       this.isLoose=false;
