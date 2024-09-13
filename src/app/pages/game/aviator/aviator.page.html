@@ -2,9 +2,9 @@
   <ion-toolbar style="--background: transparent" class="ion-text-center">
     <ion-chip style="background: white" slot="start">
       <ion-avatar>
-        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+        <img alt="{{user_name}}" src="../../../assets/icon/logo.png" />
       </ion-avatar>
-      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+      <ion-label>{{user_name|limitTo:10}}</ion-label>
     </ion-chip>
 
     <ion-chip style="background: white" (click)="showRule()">
@@ -12,7 +12,7 @@
     </ion-chip>
 
     <ion-chip style="background: white" slot="end" >
-      <ion-label>{{user.point|priceFormat}} W</ion-label>
+      <ion-label>{{user_point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
 </ion-header>
@@ -98,8 +98,8 @@
 
     <h3><ion-toggle style="z-index: 0;" [(ngModel)]="auto" [disabled]="isStarted" [checked]="auto" color="medium" [enableOnOffLabels]="true">Jeu Auto ?</ion-toggle></h3>
     <h2 *ngIf="isCrashed">Le camion <br>a crashé !!!</h2>
-    <h3 *ngIf="auto">
-      Total gain : {{total_gain - mise*total_partie |priceFormat}} W
+    <h3 *ngIf="auto && total_partie>0">
+      Gain : {{gain-prelevement |priceFormat}} W
     </h3>
     
 

@@ -12,10 +12,17 @@ import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 })
 export class AviatorPage implements OnInit {
 
+  prelevement = 0;
+  gain = 0;
+  user_point = 0;
+  user_name ="";
+
   countdownInterval:any;
   user_multiplier:number;
   mise=50;
-  total_gain=0;
+
+  current_gain=0;
+
   total_partie=0;
   private timeInterval=50;
   multiplier: number = 1;
@@ -33,6 +40,14 @@ export class AviatorPage implements OnInit {
   private index=0;
   private decision=0;
 
+  percent=0;
+  lessThan10=0;
+  lessThan1=0;
+  lessThan2=0;
+  lessThan5=0;
+  greaterThan10=0;
+
+
   can_play=true;
 
   isConnected = true;
@@ -46,7 +61,7 @@ export class AviatorPage implements OnInit {
 
   is_user=false;
   pub=false;
-  user:any={};
+  private user:any={};
   game:any={};
   private target =0;
   private count = 100;
@@ -64,9 +79,7 @@ export class AviatorPage implements OnInit {
     private admob:AdmobProvider
   ) {
     this.util.initializeNetworkListener();
-    this.series = this.getSeries(this.count);
-    this.finals= this.genererTableau(this.count);
-    this.dif = this.randomInRange(0,0.1);
+
     //console.log(this.series);
     //console.log(this.finals);
   }
@@ -74,6 +87,21 @@ export class AviatorPage implements OnInit {
   ngOnInit(){
     this.getGame();
     this.admob.loadInterstitial();
+    this.api.getSettings().then((d:any)=>{
+      this.percent=d.game_settings.truck.percent;
+      this.lessThan10=d.game_settings.truck.lessThan10;
+      this.lessThan1=d.game_settings.truck.lessThan1;
+      this.lessThan2=d.game_settings.truck.lessThan2;
+      this.lessThan5=d.game_settings.truck.lessThan5;
+      this.greaterThan10=d.game_settings.truck.greaterThan10;
+
+      this.series = this.getSeries(this.count);
+      this.finals= this.genererTableau(this.count);
+      this.dif = this.randomInRange(0,0.1);
+
+      //console.log(this.finals);
+      //console.log(this.series);
+    })
   }
 
   ionViewWillEnter(){
@@ -82,6 +110,8 @@ export class AviatorPage implements OnInit {
       this.is_user=true;
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;
+        this.user_point = this.user.point;
+        this.user_name = this.user.user_name;
         localStorage.setItem('user_ka',JSON.stringify(this.user));
       },q=>{
         this.util.handleError(q);
@@ -103,16 +133,19 @@ export class AviatorPage implements OnInit {
   }
 
   startGame() {
+    //this.user_point = this.user_point+ this.gain-this.prelevement;
+
     this.showMessage=false;
-    if(this.mise>=50){
+    if(this.mise>=this.game.fees){
       this.dif = this.randomInRange(0,0.1);
-      this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
-        this.user = a.data.user;
-        localStorage.setItem('user_ka',JSON.stringify(this.user));
-      });
-      this.party++;
+
 
       if(this.user_multiplier!=undefined && this.user_multiplier>1){
+        this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
+          this.user = a.data.user;
+          localStorage.setItem('user_ka',JSON.stringify(this.user));
+        });
+
         if(this.user.point==undefined || this.user.point<this.mise){
           this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
           this.isCountdown=false;
@@ -125,64 +158,9 @@ export class AviatorPage implements OnInit {
           this.can_play=true;
           this.showFooter=true;
         } else {
-          if(this.isConnected){
-            this.showFooter=false;
-            this.isCountdown=true;
-            this.chiffre=3;
-            this.countdownInterval = setInterval(()=>{
-              this.chiffre--;
-              if(this.chiffre==0){
-                this.isCountdown=false;
-                clearInterval(this.countdownInterval);
-                // debit
-                const opt ={
-                  user_id:this.user.id,
-                  game_id:this.game.id,
-                  mise:this.mise
-                };
-
-                this.api.post('start_game',opt).then(a=>{
-                  this.user.point-=this.mise;
-                  // gestion du countdown
-                  this.total_partie++;
-                  this.isCrashed=false;
-                  this.isWin=false;
-                  this.isStarted=false;
-
-                  //const index = Math.floor(Math.random() * this.series.length);
-                  this.target = this.series[this.index];
-                  this.decision = this.finals[this.index];
-                  if(this.index==this.series.length-1){
-                    this.series = this.getSeries(this.count);
-                    this.finals= this.genererTableau(this.count);
-                    this.index=0;
-                  }
-                  if(this.mise>1000){
-                    this.finals=this.genererTableau(this.count,this.mise);
-                  }
-                  this.index++;
-                  this.isStarted=true;
-                  this.is_win = false;
-                  this.isCrashed = false;
-                  this.multiplier = 1;
-                  this.private_multiplier = 1;
-                  this.crashTime = Math.floor(Math.random() * 10000) + 5000; // Crash time between 5 to 15 seconds
-                  this.increaseMultiplier();
-                },q=>{
-                  this.util.handleError(q);
-                });
-
-
-              }
-            },1000);
-          } else {
-            this.showMessage=true;
-            this.titre="Vous n'êtes pas connecté";
-            this.message="Connectez-vous à internet pour continuer à jouer";
-          }
-
-
+          this.lanceur();
         }
+
       } else {
         this.util.doToast('Vous n\'avez pas renseinger de multiplicateur',3000,'tertiary');
       }
@@ -193,6 +171,71 @@ export class AviatorPage implements OnInit {
     }
 
 
+  }
+
+  lanceur(){
+    if(this.isConnected){
+      this.showFooter=false;
+      this.isCountdown=true;
+      this.chiffre=3;
+      this.countdownInterval = setInterval(()=>{
+        this.chiffre--;
+        if(this.chiffre==0){
+          this.isCountdown=false;
+          clearInterval(this.countdownInterval);
+
+          // debit
+          const opt ={
+            user_id:this.user.id,
+            game_id:this.game.id,
+            mise:this.mise
+          };
+
+          this.api.post('start_game',opt).then(a=>{
+            this.user.point-=this.mise;
+            this.prelevement+=this.mise;
+            this.settings();
+          },q=>{
+            this.util.handleError(q);
+          });
+
+
+
+        }
+      },1000);
+    } else {
+      this.showMessage=true;
+      this.titre="Vous n'êtes pas connecté";
+      this.message="Connectez-vous à internet pour continuer à jouer";
+    }
+  }
+
+  settings(){
+    this.total_partie++;
+    this.isCrashed=false;
+    this.isWin=false;
+    this.isStarted=false;
+
+    //const index = Math.floor(Math.random() * this.series.length);
+    this.target = this.series[this.index];
+    this.decision = this.finals[this.index];
+    this.dif = this.randomInRange(0,0.1);
+    if(this.index==this.series.length-1){
+      this.series = this.getSeries(this.count);
+      this.finals= this.genererTableau(this.count);
+      this.index=0;
+    }
+    if(this.mise>1000){
+      this.finals=this.genererTableau(this.count,this.mise);
+    }
+    this.index++;
+    this.isStarted=true;
+    this.is_win = false;
+    this.isCrashed = false;
+    this.multiplier = 1;
+    this.private_multiplier = 1;
+    this.crashTime = Math.floor(Math.random() * 10000) + 5000; // Crash time between 5 to 15 seconds
+    this.increaseMultiplier();
   }
 
   x=0;
@@ -286,21 +329,53 @@ export class AviatorPage implements OnInit {
         this.isStarted=false;
         this.showFooter=true;
         this.can_play=true;
+        this.total_partie=0;
       }
     },2000)
   }
 
   cancel(){
-    this.total_gain=0;
-    this.total_partie=0;
-    this.isCountdown=false;
-    clearInterval(this.countdownInterval);
-    this.chiffre=3;
-    this.isStarted=false;
-    this.isCrashed=false;
-    this.auto=false;
-    this.can_play=true;
-    this.showFooter=true;
+    if(this.total_partie>1 && this.gain - this.prelevement>0){
+      const opt ={
+        level:this.user_multiplier,
+        user_id:this.user.id,
+        game_id:this.game.id,
+        jackpot:this.gain,
+        is_winner:true
+      };
+
+      this.api.post('scores',opt).then(d=>{
+        this.titre = "VOUS AVEZ GAGNEZ !!!";
+        this.message ="Vous avez gagnez "+(this.gain-this.prelevement)+" W. Vos points ont été crédités sur votre compte";
+        this.showMessage=true;
+        this.total_partie=0;
+        this.isCountdown=false;
+        clearInterval(this.countdownInterval);
+        this.chiffre=3;
+        this.prelevement=0;
+        this.gain=0;
+        this.isStarted=false;
+        this.isCrashed=false;
+        this.auto=false;
+        this.can_play=true;
+        this.showFooter=true;
+        this.ionViewWillEnter();
+      },q=>{
+        this.util.handleError(q);
+      });
+    } else {
+      this.total_partie=0;
+      this.prelevement=0;
+      this.gain=0;
+      this.isCountdown=false;
+      clearInterval(this.countdownInterval);
+      this.chiffre=3;
+      this.isStarted=false;
+      this.isCrashed=false;
+      this.auto=false;
+      this.can_play=true;
+      this.showFooter=true;
+    }
   }
 
   close(){
@@ -340,6 +415,7 @@ export class AviatorPage implements OnInit {
         this.showRule();
         this.message = this.game.rule;
         this.isFirstTime=false;
+
       }
       this.showLoading=false;
     },q=>{
@@ -350,37 +426,40 @@ export class AviatorPage implements OnInit {
 
 
   async win(){
-    this.user.point = this.user.point+this.mise*this.user_multiplier;
-    const opt ={
-      level:this.user_multiplier,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      jackpot:this.mise*this.user_multiplier,
-      is_winner:true
-    };
-
-    this.api.post('scores',opt).then(d=>{
+    if(this.auto){
       this.titre = "VOUS AVEZ GAGNEZ !!!";
-      this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
+      this.message ="Vous avez gagnez "+this.mise*this.user_multiplier+" W";
       this.showMessage=true;
-      if(this.auto){
-        this.total_gain+=opt.jackpot;
-        setTimeout(()=>{
-          this.startGame();
-        },2000);
-      } else {
+
+      this.gain+=this.mise*this.user_multiplier;
+
+      setTimeout(()=>{
+        this.startGame();
+      },2000);
+    } else {
+      const opt ={
+        level:this.user_multiplier,
+        user_id:this.user.id,
+        game_id:this.game.id,
+        jackpot:this.mise*this.user_multiplier,
+        is_winner:true
+      };
+
+      this.api.post('scores',opt).then(d=>{
+        this.titre = "VOUS AVEZ GAGNEZ !!!";
+        this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
+        this.showMessage=true;
         this.total_partie=0;
-        this.total_gain=0;
         this.isStarted=false;
         this.showFooter=true;
-      }
-    },q=>{
-      this.util.handleError(q);
-    });
+        this.ionViewWillEnter();
+      },q=>{
+        this.util.handleError(q);
+      });
+    }
+
 
   }
-
-
 
 
   getSeries(count){
@@ -388,11 +467,11 @@ export class AviatorPage implements OnInit {
 
     // Define the percentage distributions
     let percentages = {
-      "lessThan1": 0.1,  // 60% < 1
-      "lessThan2": 0.1,  // 24% < 2
-      "lessThan5": 0.4,  // 10% < 5
-      "lessThan10": 0.4, // 5% < 10
-      "greaterThan10": 0.1 // 1% > 10
+      "lessThan1": this.lessThan1,  // 60% < 1
+      "lessThan2": this.lessThan2,  // 24% < 2
+      "lessThan5": this.lessThan5,  // 10% < 5
+      "lessThan10": this.lessThan10, // 5% < 10
+      "greaterThan10": this.greaterThan10 // 1% > 10
     };
 
     // Calculate how many numbers we need for each range
@@ -461,8 +540,8 @@ export class AviatorPage implements OnInit {
   genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    let nbZeros = Math.floor(X * 0.7); // Calcul du nombre de 0 (70%)
-    if(mise){
+    let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
+    if(mise || this.multiplier>5){
       nbZeros = Math.floor(X * 0.8)
     }
     const nbUn = X - nbZeros; // Le reste sera des 1

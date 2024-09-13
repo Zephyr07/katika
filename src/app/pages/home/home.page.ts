@@ -31,6 +31,8 @@ export class HomePage implements OnInit {
   code="";
   promo_code_id:number;
   target:number;
+  jackpot:number;
+  devise="W";
   lang="";
   choice="c";
 
@@ -105,6 +107,8 @@ export class HomePage implements OnInit {
     this.api.getSettings().then((d:any)=>{
       if(d){
         this.target = d.target;
+        this.jackpot = d.jackpot;
+        this.devise = d.devise;
       }
     });
     this.getScores();
@@ -189,6 +193,14 @@ export class HomePage implements OnInit {
     }
   }
 
+  showDashboard(){
+    if(this.is_user && this.user.phone=='696870700'){
+      this.router.navigateByUrl('dashboard');
+    } else {
+
+    }
+  }
+
   showSetting(){
     this.router.navigateByUrl('setting');
   }
@@ -199,43 +211,52 @@ export class HomePage implements OnInit {
 
 
   register() {
+    this.user_name = this.user_name.trim();
     if(this.checkForm()){
-      this.util.showLoading('register');
-      const opt={
-        user_name:this.util.capitalize(this.user_name.trim()),
-        email:this.email.trim(),
-        phone:this.phone,
-        password:this.password,
-        promo_code_id:0,
-        settings:JSON.stringify([{"language":this.lang},{"notification":"true"}]),
-        password_confirmation:this.password_confirmation
+      if(this.checkSpecialCharater(this.user_name)){
+        if(isNaN(parseInt(this.user_name))){
+          this.util.showLoading('register');
+          const opt={
+            user_name:this.util.capitalize(this.user_name.trim()),
+            email:this.email.trim(),
+            phone:this.phone,
+            password:this.password,
+            promo_code_id:0,
+            settings:JSON.stringify([{"language":this.lang},{"notification":"true"}]),
+            password_confirmation:this.password_confirmation
+          }
+
+          if(this.promo_code_id!=undefined && this.promo_code_id>0){
+            opt.promo_code_id = this.promo_code_id;
+          } else {
+            delete opt.promo_code_id;
+          }
+
+          this.auth.register(opt).then((d:any)=>{
+            this.util.hideLoading();
+            this.user = {
+              user_name:d.user.user_name,
+              point:d.user.point
+            };
+            localStorage.setItem('user_game',JSON.stringify(d.user));
+            this.util.doToast('Inscription reussi, vous devez activer votre compte maintenant',5000);
+            this.navCtrl.navigateRoot(['/activated-account']);
+            this.closeModal();
+
+            // verification si le user a déjà un store
+            this.is_user=true;
+
+
+          }, q=>{
+            this.util.hideLoading();
+            this.util.handleError(q);
+          })
+        } else {
+          // le nom d'utilisateur est entièrement un chiffre
+          this.util.doToast('Le nom d\'utilisateur ne peut pas etre un nombre',1000,'light')
+        }
       }
 
-      if(this.promo_code_id!=undefined && this.promo_code_id>0){
-        opt.promo_code_id = this.promo_code_id;
-      } else {
-        delete opt.promo_code_id;
-      }
-
-      this.auth.register(opt).then((d:any)=>{
-        this.util.hideLoading();
-        this.user = {
-          user_name:d.user.user_name,
-          point:d.user.point
-        };
-        localStorage.setItem('user_game',JSON.stringify(d.user));
-        this.util.doToast('Inscription reussi, vous devez activer votre compte maintenant',5000);
-        this.navCtrl.navigateRoot(['/activated-account']);
-        this.closeModal();
-
-        // verification si le user a déjà un store
-        this.is_user=true;
-
-
-      }, q=>{
-        this.util.hideLoading();
-        this.util.handleError(q);
-      })
     }
     //localStorage.setItem('uid','rahul');
 

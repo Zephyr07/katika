@@ -7,7 +7,7 @@
       <ion-label>{{user.user_name}}</ion-label>
     </ion-chip>
 
-    <ion-chip slot="end" class="chip" *ngIf="is_user">
+    <ion-chip slot="end" class="chip" *ngIf="is_user"(click)="showDashboard()">
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
@@ -25,7 +25,7 @@
       <ion-col size="12" class="rapier ion-text-center">
         <div class="cagnotte">
           <span style="font-size: 25px">Tournoi de la semaine</span> <br>
-          <span style="font-size: 40px; color:#fff">{{target|priceFormat}} W</span>
+          <span style="font-size: 40px; color:#fff">{{jackpot|priceFormat}} {{devise}}</span>
           <br>
           <span>Le premier a cumuler <br><span class="white">{{target|priceFormat}} W</span> gagne le tournoi</span>
         </div>
