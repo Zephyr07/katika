@@ -128,7 +128,7 @@ export class SettingPage implements OnInit {
   }
 
   joinGroup(){
-    window.location.href="https://t.me/katika_games";
+    window.location.href="https://t.me/+vgMemP-Xj2o1ODhk";
   }
 
   contactUs(){

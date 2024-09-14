@@ -55,8 +55,8 @@
           <ion-button expand="block" (click)="close()" color="tertiary">Fermer</ion-button>
         </ion-col>
         <ion-col>
-          <ion-button expand="block" class="pulsate-bck" *ngIf="!isStarted && !isLoose" (click)="startGame(false)" color="medium">Jouer</ion-button>
-          <ion-button expand="block" *ngIf="isStarted && isLoose" (click)="startGame(true)" color="light">Rejouer</ion-button>
+          <ion-button expand="block" class="pulsate-bck" *ngIf="!isStarted && !isLoose" (click)="startGame()" color="medium">Jouer</ion-button>
+          <ion-button expand="block" *ngIf="isStarted && isLoose" (click)="startGame()" color="light">Rejouer</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

@@ -33,6 +33,7 @@ export class FortunePage implements OnInit,AfterViewInit {
   showMessage=false;
   isFirstTime=true;
 
+  win_p2=[];
   win_p=[];
   lost_p=[];
 
@@ -79,6 +80,13 @@ export class FortunePage implements OnInit,AfterViewInit {
               prize: this.prices[i],
             }
           );
+          this.win_p2.push(
+            {
+              index:i,
+              text: `${(i + 1)}`,
+              prize: this.prices[i],
+            }
+          );
         } else if(this.prices[i]=='Jackpot'){
           this.win_p.push(
             {
@@ -87,9 +95,16 @@ export class FortunePage implements OnInit,AfterViewInit {
               prize: this.prices[i],
             }
           );
+          this.win_p2.push(
+            {
+              index:i,
+              text: `${(i + 1)}`,
+              prize: this.prices[i],
+            }
+          );
         } else {
           if(x>0){
-            this.win_p.push(
+            this.win_p2.push(
               {
                 index:i,
                 text: `${(i + 1)}`,
@@ -350,6 +365,10 @@ export class FortunePage implements OnInit,AfterViewInit {
             this.result.prize=this.prices[this.result.text-1];
           }
           this.highlightedIndex = this.result.text-1;
+          const price = parseInt(this.result.prize.split(' ')[0]);
+          if(price!=0){
+            this.win(price);
+          }
         } else {
           if(this.result.prize=='Jackpot'){
             if(this.is_katika){
@@ -364,6 +383,7 @@ export class FortunePage implements OnInit,AfterViewInit {
               this.highlightedIndex = this.result.text-1;
               const price = parseInt(this.result.prize.split(' ')[0]);
               if(price!=0){
+                console.log(price);
                 this.win(price);
               }
             }

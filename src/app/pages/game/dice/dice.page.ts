@@ -357,7 +357,7 @@ export class DicePage implements OnInit {
   genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
+    let nbZeros = Math.floor(X * 0); // Calcul du nombre de 0 (70%)
     if(mise){
       nbZeros = Math.floor(X * 0.8)
     }

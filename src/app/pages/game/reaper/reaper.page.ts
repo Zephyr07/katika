@@ -15,6 +15,7 @@ export class ReaperPage implements OnInit {
   private screenHeight: number = window.innerHeight;
   private countRow=10;
   private finals=[];
+  private points=[];
   private decision=0;
   rows=[];
   disposition=[];
@@ -54,7 +55,14 @@ export class ReaperPage implements OnInit {
     private admob:AdmobProvider
   ) {
     this.util.initializeNetworkListener();
-    this.initializeGame(true);
+    this.api.getSettings().then((d:any)=>{
+      this.disposition = d.game_settings.reaper.disposition;
+      this.percent = d.game_settings.reaper.percent;
+      this.points = d.game_settings.reaper.points;
+      this.initializeGame();
+    },q=>{
+      this.util.handleError(q);
+    })
   }
 
   ionViewWillEnter(){
@@ -96,7 +104,7 @@ export class ReaperPage implements OnInit {
     });
   }
 
-  startGame(reset_row:boolean){
+  startGame(){
     if(this.showMessage){
       this.showMessage=false;
     }
@@ -114,7 +122,7 @@ export class ReaperPage implements OnInit {
         this.isStarted=true;
         this.user.point-=this.mise;
         this.showFooter=false;
-        this.initializeGame(reset_row);
+        this.initializeGame();
       },q=>{
         this.util.handleError(q);
       });
@@ -154,71 +162,54 @@ export class ReaperPage implements OnInit {
     this.showMessage=true;
   }
 
-  initializeGame(reset_row:boolean) {
+  initializeGame() {
     this.level = 0;
     this.isLoose = false;
+    this.table = this.generateTable();
+    this.finals = this.genererTableau(this.countRow);
+    const table = this.table;
+    this.rows=[];
 
-    if(reset_row){
-      this.api.getSettings().then((d:any)=>{
-        if(d){
-          this.disposition = d.game_settings.repear.disposition;
-          this.percent = d.game_settings.repear.percent;
-          this.table = this.generateTable();
-          this.finals = this.genererTableau(this.countRow);
-          const table = this.table;
-
-          this.rows=[];
-
-          for(let i=0;i<this.countRow;i++){
-            this.rows.push(
-              {
-                id:i,
-                gain:0,
-                items:[
-                  {
-                    id:0,
-                    row_id:i,
-                    status:table[i][0]
-                  },{
-                    id:1,
-                    row_id:i,
-                    status:table[i][1]
-                  },{
-                    id:2,
-                    row_id:i,
-                    status:table[i][2]
-                  },{
-                    id:3,
-                    row_id:i,
-                    status:table[i][3]
-                  },{
-                    id:4,
-                    row_id:i,
-                    status:table[i][4]
-                  }
-                ]
-              }
-            )
-          }
-
-          this.rows[1].gain = d.game_settings.repear.points[0];
-          this.rows[3].gain = d.game_settings.repear.points[1];
-          this.rows[5].gain = d.game_settings.repear.points[2];
-          this.rows[7].gain = d.game_settings.repear.points[3];
-          this.rows[8].gain = d.game_settings.repear.points[4];
-          this.rows[9].gain = this.jackpot;
-          this.rows= this.rows.reverse();
-          this.showLoading=false;
-        } else {
-          alert("Setting absent");
+    for(let i=0;i<this.countRow;i++){
+      this.rows.push(
+        {
+          id:i,
+          gain:0,
+          items:[
+            {
+              id:0,
+              row_id:i,
+              status:table[i][0]
+            },{
+              id:1,
+              row_id:i,
+              status:table[i][1]
+            },{
+              id:2,
+              row_id:i,
+              status:table[i][2]
+            },{
+              id:3,
+              row_id:i,
+              status:table[i][3]
+            },{
+              id:4,
+              row_id:i,
+              status:table[i][4]
+            }
+          ]
         }
-      },q=>{
-        this.util.handleError(q);
-      })
-
-
+      )
     }
 
+    this.rows[1].gain = this.points[0];
+    this.rows[3].gain = this.points[1];
+    this.rows[5].gain = this.points[2];
+    this.rows[7].gain = this.points[3];
+    this.rows[8].gain = this.points[4];
+    this.rows[9].gain = this.jackpot;
+    this.rows= this.rows.reverse();
+    this.showLoading=false;
   }
 
   updateDivDimensions() {
@@ -371,7 +362,7 @@ export class ReaperPage implements OnInit {
 
     for (let i = 0; i < 10; i++) {
       // Create an array with 3 zeros and 2 ones
-      let row: number[] = this.disposition;
+      let row: number[] = [0,1,0,0,1];
 
       // Shuffle the array to randomize the order
       row = row.sort(() => Math.random() - 0.5);
@@ -404,11 +395,6 @@ export class ReaperPage implements OnInit {
       const j = Math.floor(Math.random() * (i + 1));
       [tableau[i], tableau[j]] = [tableau[j], tableau[i]]; // Échange des éléments
     }
-
-    tableau[0]=1;
-    tableau[2]=1;
-    tableau[4]=1;
-    tableau[6]=1;
 
     return tableau;
   }

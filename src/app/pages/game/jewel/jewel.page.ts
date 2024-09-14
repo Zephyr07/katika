@@ -13,7 +13,6 @@ import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 export class JewelPage implements OnInit, AfterViewInit {
 
   items:any = [];
-  old_items:any = [];
   mouvementLeft=0;
   private mouvement=50;
   private touchStartX: number | null = null;
@@ -46,7 +45,7 @@ export class JewelPage implements OnInit, AfterViewInit {
   isLoose=false;
   isStarted=false;
 
-  private values=[]
+  private values=[];
   private valuess = [
     {
       point:1,
@@ -148,8 +147,6 @@ export class JewelPage implements OnInit, AfterViewInit {
         this.jackpot = d.game_settings.jewel.jackpot;
 
         this.items = this.getRandomItems(this.values,this.itemCount);
-        //console.log("ini",this.items);
-        this.old_items=this.getRandomItems(this.values,this.itemCount);
         this.showLoading=false;
         let g = _.groupBy(this.values,'point');
         let col=[];
@@ -292,7 +289,7 @@ export class JewelPage implements OnInit, AfterViewInit {
   }
 
   refreshGrid(){
-    this.items = this.shuffleArray(this.old_items);
+    this.items = this.shuffleArray(this.items);
     document.getElementById('grille').classList.add('scale-in-center');
   }
 
@@ -1281,7 +1278,6 @@ export class JewelPage implements OnInit, AfterViewInit {
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
       //this.items = this.getRandomItems(this.values,this.itemCount);
-      //this.old_items = this.items;
       /*this.items[8]={
         point:500,
         name:'STAR',

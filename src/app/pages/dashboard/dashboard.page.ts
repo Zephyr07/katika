@@ -25,9 +25,11 @@ export class DashboardPage implements OnInit {
 
   games:any=[];
   players:any=[];
+  best_game:any=[];
   sum=0;
   gain=0;
   perte=0;
+  dep_user=0;
   sum_re=0;
   sum_pa=0;
   sum_pv=0;
@@ -64,9 +66,12 @@ export class DashboardPage implements OnInit {
       _sort:'count',
       '_sortDir':"desc"
     };
-
-    this.api.getList('games',opt).then(d=>{
+    this.dep_user=0;
+    this.api.getList('games',opt).then((d:any)=>{
       this.games=d;
+      d.forEach(v=>{
+        this.dep_user+=v.amount;
+      })
     })
   }
 
@@ -77,7 +82,6 @@ export class DashboardPage implements OnInit {
     }
 
     this.api.post('best_payers',opt).then((d:any)=>{
-      console.log(d);
       let i = 1;
       for (const s in d) {
         if (d.hasOwnProperty(s)) {
@@ -100,6 +104,30 @@ export class DashboardPage implements OnInit {
       this.gain=d.gain;
       this.perte=d.perte;
     })
+  }
+
+  // jeux qui paye le plus
+  getScore(){
+    const opt = {
+      should_paginate:false,
+    }
+
+    this.api.getList('best_game',opt).then((d:any)=>{
+      let i = 1;
+      for (const s in d) {
+        if (d.hasOwnProperty(s)) {
+          this.best_game.push(
+            {
+              rank:i,
+              name:s,
+              point:d[s]
+            }
+          );
+          i++;
+        }
+      }
+    })
+
   }
 
   doRefresh(event) {
