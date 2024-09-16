@@ -22,6 +22,7 @@ export class GamePage implements OnInit {
   }
 
   ionViewWillEnter(){
+    //this.admob.loadInterstitial();
 
     if(this.api.checkUser()){
       this.user=JSON.parse(localStorage.getItem('user_ka'));
@@ -36,6 +37,7 @@ export class GamePage implements OnInit {
 
 
   goToGame(t){
+    //this.admob.showInterstitial();
     if(t=='bats'){
       this.router.navigateByUrl('game/triple-choice');
     } else if(t=='memory'){

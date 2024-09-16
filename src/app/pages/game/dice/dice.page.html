@@ -18,6 +18,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
+  <ion-grid>
+    <ion-row class="dashboard">
+      <ion-col>Jackpot <br> <span class="medium" style="font-size: 25px">{{game.jackpot|priceFormat}} W</span></ion-col>
+      <ion-col>Vos gains <br> <span class="medium" style="font-size: 25px">{{gain_tmp|priceFormat}} W</span></ion-col>
+    </ion-row>
+  </ion-grid>
+
   <div class="scene middle">
     <div id="cube" class="cube">
       <div class="face face1"></div>
@@ -45,9 +53,8 @@
       </div>
     </div>
     <ion-row class="dashboard">
-      <ion-col>Jackpot <br> <span class="medium" style="font-size: 19px">{{game.jackpot|priceFormat}} W</span></ion-col>
-      <ion-col>Niveau <br> <span class="medium" style="font-size: 19px">{{level}}</span></ion-col>
-      <ion-col>Vos gains <br> <span class="medium" style="font-size: 19px">{{gain_tmp|priceFormat}} W</span></ion-col>
+      <ion-col>Niveau <br> <span class="white" style="font-size: 19px">{{level}}</span></ion-col>
+      <ion-col>Points à gagner <br> <span class="white" style="font-size: 19px">{{milestone[level-1]|priceFormat}} W</span></ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="12">

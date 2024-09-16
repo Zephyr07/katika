@@ -87,19 +87,6 @@ export class HomePage implements OnInit {
     } else {
       localStorage.setItem('is_user','false');
       this.is_user=false
-      /*/ l'utilisateur n'existe pas;
-      this.auth.login({email:'696870700',password:'root123'}).then((d:any)=>{
-        this.user = {
-          user_name:d.user.user_name,
-          point:d.user.point,
-          image:d.user.image,
-        };
-        this.is_user = true;
-
-      }, q=>{
-        this.util.hideLoading();
-        this.util.handleError(q);
-      })*/
     }
   }
 
@@ -194,7 +181,8 @@ export class HomePage implements OnInit {
   }
 
   showDashboard(){
-    if(this.is_user && this.user.phone=='696870700'){
+    let user=JSON.parse(localStorage.getItem('user_ka'));
+    if(user.phone=='696870700'){
       this.router.navigateByUrl('dashboard');
     } else {
 
@@ -384,6 +372,7 @@ export class HomePage implements OnInit {
     //localStorage.setItem('uid','rahul');
 
   }
+
   doRefresh(event) {
     this.ionViewWillEnter();
     this.ngOnInit();

@@ -28,7 +28,7 @@ export class ResetPasswordPage implements OnInit {
       this.util.hideLoading();
       if(d.length>0){
         // utilisateur existant
-        window.location.href="http://t.me/holyghost777?text=Bonjour+je+souhaite+réinitialiser+mon+mot+de+passe+svp";
+        window.location.href="http://t.me/leGrand_K?text=Bonjour+je+souhaite+réinitialiser+mon+mot+de+passe+svp";
       } else {
         // utilisateur inexistant
         this.util.doToast('Utilisateur inexistant, merci de creer votre compte',5000,'medium');

@@ -5,6 +5,7 @@ import {ApiProvider} from "../../../providers/api/api";
 import {AuthProvider} from "../../../providers/auth/auth";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 
+
 @Component({
   selector: 'app-aviator',
   templateUrl: './aviator.page.html',
@@ -24,12 +25,12 @@ export class AviatorPage implements OnInit {
   current_gain=0;
 
   total_partie=0;
-  private timeInterval=50;
+  private timeInterval=25;
   multiplier: number = 1;
   private private_multiplier: number = 1;
   private crashTime: number = 0;
   isCrashed: boolean = false;
-  //private successRate: number = Math.random() * 100; // Random success rate
+
   airplaneImage: string = 'assets/img/avatar.svg'; // Path to airplane image
   interval:any;
   is_win=false;
@@ -97,7 +98,6 @@ export class AviatorPage implements OnInit {
 
       this.series = this.getSeries(this.count);
       this.finals= this.genererTableau(this.count);
-      this.dif = this.randomInRange(0,0.1);
 
       //console.log(this.finals);
       //console.log(this.series);
@@ -133,12 +133,8 @@ export class AviatorPage implements OnInit {
   }
 
   startGame() {
-    //this.user_point = this.user_point+ this.gain-this.prelevement;
-
     this.showMessage=false;
     if(this.mise>=this.game.fees){
-      this.dif = this.randomInRange(0,0.1);
-
 
       if(this.user_multiplier!=undefined && this.user_multiplier>1){
         this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
@@ -154,6 +150,7 @@ export class AviatorPage implements OnInit {
           this.chiffre=5;
           this.isStarted=false;
           this.isCrashed=false;
+          this.is_win=false;
           this.auto=false;
           this.can_play=true;
           this.showFooter=true;
@@ -219,7 +216,6 @@ export class AviatorPage implements OnInit {
     //const index = Math.floor(Math.random() * this.series.length);
     this.target = this.series[this.index];
     this.decision = this.finals[this.index];
-    this.dif = this.randomInRange(0,0.1);
     if(this.index==this.series.length-1){
       this.series = this.getSeries(this.count);
       this.finals= this.genererTableau(this.count);
@@ -228,6 +224,20 @@ export class AviatorPage implements OnInit {
     if(this.mise>1000){
       this.finals=this.genererTableau(this.count,this.mise);
     }
+
+    if(this.finals[this.index]==0 && this.target>this.user_multiplier){
+      if(this.user_multiplier>this.target){
+        this.dif = this.randomInRange(1,this.target-0.01);
+        this.target = this.dif;
+      } else {
+        this.dif = this.randomInRange(1,this.user_multiplier-0.01);
+        this.target = this.dif;
+      }
+    }
+    if(this.target>7){
+      this.timeInterval=15;
+    }
+
     this.index++;
     this.isStarted=true;
     this.is_win = false;
@@ -248,74 +258,158 @@ export class AviatorPage implements OnInit {
         return;
       }
 
-      let minus = 0;
-      if(this.user_multiplier>=1 && this.user_multiplier<2){
-        this.private_multiplier += 0.01;
-        minus=0.01;
-      } else if(this.user_multiplier>=2 && this.user_multiplier<4){
-        this.private_multiplier += 0.02;
-        minus=0.05;
-      } else if(this.user_multiplier>=3 && this.user_multiplier<5){
-        this.private_multiplier += 0.05;
-        minus=0.1;
-      } else if(this.user_multiplier>=5 && this.user_multiplier<10){
-        this.private_multiplier += 0.08;
-        minus=0.3;
-      } else if(this.user_multiplier>=10 && this.user_multiplier<15){
-        this.private_multiplier += 0.1;
-        minus=0.5;
-      } else if(this.user_multiplier>=15){
-        this.private_multiplier += 0.2;
-        minus=0.5;
-      }
-
-      if(this.private_multiplier>=this.user_multiplier-minus){
-        if(this.decision==0){
+      if(this.decision==1){
+        if(this.is_win && this.multiplier==this.target){
+          this.stopGame();
+          return;
+        }
+        if(!this.is_win && this.private_multiplier==this.target){
+          // crash
           this.crash();
           clearInterval(this.interval);
-          //console.log('c');
+          return;
+        }
+        if(this.private_multiplier == this.target && this.private_multiplier<this.user_multiplier) {
+          this.crash();
+          clearInterval(this.interval);
+          return;
+        }
+        if(this.private_multiplier==this.user_multiplier){
+          this.is_win=true;
+        }
+      } else {
+        // decision 0
+        if(this.user_multiplier==1.01 || this.user_multiplier-1.01<0.1){
+          this.crash();
+          clearInterval(this.interval);
           return;
         } else {
-          this.multiplier=this.user_multiplier;
-          // victoire
-          this.stopGame();
-          //console.log("F");
-          return;
-        }
-      }
-
-      if(this.private_multiplier>this.target){
-        this.multiplier+=0.01;
-        //console.log("a",this.private_multiplier,this.multiplier);
-        this.crash();
-        clearInterval(this.interval);
-        return;
-      }
-
-      if(this.decision==0 && this.user_multiplier==1.01){
-        this.crash();
-        clearInterval(this.interval);
-        //console.log('b');
-        return;
-
-      }
-      if(this.decision==0 && this.user_multiplier-1.01>0.1){
-        if(this.private_multiplier==this.user_multiplier-this.dif){
-          this.crash();
-          clearInterval(this.interval);
-          //console.log('d');
-          return;
+          // un nombre entre 1.00 et user_multiplier
+          if(this.user_multiplier>this.target){
+            if(this.target==this.private_multiplier){
+              // crash
+              this.crash();
+              clearInterval(this.interval);
+              return;
+            }
+          } else if(this.target==this.private_multiplier){
+            this.crash();
+            clearInterval(this.interval);
+            return;
+          } else {
+            // on attends
+          }
         }
 
       }
-
+      this.private_multiplier = parseFloat(this.private_multiplier.toFixed(2));
+      this.private_multiplier +=0.01;
       this.private_multiplier = parseFloat(this.private_multiplier.toFixed(2));
       this.multiplier=this.private_multiplier;
-      
+
       this.x+=this.timeInterval;
 
-
     }, this.timeInterval);
+  }
+  
+  logiquePoint(){
+    if(this.decision==1){
+      console.log(this.multiplier==this.target,this.target);
+      if(this.is_win && this.multiplier==this.target){
+        console.log("bon");
+        this.stopGame();
+        return;
+      }
+      if(this.multiplier == this.target && this.multiplier<this.user_multiplier) {
+        this.crash();
+        clearInterval(this.interval);
+      }
+      if(this.private_multiplier>=this.user_multiplier){
+        this.is_win=true;
+      }
+    } else {
+      // decision 0
+      if(this.user_multiplier==1.01 || this.user_multiplier-1.01<0.1){
+        this.crash();
+        clearInterval(this.interval);
+      } else {
+        // un nombre entre 1.00 et user_multiplier
+        this.target = this.dif;
+        if(this.target==this.multiplier){
+          // crash
+          this.crash();
+          clearInterval(this.interval);
+          return;
+        } else {
+          // on attends
+        }
+
+        /*if(this.private_multiplier>this.target){
+          this.multiplier+=0.01;
+          //console.log("a",this.private_multiplier,this.multiplier);
+          this.crash();
+          clearInterval(this.interval);
+          return;
+        }*/
+      }
+
+    }
+    /*
+          if(this.is_win){
+            if(this.target == this.multiplier){
+              console.log("bon");
+              this.stopGame();
+              return;
+            } else if(this.multiplier == this.target && this.multiplier<this.user_multiplier) {
+              this.crash();
+              clearInterval(this.interval);
+            } else {
+              // on va attendre l'arriver jusqu'au nombre
+            }
+          } else {
+            if(this.private_multiplier>=this.user_multiplier){
+              if(this.decision==0){
+                this.crash();
+                clearInterval(this.interval);
+                //console.log('c');
+                return;
+              } else {
+                this.multiplier=this.user_multiplier;
+                this.is_win=true;
+                //console.log("F");
+              }
+            }
+    
+            if(this.private_multiplier>this.target){
+              this.multiplier+=0.01;
+              //console.log("a",this.private_multiplier,this.multiplier);
+              this.crash();
+              clearInterval(this.interval);
+              return;
+            }
+    
+            if(this.decision==0 && this.user_multiplier==1.01){
+              this.crash();
+              clearInterval(this.interval);
+              //console.log('b');
+              return;
+    
+            }
+            if(this.decision==0 && this.user_multiplier-1.01>0.1){
+              if(this.private_multiplier==this.user_multiplier-this.dif){
+                this.crash();
+                clearInterval(this.interval);
+                //console.log('d');
+                return;
+              }
+    
+            }
+          }*/
+
+    this.private_multiplier = parseFloat(this.private_multiplier.toFixed(2));
+    this.multiplier=this.private_multiplier;
+
+    this.x+=this.timeInterval;
   }
 
   crash() {
@@ -369,6 +463,7 @@ export class AviatorPage implements OnInit {
       this.gain=0;
       this.isCountdown=false;
       clearInterval(this.countdownInterval);
+      clearInterval(this.interval);
       this.chiffre=3;
       this.isStarted=false;
       this.isCrashed=false;
@@ -387,8 +482,8 @@ export class AviatorPage implements OnInit {
     clearInterval(this.interval);
     if (!this.isCrashed) {
       //this.util.doToast('Vous avez encaissé avant le crash! Le multiplicateur était de  ' + this.multiplier.toFixed(2),5000,'medium','top');
-      this.isWin=true;
       // ajout des points
+      this.isCrashed=true;
       this.win();
     } else {
       this.showFooter=true;
@@ -503,7 +598,7 @@ export class AviatorPage implements OnInit {
     }
 
     for (let i = 0; i < limits.greaterThan10; i++) {
-      numbers.push(this.randomInRange(10, 50));
+      numbers.push(this.randomInRange(10, 20));
     }
 
     // If the total number of numbers is less than count due to rounding, fill up the remainder with random <1 numbers
@@ -541,6 +636,7 @@ export class AviatorPage implements OnInit {
     const tableau: number[] = [];
 
     let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
+  //let nbZeros = Math.floor(X * 1); // Calcul du nombre de 0 (70%)
     if(mise || this.multiplier>5){
       nbZeros = Math.floor(X * 0.8)
     }

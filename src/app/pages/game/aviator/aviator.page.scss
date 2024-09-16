@@ -246,10 +246,15 @@ ion-button.active{
   font-size: 25px;
 }
 
-.countdown{
+.countdown-container{
   position: absolute;
-  top: 8%;
-  left: 30%;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  z-index: 9999;
+}
+.countdown{
   width: 150px;
   height: 150px;
   font-size: 20vh;

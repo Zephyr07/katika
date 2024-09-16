@@ -20,8 +20,10 @@
 <ion-content [fullscreen]="true" [ngClass]="{'bg-red':isCrashed, 'bg-green':!isCrashed}">
 
 
-  <div class="countdown middle" *ngIf="chiffre>0 && isCountdown">
-    {{chiffre}}
+  <div class="countdown-container middle" *ngIf="chiffre>0 && isCountdown">
+    <div class="countdown middle">
+      {{chiffre}}
+    </div>
   </div>
 
   <div class="car" *ngIf="!isCrashed">

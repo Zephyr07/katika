@@ -232,6 +232,8 @@ export class AdmobProvider {
               this.bannerId="ca-app-pub-2538027924721849/5011942778";
             }
           }
+        }else {
+          // pas de pub
         }
       } else {
         this.interstitialId="ca-app-pub-3940256099942544/1033173712";

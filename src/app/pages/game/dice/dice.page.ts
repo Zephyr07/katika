@@ -256,27 +256,27 @@ export class DicePage implements OnInit {
   async win_level(){
     this.showFooter=true;
     this.isStarted=false;
-    this.level++;
-    this.gain_tmp+=this.milestone[this.level-2];
+    this.gain_tmp+=this.milestone[this.level-1];
 
     if(this.level>9){
-      this.win(false);
+      this.win();
     } else {
       const alert = await this.alertController.create({
         header: 'Vous avez gagné',
-        message: 'Souhaitez-vous continuer om vous arreter et retirer vos gains?',
+        message: 'Souhaitez-vous continuer ou vous arreter et retirer vos gains ('+this.gain_tmp+' W)?',
         buttons: [
           {
             text: 'Arreter',
             role: 'confirm',
             handler: () => {
-              this.win(true);
+              this.win();
             },
           },
           {
             text: 'Continuer',
             role: 'confirm',
             handler: () => {
+              this.level++;
             },
           }
         ],
@@ -285,7 +285,7 @@ export class DicePage implements OnInit {
     }
   }
 
-  async win(stopped:boolean){
+  async win(){
     this.user.point = this.user.point+this.gain_tmp;
     const opt ={
       level:this.level,
@@ -301,6 +301,7 @@ export class DicePage implements OnInit {
       this.showMessage=true;
       this.showFooter=true;
       this.isLoose=false;
+      this.gain_tmp=0;
       this.isStarted=false;
       this.level=1;
       this.ionViewWillEnter();
@@ -321,8 +322,12 @@ export class DicePage implements OnInit {
   }
 
   close(){
-    this.admob.showInterstitial();
-    this.navCtrl.navigateRoot('/game');
+    if(this.gain_tmp==0){
+      this.admob.showInterstitial();
+      this.navCtrl.navigateRoot('/game');
+    } else {
+      this.win();
+    }
   }
 
   closeMessage(event: string){
@@ -357,7 +362,7 @@ export class DicePage implements OnInit {
   genererTableau(X: number,mise?:number): number[] {
     const tableau: number[] = [];
 
-    let nbZeros = Math.floor(X * 0); // Calcul du nombre de 0 (70%)
+    let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
     if(mise){
       nbZeros = Math.floor(X * 0.8)
     }

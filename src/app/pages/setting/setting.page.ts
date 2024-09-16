@@ -182,36 +182,41 @@ export class SettingPage implements OnInit {
             role:'confirm',
             handler:(data)=>{
               if(!isNaN(data.phone) && data.phone <= NUMBER_RANGE.max && data.phone >= NUMBER_RANGE.min){
-                this.util.showLoading("treatment");
-                const opt = {
-                  amount:data.amount,
-                  user_id:this.user.id
-                };
-                let crypt = this.util.encryptAESData(opt);
-                this.api.post('init_buy_account',{value:crypt}).then(async (d:any) => {
-                  d = this.util.decryptAESData(JSON.stringify(d));
-                  const op = this.util.encryptAESData({
-                    id:d.payment.id,
-                    phone:data.phone
-                  });
-                  // initialisation du payment my-coolPay
-                  this.api.post('payment',{value:op}).then(e=>{
-                    e = this.util.decryptAESData(JSON.stringify(e));
-                    this.util.hideLoading();
-                    this.util.doToast('payment_pending',5000,'medium');
-                    // redirection vers la page de l'user
-                    /*setTimeout(()=>{
-                      this.navCtrl.navigateRoot(['/user']);
-                    },3000)*/
-                  }, q=>{
+                if(data.amount>=50){
+                  this.util.showLoading("treatment");
+                  const opt = {
+                    amount:data.amount,
+                    user_id:this.user.id
+                  };
+                  let crypt = this.util.encryptAESData(opt);
+                  this.api.post('init_buy_account',{value:crypt}).then(async (d:any) => {
+                    d = this.util.decryptAESData(JSON.stringify(d));
+                    const op = this.util.encryptAESData({
+                      id:d.payment.id,
+                      phone:data.phone
+                    });
+                    // initialisation du payment my-coolPay
+                    this.api.post('payment',{value:op}).then(e=>{
+                      e = this.util.decryptAESData(JSON.stringify(e));
+                      this.util.hideLoading();
+                      this.util.doToast('payment_pending',5000,'medium');
+                      // redirection vers la page de l'user
+                      /*setTimeout(()=>{
+                        this.navCtrl.navigateRoot(['/user']);
+                      },3000)*/
+                    }, q=>{
+                      this.util.hideLoading();
+                      this.util.handleError(q);
+                    })
+                    //console.log(d);
+                  },q=>{
                     this.util.hideLoading();
                     this.util.handleError(q);
-                  })
-                  //console.log(d);
-                },q=>{
-                  this.util.hideLoading();
-                  this.util.handleError(q);
-                });
+                  });
+                } else {
+                  this.util.doToast('Le montant doit être supérieur ou égale à 50',3000);
+                }
+
               } else {
                 this.util.doToast('Veuillez entrer un numéro de téléphone valide',3000);
               }

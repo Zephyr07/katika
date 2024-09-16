@@ -17,7 +17,6 @@ export class DashboardPage implements OnInit {
   public user_name="";
   private user:any={};
   private user_id:number;
-  private store_id:number;
   public customers:any=[];
   public products:any=[];
   public bills:any=[];
@@ -30,17 +29,10 @@ export class DashboardPage implements OnInit {
   gain=0;
   perte=0;
   dep_user=0;
-  sum_re=0;
-  sum_pa=0;
-  sum_pv=0;
   is_loading=true;
 
   constructor(
-    private api:ApiProvider,
-    private util:UtilProvider,
-    private modalController:ModalController,
-    private navCtrl:NavController,
-    private router : Router
+    private api:ApiProvider
   ) {
 
   }
@@ -76,10 +68,11 @@ export class DashboardPage implements OnInit {
   }
 
   getPlayers(){
+    this.players=[];
     const opt={
       should_paginate:false,
       status:3,
-    }
+    };
 
     this.api.post('best_payers',opt).then((d:any)=>{
       let i = 1;
@@ -108,6 +101,7 @@ export class DashboardPage implements OnInit {
 
   // jeux qui paye le plus
   getScore(){
+    this.best_game=[];
     const opt = {
       should_paginate:false,
     }
@@ -131,7 +125,10 @@ export class DashboardPage implements OnInit {
   }
 
   doRefresh(event) {
-
+    this.getGames();
+    this.getGain();
+    this.getPlayers();
+    this.getScore();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();

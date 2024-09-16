@@ -1,9 +1,9 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar color="tertiary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" color="tertiary"></ion-back-button>
+      <ion-back-button defaultHref="/" color="medium"></ion-back-button>
     </ion-buttons>
-    <ion-title>Tableau de bord</ion-title>
+    <ion-title class="medium">Tableau de bord</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,18 +19,22 @@
   <ion-grid>
 
     <ion-list class="custom-list">
-      <ion-row>
-        <ion-col size="4" class="ion-text-center">
+      <ion-row class="row-gain">
+        <ion-col size="3" class="ion-text-center">
           <strong style="text-transform: uppercase;font-size:12px">Gain</strong> <br>
           <strong class="primary">{{gain|priceFormat}}</strong>
         </ion-col>
-        <ion-col size="4" class="ion-text-center">
+        <ion-col size="3" class="ion-text-center">
           <strong style="text-transform: uppercase;font-size:12px">Gain Jeux</strong> <br>
           <strong class="primary">{{dep_user|priceFormat}}</strong>
         </ion-col>
-        <ion-col size="4" class="ion-text-center">
+        <ion-col size="3" class="ion-text-center">
           <strong style="text-transform: uppercase;font-size:12px">Perte</strong> <br>
           <strong class="primary">{{perte|priceFormat}}</strong>
+        </ion-col>
+        <ion-col size="3" class="ion-text-center">
+          <strong style="text-transform: uppercase;font-size:12px">Bénéfice</strong> <br>
+          <strong class="primary">{{dep_user - perte|priceFormat}}</strong>
         </ion-col>
       </ion-row>
     </ion-list>
@@ -47,7 +51,7 @@
           <strong  class="primary"style="text-transform: uppercase;font-size:12px">Montant</strong> <br>
         </ion-col>
       </ion-row>
-      <ion-row *ngFor="let g of games">
+      <ion-row class="row-gain" *ngFor="let g of games">
         <ion-col size="6">
           <strong>{{g.name}}</strong>
         </ion-col>
@@ -66,11 +70,11 @@
           Top Joueurs
         </ion-col>
       </ion-row>
-      <ion-row *ngFor="let c of players">
+      <ion-row *ngFor="let c of players" style="font-size: 13px">
         <ion-col size="7">
           <strong class="primary">{{c.user_name}}</strong>
         </ion-col>
-        <ion-col class="ion-text-right tertiary">
+        <ion-col class="ion-text-right bold tertiary">
           {{c.point|priceFormat}}
         </ion-col>
       </ion-row>
