@@ -40,11 +40,12 @@ export class DicePage implements OnInit {
   private finals=[];
   private index=0;
   private decision=0;
+  private history="";
 
   user:any={};
   game:any={};
 
-  percent=0.6;
+  percent=0;
 
   cube: HTMLElement;
   cube2: HTMLElement;
@@ -74,6 +75,8 @@ export class DicePage implements OnInit {
         this.milestone.push(this.game.jackpot - 24650);
         this.finals= this.genererTableau(100);
         this.showLoading=false;
+        console.log(this.percent,this.finals);
+        console.log(this.milestone);
       }
     })
   }
@@ -257,6 +260,7 @@ export class DicePage implements OnInit {
     this.showFooter=true;
     this.isStarted=false;
     this.gain_tmp+=this.milestone[this.level-1];
+    this.history+="C:"+this.choix_decision+"|U:"+this.choix_result+"|D:"+this.dice_result+"|G:"+this.milestone[this.level-1]+"|L:"+this.level+"\n";
 
     if(this.level>9){
       this.win();
@@ -292,7 +296,8 @@ export class DicePage implements OnInit {
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot:this.gain_tmp,
-      is_winner:true
+      is_winner:true,
+      info:this.history
     };
 
     this.api.post('scores',opt).then(d=>{
@@ -317,6 +322,7 @@ export class DicePage implements OnInit {
     this.isStarted=false;
     this.showFooter=true;
     this.gain_tmp=0;
+    this.history="";
     this.level=1;
     this.ionViewWillEnter();
   }
@@ -359,13 +365,10 @@ export class DicePage implements OnInit {
     })
   }
 
-  genererTableau(X: number,mise?:number): number[] {
+  genererTableau(X: number): number[] {
     const tableau: number[] = [];
 
     let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
-    if(mise){
-      nbZeros = Math.floor(X * 0.8)
-    }
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau

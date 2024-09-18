@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>machine5x</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="slot-machine">
+    <h1>Slot Machine Game</h1>
+    <div class="reels">
+      <div class="reel" [class.spinning]="spinningReel[0]">
+        <div *ngFor="let symbol of slots[0]; let i = index"
+             [ngStyle]="{'transform': 'translateY(' + (-reelPositions[0] * 100) + '%)'}">{{ symbol }}</div>
+      </div>
+      <div class="reel" [class.spinning]="spinningReel[1]">
+        <div *ngFor="let symbol of slots[1]; let i = index"
+             [ngStyle]="{'transform': 'translateY(' + (-reelPositions[1] * 100) + '%)'}">{{ symbol }}</div>
+      </div>
+      <div class="reel" [class.spinning]="spinningReel[2]">
+        <div *ngFor="let symbol of slots[2]; let i = index"
+             [ngStyle]="{'transform': 'translateY(' + (-reelPositions[2] * 100) + '%)'}">{{ symbol }}</div>
+      </div>
+    </div>
+
+
+    <button (click)="spin()" [disabled]="spinningReel[0] && spinningReel[1] && spinningReel[2]">🎰 Spin</button>
+  </div>
+
+
+
+</ion-content>

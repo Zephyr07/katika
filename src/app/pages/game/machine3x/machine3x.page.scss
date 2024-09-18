@@ -1,0 +1,92 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/fruits.png') no-repeat center/cover fixed !important;
+}
+
+.slot-machine {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.reels {
+  display: flex;
+  justify-content: center;
+  margin: 20px 40px;
+  padding: 10px;
+  border-radius: 20px;
+  background: #fcd65175;
+  width: 290px;
+}
+
+.reel {
+  width: 80px;
+  height: 240px; /* Set to show only 3 symbols at a time */
+  overflow: hidden;
+  border: 1px solid #000;
+  position: relative;
+  background: linear-gradient(to top, #fff, #fefefe, #94550e,#fefefe, #fff);
+  margin: 0 3px;
+}
+
+.reel div {
+  font-size: 50px;
+  text-align: center;
+  //padding: 10px 0;
+  height: 80px;
+}
+
+button {
+  font-size: 20px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.spinning div {
+  animation: spin 2s linear infinite;
+}
+
+/* Adjust the animation to spin all symbols in the reel */
+@keyframes spin {
+  0% {
+    transform: translateY(0); /* Start at the first symbol */
+  }
+  100% {
+    transform: translateY(-1300px); /* Spin through all symbols (5 symbols total) */
+  }
+}
+
+.points{
+  //font-size:15px;
+  font-family: Rapier;
+  letter-spacing: 1px;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 20px;
+  background: #b34b15;
+  color: white;
+
+  ion-col{
+    text-align: center;
+  }
+  ion-input{
+    color:#000;
+    background: #ffe384;
+  }
+}
+
+.toggle{
+  background: white;
+  border-radius: 5px;
+  font-family: Rapier;
+  padding: 10px;
+  height: 44.5px;
+  margin-top: -4px;
+}

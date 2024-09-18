@@ -43,6 +43,8 @@ export class FortunePage implements OnInit,AfterViewInit {
   private prices = [];
   private percent = 0;
 
+  private history="";
+
   result:any={};
   highlightedIndex: number | null = null; // Variable pour le segment en surbrillance
 
@@ -195,7 +197,8 @@ export class FortunePage implements OnInit,AfterViewInit {
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot,
-      is_winner:true
+      is_winner:true,
+      info:this.history
     };
     this.titre = "VOUS AVEZ GAGNEZ !!!";
     this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
@@ -366,12 +369,14 @@ export class FortunePage implements OnInit,AfterViewInit {
           }
           this.highlightedIndex = this.result.text-1;
           const price = parseInt(this.result.prize.split(' ')[0]);
-          if(price!=0){
+          if(price>=50){
+            this.history+="R:"+this.result.text+"|G:"+price;
             this.win(price);
           }
         } else {
           if(this.result.prize=='Jackpot'){
             if(this.is_katika){
+              this.history+="R:"+this.result.text+"|G:"+this.game.jackpot+this.mise;
               this.win(this.game.jackpot+this.mise);
               this.is_katika=false;
             } else {
@@ -382,14 +387,15 @@ export class FortunePage implements OnInit,AfterViewInit {
               }
               this.highlightedIndex = this.result.text-1;
               const price = parseInt(this.result.prize.split(' ')[0]);
-              if(price!=0){
-                console.log(price);
+              if(price>=50){
+                this.history+="R:"+this.result.text+"|G:"+price;
                 this.win(price);
               }
             }
           } else {
             const price = parseInt(this.result.prize.split(' ')[0]);
-            if(price!=0){
+            if(price>=50){
+              this.history+="R:"+this.result.text+"|G:"+price;
               this.win(price);
             }
           }

@@ -23,9 +23,10 @@ export class AviatorPage implements OnInit {
   mise=50;
 
   current_gain=0;
+  history="";
 
   total_partie=0;
-  private timeInterval=25;
+  private timeInterval=15;
   multiplier: number = 1;
   private private_multiplier: number = 1;
   private crashTime: number = 0;
@@ -90,6 +91,7 @@ export class AviatorPage implements OnInit {
     this.admob.loadInterstitial();
     this.api.getSettings().then((d:any)=>{
       this.percent=d.game_settings.truck.percent;
+      //this.percent=0;
       this.lessThan10=d.game_settings.truck.lessThan10;
       this.lessThan1=d.game_settings.truck.lessThan1;
       this.lessThan2=d.game_settings.truck.lessThan2;
@@ -189,7 +191,7 @@ export class AviatorPage implements OnInit {
           };
 
           this.api.post('start_game',opt).then(a=>{
-            this.user.point-=this.mise;
+            this.user_point-=this.mise;
             this.prelevement+=this.mise;
             this.settings();
           },q=>{
@@ -235,7 +237,7 @@ export class AviatorPage implements OnInit {
       }
     }
     if(this.target>7){
-      this.timeInterval=15;
+      this.timeInterval=5;
     }
 
     this.index++;
@@ -260,16 +262,19 @@ export class AviatorPage implements OnInit {
 
       if(this.decision==1){
         if(this.is_win && this.multiplier==this.target){
+          this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:"+this.mise*this.user_multiplier+"\n";
           this.stopGame();
           return;
         }
         if(!this.is_win && this.private_multiplier==this.target){
+          this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:0\n";
           // crash
           this.crash();
           clearInterval(this.interval);
           return;
         }
         if(this.private_multiplier == this.target && this.private_multiplier<this.user_multiplier) {
+          this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:0\n";
           this.crash();
           clearInterval(this.interval);
           return;
@@ -280,6 +285,7 @@ export class AviatorPage implements OnInit {
       } else {
         // decision 0
         if(this.user_multiplier==1.01 || this.user_multiplier-1.01<0.1){
+          this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:0\n";
           this.crash();
           clearInterval(this.interval);
           return;
@@ -287,12 +293,14 @@ export class AviatorPage implements OnInit {
           // un nombre entre 1.00 et user_multiplier
           if(this.user_multiplier>this.target){
             if(this.target==this.private_multiplier){
+              this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:0\n";
               // crash
               this.crash();
               clearInterval(this.interval);
               return;
             }
           } else if(this.target==this.private_multiplier){
+            this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:0\n";
             this.crash();
             clearInterval(this.interval);
             return;
@@ -420,6 +428,7 @@ export class AviatorPage implements OnInit {
       if(this.auto){
         this.startGame();
       } else {
+        this.history="";
         this.isStarted=false;
         this.showFooter=true;
         this.can_play=true;
@@ -435,7 +444,8 @@ export class AviatorPage implements OnInit {
         user_id:this.user.id,
         game_id:this.game.id,
         jackpot:this.gain,
-        is_winner:true
+        is_winner:true,
+        info:this.history
       };
 
       this.api.post('scores',opt).then(d=>{
@@ -537,7 +547,8 @@ export class AviatorPage implements OnInit {
         user_id:this.user.id,
         game_id:this.game.id,
         jackpot:this.mise*this.user_multiplier,
-        is_winner:true
+        is_winner:true,
+        info:this.history
       };
 
       this.api.post('scores',opt).then(d=>{

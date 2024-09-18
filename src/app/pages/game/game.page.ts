@@ -10,6 +10,18 @@ import {ApiProvider} from "../../providers/api/api";
 })
 export class GamePage implements OnInit {
   user:any={};
+  games:any={
+    crystal:{},
+    truck:{},
+    memory:{},
+    bats:{},
+    reaper:{},
+    jewel:{},
+    dice:{},
+    fruits:{},
+    fortune:{},
+
+  };
   constructor(
     private router:Router,
     private admob:AdmobProvider,
@@ -22,6 +34,9 @@ export class GamePage implements OnInit {
   }
 
   ionViewWillEnter(){
+    this.api.getSettings().then((d:any)=>{
+      this.games = d.game_settings;
+    })
     //this.admob.loadInterstitial();
 
     if(this.api.checkUser()){
@@ -54,6 +69,8 @@ export class GamePage implements OnInit {
       this.router.navigateByUrl('game/dice');
     } else if(t=='jewel'){
       this.router.navigateByUrl('game/jewel');
+    } else if(t=='fruits'){
+      this.router.navigateByUrl('game/machine3x');
     }
   }
 }
