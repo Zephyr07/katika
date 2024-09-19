@@ -70,6 +70,16 @@
         <br>
         <img src="../../../assets/img/Fruits-Slots-18-09-2024.png" alt="" class="radius" style="width: 100%">
       </ion-col>
+      <ion-col (click)="goToGame('multiplicator')" size="4" *ngIf="games.multiplicator.status=='enable'">
+        <img src="../../../assets/img/wz/game/multiplicator.png" alt="" class="radius">
+        <br>
+        <img src="../../../assets/img/Multplicator-19-09-2024.png" alt="" class="radius" style="width: 100%">
+      </ion-col>
+      <ion-col (click)="goToGame('plusmoins')" size="4" *ngIf="games.plusmoins.status=='enable'">
+        <img src="../../../assets/img/wz/game/plusmoins.png" alt="" class="radius">
+        <br>
+        <img src="../../../assets/img/-ou-19-09-2024.png" alt="" class="radius" style="width: 80%">
+      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

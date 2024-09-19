@@ -1,28 +1,25 @@
-import {Component, OnInit} from '@angular/core';
-import {UtilProvider} from "../../../providers/util/util";
+import { Component, OnInit } from '@angular/core';
 import {AlertController, NavController} from "@ionic/angular";
+import {UtilProvider} from "../../../providers/util/util";
 import {ApiProvider} from "../../../providers/api/api";
 import {AuthProvider} from "../../../providers/auth/auth";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
 
 @Component({
-  selector: 'app-dice',
-  templateUrl: './dice.page.html',
-  styleUrls: ['./dice.page.scss'],
+  selector: 'app-plusmoins',
+  templateUrl: './plusmoins.page.html',
+  styleUrls: ['./plusmoins.page.scss'],
 })
-export class DicePage implements OnInit {
+export class PlusmoinsPage implements OnInit {
 
+  gain = 0;
   face = 0;
-  choix_result = 0;
-  choix_decision = "";
-  gain_tmp = 0;
-  level = 1;
   mise = 50;
+  choix = '';
 
   dice_result = 0;
 
   milestone=[];
-  results = [6,7,8];
 
   points: any[] = new Array(10); // 10 points pour la timeline
 
@@ -39,13 +36,13 @@ export class DicePage implements OnInit {
 
   private finals=[];
   private index=0;
+  private indexMilestone=0;
   private decision=0;
-  private history="";
 
   user:any={};
   game:any={};
 
-  percent=0;
+  private percent=0;
 
   cube: HTMLElement;
   cube2: HTMLElement;
@@ -56,7 +53,6 @@ export class DicePage implements OnInit {
     private api:ApiProvider,
     private auth:AuthProvider,
     private admob:AdmobProvider,
-    private alertController:AlertController
   ) {
     // Assurez-vous que l'élément cube est chargé après l'initialisation du composant
     setTimeout(() => {
@@ -67,19 +63,7 @@ export class DicePage implements OnInit {
 
   ngOnInit() {
     this.admob.loadInterstitial();
-    this.getGame();
-    this.api.getSettings().then((d:any)=>{
-      if(d){
-        this.milestone = d.game_settings.dice.points;
-        this.percent = d.game_settings.dice.percent;
-        //this.percent=0;
-        this.milestone.push(this.game.jackpot - 24650);
-        this.finals= this.genererTableau(100);
-        this.showLoading=false;
-        //console.log(this.percent,this.finals);
-        //console.log(this.milestone);
-      }
-    })
+
   }
 
   ionViewWillEnter(){
@@ -93,20 +77,34 @@ export class DicePage implements OnInit {
     } else {
 
     }
+    this.getGame();
+    this.api.getSettings().then((d:any)=>{
+      if(d){
+        this.milestone = d.game_settings.plusmoins.points;
+        this.percent = d.game_settings.plusmoins.percent;
+        //this.percent=0;
+        this.finals= this.genererTableau(50);
+        this.showLoading=false;
+        //console.log(this.percent,this.finals);
+        //console.log(this.milestone);
+      }
+    })
   }
 
   ionViewWillLeave(){
     this.admob.showInterstitial();
   }
 
+  choice(choix){
+    if(!this.isStarted){
+      this.choix=choix;
+    }
+  }
 
   startGame() {
-    if(this.choix_decision=="" || this.choix_result==0){
-      this.util.doToast('Vous n\'avez pas renseignez le nombre ou la décision',2000);
+    if(this.choix==""){
+      this.util.doToast('Vous n\'avez pas choisi le résultat des dé',2000);
     } else {
-      if(this.isLoose){
-        this.level=1;
-      }
       this.showMessage=false;
       if(this.user.point==undefined || this.user.point<this.mise){
         this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
@@ -127,7 +125,7 @@ export class DicePage implements OnInit {
 
             this.decision = this.finals[this.index];
             if(this.index==this.finals.length-1){
-              this.finals= this.genererTableau(100);
+              this.finals= this.genererTableau(50);
               this.index=0;
             }
 
@@ -154,20 +152,39 @@ export class DicePage implements OnInit {
     }
 
     if(this.decision==0){
-      if(this.choix_decision=='egal'){
-        while(face+face2==this.choix_result){
+      if(this.choix=='egal'){
+        while(face+face2==7){
           face = parseInt(this.util.randomInRange(6,1)+'');
           face2 = parseInt(this.util.randomInRange(6,1)+'');
         }
-      } else if (this.choix_decision=='petit'){
-        while(face+face2<this.choix_result){
+      } else if (this.choix=='moins'){
+        while(face+face2<7){
           face = parseInt(this.util.randomInRange(6,1)+'');
           face2 = parseInt(this.util.randomInRange(6,1)+'');
         }
-      } else if (this.choix_decision=='grand'){
-        while(face+face2>this.choix_result){
+      } else if (this.choix=='plus'){
+        while(face+face2>7){
           face = parseInt(this.util.randomInRange(6,1)+'');
           face2 = parseInt(this.util.randomInRange(6,1)+'');
+        }
+      }
+    } else {
+      if(this.mise>2000){
+        if(this.choix=='egal'){
+          while(face+face2==7){
+            face = parseInt(this.util.randomInRange(6,1)+'');
+            face2 = parseInt(this.util.randomInRange(6,1)+'');
+          }
+        } else if (this.choix=='moins'){
+          while(face+face2<7){
+            face = parseInt(this.util.randomInRange(6,1)+'');
+            face2 = parseInt(this.util.randomInRange(6,1)+'');
+          }
+        } else if (this.choix=='plus'){
+          while(face+face2>7){
+            face = parseInt(this.util.randomInRange(6,1)+'');
+            face2 = parseInt(this.util.randomInRange(6,1)+'');
+          }
         }
       }
     }
@@ -245,80 +262,46 @@ export class DicePage implements OnInit {
   }
 
   checkState(){
-    if(this.choix_result==this.dice_result && this.choix_decision=='egal'){
-      this.win_level();
-    } else if(this.dice_result<this.choix_result && this.choix_decision=='petit'){
-      this.win_level();
-    } else if(this.dice_result>this.choix_result && this.choix_decision=='grand'){
-      this.win_level();
+    if(7==this.dice_result && this.choix=='egal'){
+      this.indexMilestone=1;
+      this.win();
+    } else if(this.dice_result<7 && this.choix=='moins'){
+      this.indexMilestone=0;
+      this.win();
+    } else if(this.dice_result>7 && this.choix=='plus'){
+      this.indexMilestone=2;
+      this.win();
     } else {
       this.loose();
     }
     this.showFooter=true;
   }
 
-  async win_level(){
-    this.showFooter=true;
-    this.isStarted=false;
-    this.gain_tmp+=this.milestone[this.level-1];
-    this.history+="C:"+this.choix_decision+"|U:"+this.choix_result+"|D:"+this.dice_result+"|G:"+this.milestone[this.level-1]+"|L:"+this.level+"\n";
-
-    if(this.level>9){
-      this.win();
-    } else {
-      const alert = await this.alertController.create({
-        header: 'Vous avez gagné',
-        message: 'Souhaitez-vous continuer ou vous arreter et retirer vos gains ('+this.gain_tmp+' W)?',
-        buttons: [
-          {
-            text: 'Arreter',
-            role: 'confirm',
-            handler: () => {
-              this.win();
-            },
-          },
-          {
-            text: 'Continuer',
-            role: 'confirm',
-            handler: () => {
-              this.level++;
-            },
-          }
-        ],
-      });
-      await alert.present();
-    }
-  }
-
   async win(){
-    this.user.point = this.user.point+this.gain_tmp;
-    //"C:"+this.choix_decision+"|U:"+this.choix_result+"|D:"+this.dice_result+"|G:"+this.milestone[this.level-1]+"|L:"+this.level+"\n";
     const info = {
-      choix_decision:this.choix_decision,
-      choix_result:this.choix_result,
+      choix_decision:this.choix,
       dice_result:this.dice_result,
-      gain:this.gain_tmp,
-      milestone:this.level,
-      history:this.history
+      gain:this.mise*this.milestone[this.indexMilestone],
+      milestone:this.indexMilestone,
+      mise:this.mise
     };
     const opt ={
-      level:this.level,
+      level:10,
       user_id:this.user.id,
       game_id:this.game.id,
-      jackpot:this.gain_tmp,
+      jackpot:this.mise*this.milestone[this.indexMilestone],
       is_winner:true,
       info:JSON.stringify(info)
     };
-
+    
+    this.gain=this.mise*this.milestone[this.indexMilestone];
+    
     this.api.post('scores',opt).then(d=>{
       this.titre = "VOUS AVEZ GAGNEZ !!!";
-      this.message ="Vous avez gagnez "+this.gain_tmp+" W. Vos points ont été crédités sur votre compte";
+      this.message ="Vous avez gagnez "+this.gain+" W. Vos points ont été crédités sur votre compte";
       this.showMessage=true;
       this.showFooter=true;
-      this.isLoose=false;
-      this.gain_tmp=0;
       this.isStarted=false;
-      this.level=1;
       this.ionViewWillEnter();
     },q=>{
       this.util.handleError(q);
@@ -331,48 +314,41 @@ export class DicePage implements OnInit {
     this.showMessage=true;
     this.isStarted=false;
     this.showFooter=true;
-    this.gain_tmp=0;
-    this.history="";
-    this.level=1;
     this.ionViewWillEnter();
   }
 
   close(){
-    if(this.gain_tmp==0){
-      this.admob.showInterstitial();
-      this.navCtrl.navigateRoot('/game');
-    } else {
-      this.win();
-    }
+    this.admob.showInterstitial();
+    this.navCtrl.navigateRoot('/game');
   }
 
   closeMessage(event: string){
     this.showMessage=false;
   }
 
-  showRule(){
-    this.titre=this.game.name;
-    this.message=this.game.rule;
-    this.showMessage=true;
-  }
-
   getGame(){
     const opt={
-      name:'Dices'
+      name:'Plus ou Moins'
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
-      this.mise = this.game.fees;
       if(this.isFirstTime){
         this.showRule();
+        this.mise = this.game.fees;
         this.message = this.game.rule;
         this.isFirstTime=false;
         this.showLoading=false;
       }
     },q=>{
-      this.util.handleError(q);
       this.showLoading=false;
+      this.util.handleError(q);
     })
+  }
+
+  showRule(){
+    this.titre=this.game.name;
+    this.message=this.game.rule;
+    this.showMessage=true;
   }
 
   genererTableau(X: number): number[] {

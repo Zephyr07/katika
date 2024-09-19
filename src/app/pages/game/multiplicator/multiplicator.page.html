@@ -2,58 +2,47 @@
   <ion-toolbar style="--background: transparent" class="ion-text-center">
     <ion-chip style="background: white" slot="start">
       <ion-avatar>
-        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+        <img alt="{{user_name}}" src="../../../assets/icon/logo.png" />
       </ion-avatar>
-      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+      <ion-label>{{user_name|limitTo:10}}</ion-label>
     </ion-chip>
 
     <ion-chip style="background: white" (click)="showRule()">
       <ion-label>Règles du jeu</ion-label>
     </ion-chip>
 
-    <ion-chip style="background: white" slot="end">
-      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    <ion-chip style="background: white" slot="end" >
+      <ion-label>{{user_point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
-  <h3 class="jackpot ion-text-center"  style="margin: 10px 15px;
-  background: #ddb8788c;
-  border-radius: 20px;
-  padding: 10px;
-  font-size: 30px;">
-    Jackpot :
-    <span style="color:var(--ion-color-primary);"> {{game.jackpot|priceFormat}} W</span>
-  </h3>
-
-  <div id="wheel-container">
-    <canvas id="wheel"></canvas>
+  <div class="middle" style="margin-top: 50px">
+    <canvas id="wheelCanvas" width="350" height="350"></canvas>
   </div>
 
+
   <ion-grid>
-    <h3 class="ion-text-center primary shadow" style="margin: 10px 30px;
+    <h3 class="ion-text-center primary shadow rapier" style="margin: 10px 30px;
   background: #fff;
   border-radius: 20px;
   padding: 5px 5px 10px;
   font-size: 25px;">
-      <div *ngIf="result.prize==undefined" class="white">Fortune</div>
-      <div *ngIf="result.prize!=undefined">Resultat : {{result.prize}}</div>
+      Gain : {{gain}} W
     </h3>
 
   </ion-grid>
 
 
 
-  <ion-grid style="margin: 10px; background: #ddb8788c; border-radius: 20px;">
-    <h3 class="ion-text-center tertiary">Les prix à gagner</h3>
-    <ion-row  style="font-size: 12px">
-      <ion-col size="3" *ngFor="let s of win_p2">
-        {{s.text}} : <strong>{{s.prize}}</strong>
+  <ion-grid style="margin: 10px; background: #ddb878d4; border-radius: 20px;">
+    <ion-row>
+      <ion-col class="rapier middle">
+        <h3>Mise</h3>
       </ion-col>
-      <ion-col size="3">
-        Autre : <strong>0 W</strong>
+      <ion-col size="6" class="custom middle">
+        <ion-input class="custom-input" [disabled]="isStarted" style="z-index: 0;" type="number" min="50" max="10000" step="100" [(ngModel)]="mise" placeholder="Mise"></ion-input>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -75,4 +64,3 @@
     </ion-grid>
   </ion-footer>
 </ion-content>
-

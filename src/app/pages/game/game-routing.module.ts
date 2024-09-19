@@ -55,6 +55,14 @@ const routes: Routes = [
   {
     path: 'machine5x',
     loadChildren: () => import('./machine5x/machine5x.module').then( m => m.Machine5xPageModule)
+  },
+  {
+    path: 'multiplicator',
+    loadChildren: () => import('./multiplicator/multiplicator.module').then( m => m.MultiplicatorPageModule)
+  },
+  {
+    path: 'plusmoins',
+    loadChildren: () => import('./plusmoins/plusmoins.module').then( m => m.PlusmoinsPageModule)
   }
 
 ];

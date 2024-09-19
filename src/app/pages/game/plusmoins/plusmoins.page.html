@@ -1,0 +1,104 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip style="background: white" slot="start">
+      <ion-avatar>
+        <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user.user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" slot="end" >
+      <ion-label>{{user.point|priceFormat}} W</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="3"></ion-col>
+      <ion-col size="6" class="dashboard">Résultat <br>
+        <span class="medium" style="font-size: 35px">{{gain|priceFormat}} W</span></ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="scene middle">
+    <div id="cube" class="cube">
+      <div class="face face1"></div>
+      <div class="face face2"></div>
+      <div class="face face3"></div>
+      <div class="face face4"></div>
+      <div class="face face5"></div>
+      <div class="face face6"></div>
+    </div>
+
+    <div id="cube2" class="cube">
+      <div class="face face1"></div>
+      <div class="face face2"></div>
+      <div class="face face3"></div>
+      <div class="face face4"></div>
+      <div class="face face5"></div>
+      <div class="face face6"></div>
+    </div>
+  </div>
+
+  <ion-grid class="de-grid">
+    <ion-row>
+      <ion-col class="demi3"></ion-col>
+
+      <ion-col size="3" class="middle" (click)="choice('plus')">
+        <div class="choix" [ngClass]="{'active':choix=='plus'}">
+          > 7
+          <br>
+          <span>x{{milestone[0]}}</span>
+        </div>
+      </ion-col>
+      <ion-col size="3" class="middle" (click)="choice('egal')" >
+        <div class="choix" [ngClass]="{'active':choix=='egal'}">
+          =  7
+          <br>
+          <span>x{{milestone[1]}}</span>
+        </div>
+      </ion-col>
+      <ion-col size="3" class="middle" (click)="choice('moins')">
+        <div class="choix" [ngClass]="{'active':choix=='moins'}">
+          < 7
+          <br>
+          <span>x{{milestone[2]}}</span>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="rapier middle">
+        <h3>Mise</h3>
+      </ion-col>
+      <ion-col size="6" class="custom middle">
+        <ion-input class="custom-input" [disabled]="isStarted" style="z-index: 0;" type="number" min="50" max="10000" step="100" [(ngModel)]="mise" placeholder="Mise"></ion-input>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+
+</ion-content>
+<ion-footer style="bottom:0; width: 100%; background: transparent !important;">
+  <ion-grid>
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" [disabled]="!showFooter" (click)="close()" color="tertiary">Fermer</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" [disabled]="!showFooter" (click)="startGame()" color="medium">Jouer</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

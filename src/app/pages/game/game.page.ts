@@ -20,6 +20,8 @@ export class GamePage implements OnInit {
     dice:{},
     fruits:{},
     fortune:{},
+    multiplicator:{},
+    plusmoins:{},
 
   };
   constructor(
@@ -71,6 +73,10 @@ export class GamePage implements OnInit {
       this.router.navigateByUrl('game/jewel');
     } else if(t=='fruits'){
       this.router.navigateByUrl('game/machine3x');
+    } else if(t=='multiplicator'){
+      this.router.navigateByUrl('game/multiplicator');
+    } else if(t=='plusmoins'){
+      this.router.navigateByUrl('game/plusmoins');
     }
   }
 }

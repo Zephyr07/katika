@@ -1023,3 +1023,10 @@ app-modal-loading{
   background: var(--ion-color-medium);
   color: var(--ion-color-tertiary);
 }
+.custom-input{
+  background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
+  color:var(--ion-color-primary);
+  font-family: Rapier;
+  font-size: 25px;
+  border-color: #FCD000;
+}

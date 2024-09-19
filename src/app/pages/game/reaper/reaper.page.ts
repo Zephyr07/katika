@@ -33,10 +33,12 @@ export class ReaperPage implements OnInit {
   is_user = false;
   game:any={};
 
+  current_gain = 0;
   gain_tmp = 0;
 
   mise=0;
 
+  history="";
   titre="";
   message="";
   showMessage=false;
@@ -58,6 +60,7 @@ export class ReaperPage implements OnInit {
     this.api.getSettings().then((d:any)=>{
       this.disposition = d.game_settings.reaper.disposition;
       this.percent = d.game_settings.reaper.percent;
+      //this.percent=0;
       this.points = d.game_settings.reaper.points;
       this.initializeGame();
     },q=>{
@@ -210,6 +213,8 @@ export class ReaperPage implements OnInit {
     this.rows[9].gain = this.jackpot;
     this.rows= this.rows.reverse();
     this.showLoading=false;
+
+    //console.log(this.rows);
   }
 
   updateDivDimensions() {
@@ -227,6 +232,7 @@ export class ReaperPage implements OnInit {
       if(this.isStarted && !this.isLoose){
         if(item.row_id==this.level){
           this.decision=this.finals[item.row_id];
+          this.history+="item_status:"+item.status+"|level:"+this.level+"\n";
           if(item.status==0){
             // perdu
             this.loose();
@@ -235,6 +241,7 @@ export class ReaperPage implements OnInit {
               // gagné
               const row = _.find(this.rows,{id:item.row_id});
               this.gain_tmp+=row.gain;
+              this.current_gain=row.gain;
               this.win_level();
             } else {
               // echec
@@ -330,12 +337,18 @@ export class ReaperPage implements OnInit {
 
   async win(stopped:boolean){
     this.user.point = this.user.point+this.gain_tmp;
+    const info ={
+      level:this.level,
+      gain:this.gain_tmp,
+      history:this.history
+    };
     const opt ={
       level:this.level,
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot:this.gain_tmp,
-      is_winner:true
+      is_winner:true,
+      info:JSON.stringify(info)
     };
 
     this.api.post('scores',opt).then(d=>{

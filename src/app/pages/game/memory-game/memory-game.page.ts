@@ -189,6 +189,7 @@ export class MemoryGamePage implements OnInit {
   }
 
   startGame(){
+    this.showMessage=false;
     if(this.isConnected){
       if(this.user.point==undefined || this.user.point<this.mise){
         this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);

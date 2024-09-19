@@ -18,11 +18,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <ion-grid>
-    <ion-row *ngFor="let row of rows" class="apple-row">
+    <ion-row *ngFor="let row of rows,let i = index" class="apple-row">
       <ion-col size="1" style="height: {{hauteur}}px" class="middle">
-        <span *ngIf="row.gain>0" class="gain" [ngClass]="{'active':gain_tmp>=row.gain}">{{row.gain|priceFormat}}</span>
+        <span *ngIf="row.gain>0" class="gain" [ngClass]="{'active':current_gain>=row.gain}">{{row.gain|priceFormat}}</span>
       </ion-col>
 
       <ion-col size="1" *ngFor="let col of row.items"

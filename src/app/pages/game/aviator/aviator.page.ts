@@ -224,7 +224,8 @@ export class AviatorPage implements OnInit {
       this.index=0;
     }
     if(this.mise>1000){
-      this.finals=this.genererTableau(this.count,this.mise);
+      this.finals=this.genererTableau(10,this.mise);
+      //console.log(this.finals);
     }
 
     if(this.finals[this.index]==0 && this.target>this.user_multiplier){
@@ -433,6 +434,8 @@ export class AviatorPage implements OnInit {
         this.showFooter=true;
         this.can_play=true;
         this.total_partie=0;
+        this.gain=0;
+        this.prelevement=0;
       }
     },2000)
   }
@@ -542,13 +545,20 @@ export class AviatorPage implements OnInit {
         this.startGame();
       },2000);
     } else {
+      const info = {
+        mise:this.mise,
+        user_multiplier:this.user_multiplier,
+        target:this.target,
+        gain:this.mise*this.user_multiplier,
+        history:this.history
+      };
       const opt ={
         level:this.user_multiplier,
         user_id:this.user.id,
         game_id:this.game.id,
         jackpot:this.mise*this.user_multiplier,
         is_winner:true,
-        info:this.history
+        info:JSON.stringify(info)
       };
 
       this.api.post('scores',opt).then(d=>{
@@ -648,9 +658,12 @@ export class AviatorPage implements OnInit {
 
     let nbZeros = Math.floor(X * this.percent); // Calcul du nombre de 0 (70%)
   //let nbZeros = Math.floor(X * 1); // Calcul du nombre de 0 (70%)
-    if(mise || this.multiplier>5){
-      nbZeros = Math.floor(X * 0.8)
+    if(this.mise>1000 && this.mise<4999 && this.user_multiplier>4){
+      nbZeros = Math.floor(X * 0.9)
+    } else if(this.mise>5000){
+      nbZeros = Math.floor(X * 0)
     }
+
     const nbUn = X - nbZeros; // Le reste sera des 1
 
     // Ajouter 0 au tableau

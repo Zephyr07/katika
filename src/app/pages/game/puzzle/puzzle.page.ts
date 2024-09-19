@@ -295,9 +295,9 @@ export class PuzzlePage implements OnInit {
   }
 
   async buyLive(){
-    if(this.score==30){
+    if(this.score==30 && this.indexLife<4){
       this.indexLife=4;
-    } else if(this.score==40){
+    } else if(this.score==40 && this.indexLife<8){
       this.indexLife=8;
     }
     const alert = await this.alertController.create({

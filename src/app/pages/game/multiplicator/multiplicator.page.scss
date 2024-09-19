@@ -1,0 +1,12 @@
+ion-content{
+  --background: url('/assets/img/wallpaper/multiplicator.png') no-repeat center/cover fixed !important;
+}
+
+
+.custom-input{
+  background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
+  color:var(--ion-color-primary);
+  font-family: Rapier;
+  font-size: 25px;
+  border-color: #FCD000;
+}

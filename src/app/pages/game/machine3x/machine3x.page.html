@@ -47,7 +47,7 @@
     <ion-row>
       <ion-col size="6" class="custom">
         <ion-input [disabled]="!(spinningReel[0]==false && spinningReel[1]==false && spinningReel[2]==false)"
-                   type="number" placeholder="Mise" [(ngModel)]="mise" min="50" max="10000"></ion-input>
+                   type="number" placeholder="Mise" [(ngModel)]="mise" step="100" min="50" max="10000"></ion-input>
       </ion-col>
       <ion-col size="6" class="middle">
         <div class="rapier">

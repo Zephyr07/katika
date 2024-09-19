@@ -70,6 +70,7 @@ export class FortunePage implements OnInit,AfterViewInit {
       this.is_katika = d.katika == 'true';
       this.prices = d.game_settings.fortune.prices;
       this.percent = d.game_settings.fortune.percent;
+      //this.percent=0;
       this.finals = this.genererTableau(this.count);
 
       for(let i=0; i<this.prices.length;i++){
@@ -191,14 +192,18 @@ export class FortunePage implements OnInit,AfterViewInit {
   }
 
   async win(jackpot){
-
+    const info={
+      indice:parseInt(this.result.text)-1,
+      gain:jackpot,
+      history:this.history
+    };
     const opt ={
       level:10,
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot,
       is_winner:true,
-      info:this.history
+      info:JSON.stringify(info)
     };
     this.titre = "VOUS AVEZ GAGNEZ !!!";
     this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
@@ -287,8 +292,26 @@ export class FortunePage implements OnInit,AfterViewInit {
       ctx.fillText(this.segments[i].text, radius / 2 - 10, 0);
       ctx.restore();
     }
-
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
     ctx.translate(-radius, -radius); // Réinitialiser la translation
+
+    // Ombre centrale pour donner un effet 3D
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius * 0.1, 0, 2 * Math.PI);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fill();
+    ctx.closePath();
+
+    // Effet 3D ombré autour de la roue
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetX = 10;
+    ctx.shadowOffsetY = 10;
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.stroke();
   }
 
   spinWheel() {
@@ -376,7 +399,7 @@ export class FortunePage implements OnInit,AfterViewInit {
         } else {
           if(this.result.prize=='Jackpot'){
             if(this.is_katika){
-              this.history+="R:"+this.result.text+"|G:"+this.game.jackpot+this.mise;
+              this.history+="R:"+this.result.text+"|G:"+this.game.jackpot;
               this.win(this.game.jackpot+this.mise);
               this.is_katika=false;
             } else {

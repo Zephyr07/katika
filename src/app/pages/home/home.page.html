@@ -42,10 +42,10 @@
   </ion-grid>
 
   <ion-grid *ngIf="scores.length>0">
-    <div class="sous-titre ion-text-center" style="margin-top: -10px !important;">
-      <img src="../../../assets/img/Meilleurs-Joueurs-01-09-2024.png" style="width: 80%" alt="" class="radius">
-    </div>
     <div class="grid-rank">
+      <div class="sous-titre ion-text-center" style="margin-top: -10px !important;">
+        <img src="../../../assets/img/Meilleurs-Joueurs-01-09-2024.png" style="width: 80%" alt="" class="radius">
+      </div>
       <ion-row style="display:none;">
         <ion-col size="1">
           #
@@ -60,10 +60,10 @@
           <span *ngIf="s.rank>3">{{s.rank}}</span>
           <span name="crown" *ngIf="s.rank==1">🥇</span><span name="crown" *ngIf="s.rank==2">🥈</span><span name="crown" *ngIf="s.rank==3">🥉</span>
         </ion-col>
-        <ion-col size="7">
+        <ion-col size="6">
           {{s.user_name|limitTo:10}}
         </ion-col>
-        <ion-col size="4" class="ion-text-right">{{s.point|priceFormat}} W</ion-col>
+        <ion-col size="5" class="ion-text-right">{{s.point|priceFormat}} W</ion-col>
       </ion-row>
     </div>
   </ion-grid>

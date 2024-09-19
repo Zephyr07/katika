@@ -4,7 +4,6 @@ import {AlertController, NavController} from "@ionic/angular";
 import {ApiProvider} from "../../../providers/api/api";
 import {UtilProvider} from "../../../providers/util/util";
 import {AdmobProvider} from "../../../providers/admob/AdmobProvider";
-import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-triple-choice',
@@ -30,6 +29,7 @@ export class TripleChoicePage implements OnInit {
   showLoading=true;
   isConnected=true;
   showFooter=true;
+  history="";
   titre="";
   message="";
   showMessage=false;
@@ -72,6 +72,7 @@ export class TripleChoicePage implements OnInit {
   }
 
   startGame(){
+    this.history="";
     if(this.isConnected){
       if(this.user.point<this.mise){
         this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
@@ -101,6 +102,7 @@ export class TripleChoicePage implements OnInit {
   checkChoice(t){
     if(this.isStarted){
       if(!this.is_loose){
+        this.history+='C:'+this.choice+"|A:"+this.answer+"|L:"+this.level+"\n";
         this.choice = t;
         if(this.answer ==t){
           setTimeout(()=>{
@@ -164,12 +166,19 @@ export class TripleChoicePage implements OnInit {
 
   async win(){
     this.game.jackpot+=this.mise;
+    const info={
+      level:this.level,
+      choice:this.choice,
+      answer:this.answer,
+      history:this.history
+    };
     const opt ={
       level:this.level,
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot:this.game.jackpot,
-      is_winner:true
+      is_winner:true,
+      info:JSON.stringify(info)
     };
 
     this.titre = "VOUS AVEZ GAGNEZ !!!";

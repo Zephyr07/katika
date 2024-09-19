@@ -19,7 +19,6 @@ export class Machine3xPage implements OnInit {
   private times: number[] = [2000, 2500, 3000]; // Target positions for the reels
   spinningReel: boolean[] = [false, false, false]; // Target positions for the reels
 
-  history="";
   user_name="";
   user_point:number;
   isStarted=false;
@@ -40,6 +39,10 @@ export class Machine3xPage implements OnInit {
 
   private user:any={};
   game:any={};
+
+  private index = 0;
+  private old_x=0;
+  private x=[0,0,0];
 
   private interval:any;
 
@@ -198,13 +201,18 @@ export class Machine3xPage implements OnInit {
   }
 
   async win(){
+    const info ={
+      mise:this.mise,
+      multiplier:this.multipliers[this.targetIndexes[0]],
+      motif:this.reels[this.targetIndexes[0]]
+    };
     const opt ={
       level:1,
       user_id:this.user.id,
       game_id:this.game.id,
       jackpot:this.mise*this.multipliers[this.targetIndexes[0]],
       is_winner:true,
-      info:'M:'+this.mise+'|X:'+this.multipliers[this.targetIndexes[0]]+'|F:'+this.reels[this.targetIndexes[0]]
+      info:JSON.stringify(info)
     };
 
     this.api.post('scores',opt).then(d=>{
@@ -258,8 +266,7 @@ export class Machine3xPage implements OnInit {
   }
 
   // Spin the slot machine to the specified target indexes
-  private index = 0;
-  private old_x=0;
+
   spin() {
     this.initializeReels();
     this.message="";
@@ -278,17 +285,27 @@ export class Machine3xPage implements OnInit {
     }
 
     if(this.finals[(this.index)%this.finals.length]==1){
-      // on s'arrange pour qu'il gagne
-      if(target[0]==target[1] && target[1]==target[2]){
-        // on ne fait rien
+      if(this.mise>=1000 && this.mise<5000){
+        // il ne peux que gagner x1
+        target = [0,0,0]
+      } else if(this.mise>=5000) {
+        // perdu
+        target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
       } else {
-        let x = 0;
-        while(x==this.old_x){
-          x = this.util.randomIntInRange(0,this.reels.length-2);
+        // inférieur à 1000
+        // on s'arrange pour qu'il gagne
+        if(target[0]==target[1] && target[1]==target[2]){
+          // on ne fait rien
+        } else {
+          let x = 0;
+          while(x==this.old_x){
+            x = this.util.randomIntInRange(0,this.reels.length-3);
+          }
+          target = [x, x, x];
+          this.old_x = x;
         }
-        target = [x, x, x];
-        this.old_x = x;
       }
+
     }
     this.index+=1;
     this.targetIndexes = target;
@@ -336,7 +353,6 @@ export class Machine3xPage implements OnInit {
     }, spins * spinSpeed);
   }
 
-  private x=[0,0,0];
   async spinToTarget(target:number[]){
     // reel 1
     const interval1 = setInterval(()=>{
