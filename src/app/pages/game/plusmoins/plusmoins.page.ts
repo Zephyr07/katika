@@ -102,6 +102,7 @@ export class PlusmoinsPage implements OnInit {
   }
 
   startGame() {
+    this.gain=0;
     if(this.choix==""){
       this.util.doToast('Vous n\'avez pas choisi le résultat des dé',2000);
     } else {
