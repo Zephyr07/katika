@@ -17,6 +17,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
   <ion-grid>
     <div class="sous-titre ion-text-center">
       <img src="../../../assets/img/Liste-des-jeuX-26-08-2024.png" alt="" class="radius" style="width: 80%">

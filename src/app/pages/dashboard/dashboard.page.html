@@ -8,6 +8,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
@@ -17,6 +18,49 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-grid>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-button id="present-alert" size="small" colo="tertiary" style="--border-radius: 20px">
+          <span *ngIf="periode=='day'">Aujourd'hui </span>
+          <span *ngIf="periode=='yesterday'">Hier </span>
+          <span *ngIf="periode=='this_month'">Ce mois-ci</span>
+          <span *ngIf="periode=='week'">Les 7 derniers jours </span>
+          <span *ngIf="periode=='month'">Les 30 derniers jours </span>
+          <span *ngIf="periode=='year'">Cette année </span>
+          <span *ngIf="periode=='custom'">Autre date </span>
+          <ion-icon name="chevron-down"></ion-icon>
+        </ion-button>
+        <ion-alert
+          trigger="present-alert"
+          header="Choisir une période"
+          [buttons]="alertButtons"
+          [inputs]="alertInputs"
+        ></ion-alert>
+
+      </ion-col>
+
+      <ion-col size="6" class="ion-text-right" *ngIf="periode=='custom'">
+
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              presentation="date"
+              [showDefaultTitle]="true"
+              [showDefaultButtons]="true"
+              doneText="Confirmer" cancelText="Annuler"
+              format="YYYY-MM-DD"
+              locale="fr-FR"
+              (ionChange)="getStories()"
+              [(ngModel)]="custom_date"
+              id="datetime"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+
+      </ion-col>
+    </ion-row>
 
     <ion-list class="custom-list">
       <ion-row class="row-gain">
@@ -45,15 +89,15 @@
           <strong class="primary" style="text-transform: uppercase;font-size:12px">Jeu</strong> <br>
         </ion-col>
         <ion-col class="ion-text-right">
-          <strong  class="primary"style="text-transform: uppercase;font-size:12px">Compte</strong> <br>
+          <strong  class="primary"style="text-transform: uppercase;font-size:12px">Partie</strong> <br>
         </ion-col>
         <ion-col class="ion-text-right">
           <strong  class="primary"style="text-transform: uppercase;font-size:12px">Montant</strong> <br>
         </ion-col>
       </ion-row>
-      <ion-row class="row-gain" *ngFor="let g of games">
+      <ion-row class="row-gain" *ngFor="let g of stories">
         <ion-col size="6">
-          <strong>{{g.name}}</strong>
+          <strong>{{g.game.name}}</strong>
         </ion-col>
         <ion-col size="2" class="ion-text-right">
           <strong>{{g.count|priceFormat}}</strong>

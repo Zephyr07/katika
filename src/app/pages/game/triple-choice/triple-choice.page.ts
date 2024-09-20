@@ -73,6 +73,7 @@ export class TripleChoicePage implements OnInit {
 
   startGame(){
     this.history="";
+    this.showMessage=false;
     if(this.isConnected){
       if(this.user.point<this.mise){
         this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);

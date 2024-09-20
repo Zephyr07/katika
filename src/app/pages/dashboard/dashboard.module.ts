@@ -9,6 +9,7 @@ import { DashboardPageRoutingModule } from './dashboard-routing.module';
 import { DashboardPage } from './dashboard.page';
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../pipe/pipe.module";
+import {ModalLoadingModule} from "../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import {PipeModule} from "../../pipe/pipe.module";
     IonicModule,
     DashboardPageRoutingModule,
     TranslateModule,
-    PipeModule
+    PipeModule,
+    ModalLoadingModule
   ],
   declarations: [DashboardPage]
 })

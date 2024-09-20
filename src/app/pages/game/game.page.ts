@@ -24,6 +24,7 @@ export class GamePage implements OnInit {
     plusmoins:{},
 
   };
+  showLoading=true;
   constructor(
     private router:Router,
     private admob:AdmobProvider,
@@ -38,7 +39,7 @@ export class GamePage implements OnInit {
   ionViewWillEnter(){
     this.api.getSettings().then((d:any)=>{
       this.games = d.game_settings;
-    })
+    });
     //this.admob.loadInterstitial();
 
     if(this.api.checkUser()){
@@ -46,9 +47,10 @@ export class GamePage implements OnInit {
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;
         localStorage.setItem('user_ka',JSON.stringify(this.user));
+        this.showLoading=false;
       });
     } else {
-
+      this.showLoading=false;
     }
   }
 

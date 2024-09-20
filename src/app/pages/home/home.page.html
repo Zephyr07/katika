@@ -7,25 +7,17 @@
       <ion-label>{{user.user_name}}</ion-label>
     </ion-chip>
 
-    <ion-chip slot="end" class="chip" *ngIf="is_user"(click)="showDashboard()">
+    <ion-chip slot="end" class="chip" *ngIf="is_user" (click)="showDashboard()">
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="home-content">
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content
-      pullingIcon="chevron-down-circle-outline"
-      pullingText="{{'pull_down'|translate}}"
-      refreshingSpinner="circles"
-      refreshingText="{{'loading'|translate}}...">
-    </ion-refresher-content>
-  </ion-refresher>
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center" size="12">
-        <img src="../../../assets/img/Katika-25-08-2024.png" alt="" class="radius" (click)="showDashboard()">
+        <img src="../../../assets/img/KATIKA-25-08-2024.png" alt="" class="radius" (click)="showDashboard()">
 
         <img src="../../../assets/img/Joue-et-tente-de-gagner-25-08-2024.png" alt="" class="radius" >
       </ion-col>

@@ -8,6 +8,7 @@ import { GamePageRoutingModule } from './game-routing.module';
 
 import { GamePage } from './game.page';
 import {PipeModule} from "../../pipe/pipe.module";
+import {ModalLoadingModule} from "../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import {PipeModule} from "../../pipe/pipe.module";
     FormsModule,
     IonicModule,
     GamePageRoutingModule,
-    PipeModule
+    PipeModule,
+    ModalLoadingModule
   ],
   declarations: [GamePage]
 })
