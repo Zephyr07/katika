@@ -2,10 +2,10 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ApiProvider} from "../../providers/api/api";
 import {Router} from "@angular/router";
 import {AuthProvider} from "../../providers/auth/auth";
-import {ModalEditUserComponent} from "../../components/modal-edit-user/modal-edit-user.component";
 import {UtilProvider} from "../../providers/util/util";
 import {TranslateService} from "@ngx-translate/core";
-import {AlertController, IonModal, ModalController} from "@ionic/angular";
+import {AlertController, IonModal, ModalController, Platform} from "@ionic/angular";
+import {NUMBER_RANGE} from "../../services/contants";
 
 @Component({
   selector: 'app-user',
@@ -19,7 +19,9 @@ export class UserPage implements OnInit {
   UPDATE="";
   TEXT="";
   OLD_PASS="";
+  PHONE="";
   PASSWORD="";
+  AMOUNT="";
   PASS="";
   NEW_PASS="";
   DELETE="";
@@ -27,8 +29,12 @@ export class UserPage implements OnInit {
   country:any={};
   is_subscription=false;
   point=1;
+  user_point:number=0;
   phone:number;
   password="";
+  is_user=false;
+  username="";
+  showLoading=true;
 
   constructor(
     private router:Router,
@@ -66,6 +72,13 @@ export class UserPage implements OnInit {
     this.translate.get('ask_password').subscribe( (res: string) => {
       this.CONFIRM_DELETE_TEXT=res;
     });
+    this.translate.get('phone').subscribe( (res: string) => {
+      this.PHONE=res;
+    });
+    this.translate.get('amount').subscribe( (res: string) => {
+      this.AMOUNT=res;
+    });
+
   }
 
   ngOnInit() {
@@ -74,82 +87,29 @@ export class UserPage implements OnInit {
   ionViewWillEnter(){
     
     if (this.api.checkUser()) {
+      this.is_user=true;
       let user = JSON.parse(localStorage.getItem('user_ka'));
       this.api.getList('auth/me',{id:user.id}).then((a:any)=>{
         this.user = a.data.user;
+        this.username=this.user.user_name;
+        this.user_point=this.user.point;
+
+        this.api.getSettings().then((d:any)=>{
+          this.showLoading=false;
+        })
       });
     } else {
+      this.is_user=false;
       this.util.doToast('Vous n\'êtes pas connecté',2000,'light');
       this.router.navigate(['/home']);
-    }
-  }
-
-  async editUser(o?:any){
-    o=this.user;
-    const modal = await this.modalController.create({
-      component: ModalEditUserComponent,
-      cssClass: 'my-custom-class',
-      componentProps: {
-        'objet': o
-      }
-    });
-    modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-
-    if (role === 'confirm') {
-      this.user = JSON.parse(localStorage.getItem('user_ka'));
-    } else {
-
-    }
-  }
-
-  transfert(){
-    if(this.point>this.user.point || this.point<10000){
-      this.util.doToast('Vous n\'avez pas assez de point, il vous faut minimum 10 000W pour initier un transfert',5000);
-    } else {
-      const opt = {
-        phone:this.phone
-      };
-      this.api.getList('users',opt).then((d:any)=>{
-        if(d.length>0){
-          this.util.showLoading('Transfert encours');
-          // utilisateur existant
-          if(d[0].phone==this.user.phone){
-            this.util.doToast('Vous ne pouvez pas vous transferer des points',4000);
-          } else {
-            const o = {
-              point:this.point,
-              phone:this.phone,
-              password:this.password
-            };
-            const x = this.util.encryptAESData(o);
-            this.api.post('transferts',{value:x}).then(d=>{
-              this.util.hideLoading();
-              this.closeModal();
-              this.point=1;
-              this.phone=null;
-              this.password="";
-              this.util.doToast('Transfert effectué',3000);
-              this.user.point-=this.point;
-              localStorage.setItem('user_ka',JSON.stringify(this.user));
-            },(error:any)=>{
-              const data = this.util.decryptAESData(JSON.stringify(error.response.data));
-              alert(data);
-              this.util.hideLoading();
-            })
-          }
-        } else {
-          this.util.doToast("Cet utilisateur n'existe pas",3000);
-        }
-      })
+      this.showLoading=false;
     }
 
   }
 
   async deleteUser() {
     const alert = await this.alertController.create({
-      header: this.DELETE,
+      header: "Supprimer le compte",
       subHeader:this.CONFIRM_DELETE_TEXT,
       buttons: [
         {
@@ -321,20 +281,24 @@ export class UserPage implements OnInit {
     }
   }
 
-  recharge(){
-    window.location.href="http://t.me/holyghost777";
-  }
-
   joinGroup(){
     window.location.href="https://t.me/+vgMemP-Xj2o1ODhk";
   }
 
-  showUser(){
-    this.router.navigateByUrl('user');
+  withdrawal(){
+    this.router.navigateByUrl('user/withdrawal');
+  }
+
+  showAccount(){
+    this.router.navigateByUrl('user/account');
   }
 
   showHome(){
     this.router.navigateByUrl('home');
+  }
+
+  promo_code(){
+    this.router.navigateByUrl('user/promo-code');
   }
 
   showSetting(){

@@ -118,10 +118,6 @@ export class PuzzlePage implements OnInit {
   }
 
   close(){
-    if(this.isStarted){
-      //
-    }
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 

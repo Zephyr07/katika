@@ -174,7 +174,7 @@ export class HomePage implements OnInit {
 
   showUser(){
     if(this.is_user){
-      this.router.navigateByUrl('account');
+      this.router.navigateByUrl('user');
     } else {
       this.router.navigateByUrl('login');
     }

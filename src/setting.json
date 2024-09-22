@@ -3,17 +3,17 @@
   "game_settings":{
     "dice":{
       "points":[50,100,200,300,400,500,1000,2000,3000],
-      "percent":0.7,
+      "percent":0.1,
       "status":"enable"
     },
     "plusmoins":{
       "points":[3,5,3],
-      "percent":0.7,
+      "percent":0.1,
       "status":"enable"
     },
     "fruits":{
       "multipliers":[1,2,3,4,5,10],
-      "percent":0.7,
+      "percent":0.1,
       "status":"enable"
     },
     "bats":{
@@ -23,7 +23,7 @@
       "status":"enable"
     },
     "truck":{
-      "percent":0.7,
+      "percent":0.1,
       "lessThan1":0.2,
       "lessThan2":0.35,
       "lessThan5":0.3,
@@ -33,19 +33,19 @@
     },
     "reaper":{
       "points":[500,1200,1500,1800,2000],
-      "percent":0.7,
+      "percent":0.1,
       "disposition":[0,1,0,0,1],
       "status":"enable"
     },
     "fortune":{
       "prices":["0 W", "50 W","0 W", "0 W", "0 W", "100 W", "Jackpot", "200 W", "0 W", "0 W", "0 W", "0 W", "0 W", "0 W", "0 W", "300 W", "Jackpot", "500 W", "0 W", "700 W", "1000 W", "0 W", "0 W", "0 W", "0 W", "0 W", "0 W", "2000 W", "0 W", "5000 W", "0 W", "0 W", "0 W"],
       "old_prices":["10 W", "300 W","20 W", "25 W", "5 W", "200 W", "Jackpot", "2000 W", "15 W", "15 W", "0 W", "45 W", "0 W", "0 W", "0 W", "700 W", "Jackpot", "100 W", "1 W", "50 W", "1000 W", "20 W", "30 W", "25 W", "0 W", "35 W", "0 W", "500 W", "40 W", "0 W", "0 W", "0 W", "0 W"],
-      "percent":0.9,
+      "percent":0.1,
       "status":"enable"
     },
     "multiplicator":{
       "prices":["x100", "x5", "x0", "x10", "x20", "x0", "x2", "x3", "x0", "x25","x50", "x0", "x5", "x2", "x0", "x2", "x1", "x0", "x6", "x3","x0"],
-      "percent":0.9,
+      "percent":0.91,
       "status":"enable"
     },
     "crystal":{
@@ -126,6 +126,7 @@
   },
   "target":100000,
   "jackpot":10000,
+  "min_withdrawal":500,
   "devise":"F",
   "register_out":"false",
   "subscription":"true",
@@ -134,9 +135,12 @@
   "upgrade":"false",
   "pub":"enable",
   "maintenance":"false",
+  "promo_code_number":100,
+  "promo_code_discount":5,
+  "promo_code_min_mise":5000,
   "ios":{
     "version":1,
-    "link":"https://apps.apple.com/cm/app/warzone-la-salle-de-jeux/id6503222759",
+    "link":"https://apps.apple.com/cm/app/katika-games/id6670410048",
     "subscription":"enable",
     "referral":"enable",
     "recharge":"enable",

@@ -4,6 +4,9 @@
       <ion-back-button defaultHref="/" color="medium"></ion-back-button>
     </ion-buttons>
     <ion-title class="medium">Tableau de bord</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon slot="icon-only" class="medium" name="refresh" (click)="loadStories()"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

@@ -1,0 +1,32 @@
+
+
+<ion-content [fullscreen]="true" class="home-content">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center" size="12">
+        <img src="../../../assets/img/KATIKA-25-08-2024.png" alt="" class="radius">
+
+        <img src="../../../assets/img/Joue-et-tente-de-gagner-25-08-2024.png" alt="" class="radius" >
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <ion-grid class="middle">
+    <div class="modal-message" *ngIf="isUpgrade">
+      <h3>Mise à jour disponible</h3>
+
+      <p>Une nouvelle version de l'application est disponible. Cliquez sur <span class="primary">"Mettre à jour"</span> pour l'installer et continuer à jouer</p>
+      <div class="ion-text-center">
+        <ion-button (click)="update()">Mettre à jour</ion-button>
+      </div>
+    </div>
+
+    <div class="modal-message" *ngIf="isMaintenance">
+      <h3>Maintenance en cours</h3>
+
+      <p>Nous effectuons une maintenance de l'application. Vous recevrez une notification lorsque celle-ci sera terminée. </p>
+    </div>
+  </ion-grid>
+
+</ion-content>

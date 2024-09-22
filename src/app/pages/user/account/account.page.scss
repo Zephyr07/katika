@@ -1,0 +1,23 @@
+.custom-list{
+  ion-item{
+    font-size: 13px;
+    border: 0.5px solid #cdcdcd;
+    margin-bottom: 5px;
+    border-radius: 5px;
+  }
+}
+
+ion-modal{
+  ion-item-sliding {
+    font-size: 13px;
+    border: 0.5px solid #cdcdcd;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background: white;
+  }
+  ion-item{
+    border: none !important;
+    margin-bottom: 0 !important;
+    border-radius: unset !important;
+  }
+}

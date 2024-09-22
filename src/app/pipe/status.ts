@@ -15,6 +15,14 @@ export class StatutPipe implements PipeTransform{
       return 'Créance';
     } else if (value === 'used') {
       return 'Utilisé';
+    } else if (value === 'submited') {
+      return 'Confirmation utilisateur requise'
+    } else if (value === 'failed') {
+      return 'Echec'
+    } else if (value === 'complete') {
+      return 'Validée'
+    } else if (value === 'pending_review') {
+      return 'En attente de verification';
     } else if (value === 'pending_delivery') {
       return 'En attente de livraison';
     } else if (value === 'pending_confirmation') {

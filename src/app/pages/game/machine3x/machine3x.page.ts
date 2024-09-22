@@ -167,7 +167,6 @@ export class Machine3xPage implements OnInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 

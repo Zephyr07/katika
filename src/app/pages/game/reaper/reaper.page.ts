@@ -133,7 +133,6 @@ export class ReaperPage implements OnInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 

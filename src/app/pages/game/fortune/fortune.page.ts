@@ -158,7 +158,6 @@ export class FortunePage implements OnInit,AfterViewInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 

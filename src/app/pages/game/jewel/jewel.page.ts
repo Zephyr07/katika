@@ -1265,8 +1265,6 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   closeMessage(event: string){
     this.showMessage=false;
-    if(!this.isStarted||this.isLoose){
-    }
   }
 
   startGame(){
@@ -1323,7 +1321,6 @@ export class JewelPage implements OnInit, AfterViewInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 }

@@ -9,7 +9,7 @@ import { UserPageRoutingModule } from './user-routing.module';
 import { UserPage } from './user.page';
 import {TranslateModule} from "@ngx-translate/core";
 import {PipeModule} from "../../pipe/pipe.module";
-import {ModalEditUserModule} from "../../components/modal-edit-user/modal-edit-user.module";
+import {ModalLoadingModule} from "../../components/modal-loading/modal-loading.module";
 
 @NgModule({
   imports: [
@@ -19,7 +19,7 @@ import {ModalEditUserModule} from "../../components/modal-edit-user/modal-edit-u
     UserPageRoutingModule,
     PipeModule,
     TranslateModule,
-    ModalEditUserModule
+    ModalLoadingModule
   ],
   declarations: [UserPage]
 })

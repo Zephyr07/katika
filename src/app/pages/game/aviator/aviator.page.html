@@ -106,8 +106,8 @@
     
 
     <ion-row>
-      <ion-col size="12">
-        <ion-button expand="block" *ngIf="isCountdown && chiffre>1" (click)="cancel()" color="light">Annuler</ion-button>
+      <ion-col size="12" class="ion-text-center">
+        <ion-button *ngIf="isCountdown && chiffre>1" (click)="cancel()" color="light">Annuler</ion-button>
       </ion-col>
     </ion-row>
 

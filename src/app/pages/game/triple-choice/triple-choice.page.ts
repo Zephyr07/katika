@@ -202,7 +202,6 @@ export class TripleChoicePage implements OnInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 

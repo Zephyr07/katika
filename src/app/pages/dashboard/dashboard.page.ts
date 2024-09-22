@@ -92,8 +92,16 @@ export class DashboardPage implements OnInit {
   ngOnInit() {
   }
 
-  selectDate(){
-
+  loadStories(){
+    this.showLoading=true;
+    this.api.getList('setup',{}).then((d:any)=>{
+      console.log(d);
+      this.getStories();
+      this.showLoading=false;
+    },q=>{
+      this.util.handleError(q);
+      this.showLoading=false;
+    })
   }
 
   ionViewWillEnter(){

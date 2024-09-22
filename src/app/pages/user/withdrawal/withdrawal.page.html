@@ -1,0 +1,57 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" color="medium"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="medium">Gestion du compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <div class="ion-text-center bold" style="font-size: 35px; margin: 10px">
+      {{user_name}}
+      <br>
+      <div>
+        <ion-chip style="background: var(--ion-color-medium)">
+          <ion-avatar>
+            <img alt="{{user_name}}" src="../../../../assets/icon/setting/diamond.svg" style="background: var(--ion-color-tertiary); padding: 3px" />
+          </ion-avatar>
+          <ion-label>{{user_point|priceFormat}} W </ion-label>
+        </ion-chip>
+      </div>
+    </div>
+  </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="medium" (click)="recharge()">Dépôt</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" color="tertiary" *ngIf="can_withdrawal" (click)="withdrawal()">Retrait</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid style="background: #fff;
+  margin: 10px;
+  border-radius: 20px;">
+    <ion-row style="font-weight: bold" class="primary">
+      <ion-col size="5">Type</ion-col>
+      <ion-col size="3" class="ion-text-right">Montant</ion-col>
+      <ion-col size="4" class="ion-text-right">Statut</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let s of items" style="font-size: 12px">
+      <ion-col size="5">
+        <strong *ngIf="s.amount>0">Recharge</strong>
+        <strong *ngIf="!(s.amount>0)">Retrait</strong>
+        <br>
+        {{s.date|dateFormat}}
+      </ion-col>
+      <ion-col size="3" class="ion-text-right tertiary bold">{{s.amount|priceFormat}} W</ion-col>
+      <ion-col size="4" class="ion-text-right">{{s.status|status}}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
+</ion-content>

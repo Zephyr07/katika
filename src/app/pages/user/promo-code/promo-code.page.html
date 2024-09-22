@@ -1,0 +1,88 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" color="medium"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="medium">Code promo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
+  <ion-grid class="ion-padding">
+    <h1>Programme de Code Promo KATIKA</h1>
+    <p>
+      Nous sommes ravis de vous présenter notre <strong>Programme de Code Promo</strong>, 
+      conçu pour récompenser nos utilisateurs les plus engagés tout en leur offrant des avantages exceptionnels.
+      <br>Avec ce programme, vous pouvez transformer vos parrainages en revenus supplémentaires et profiter d'une expérience de
+      jeu encore plus enrichissante.
+    </p>
+
+    <h3 class="sous-titre">1. Parrainage de {{user_number|priceFormat}} personnes minimum</h3>
+    <p>
+      Pour bénéficier des avantages exclusifs du programme, vous devez parrainer <span class="highlight">au moins {{user_number|priceFormat}} personnes</span>.
+      Chaque utilisateur que vous parrainez doit s'inscrire sur notre plateforme en utilisant <span class="highlight">votre code promo unique</span>.
+      Plus vous parrainez de personnes, plus vos gains potentiels augmentent.
+    </p>
+
+    <h3 class="sous-titre">2. Bonus de {{discount}} % sur les recharges de vos filleuls</h3>
+    <p>
+      Chaque fois que l'un de vos filleuls recharge son compte, il va recevoir <span class="highlight">1 000 Points gratuits</span> pour commencer à jouer, vous recevez un bonus de <span class="highlight">{{discount}} % du montant de sa recharge</span>.
+      <br>Ce pourcentage est calculé automatiquement et ajouté à votre solde de gains. Par exemple, si l'un de vos filleuls effectue une recharge de 20 000 Points, vous gagnez 1 000 Points grâce à son dépôt.
+    </p>
+
+    <h3 class="sous-titre">3. Pari minimum de {{mise|priceFormat}} Points</h3>
+    <p>
+      Pour activer le retrait de vos gains générés par le programme, vous devez avoir parié un total de <span class="highlight">{{mise|priceFormat}} Points</span> ou plus sur les jeux disponibles sur notre plateforme.
+    </p>
+
+    <h3 class="sous-titre">4. Conditions de validité des filleuls</h3>
+    <p>
+      Pour que vos filleuls soient comptabilisés dans vos {{user_number|priceFormat}} parrainages, ils doivent :
+    </p>
+    <ul>
+      <li>Avoir créé un compte valide avec votre code promo.</li>
+      <li>Placer au moins <span class="highlight">10 paris</span> sur n’importe quel jeu proposé sur notre plateforme.</li>
+    </ul>
+
+    <h3 class="sous-titre">5. Cumul des bonus et limites</h3>
+    <p>Le montant total de bonus que vous pouvez obtenir via ce programme est plafonné à <span class="highlight">100 000 Points par mois</span>.</p>
+
+    <h3 class="sous-titre">6. Conditions de retrait des gains</h3>
+    <p>
+      Les gains obtenus via ce programme peuvent être retirés sous réserve des conditions suivantes :
+    </p>
+    <ul>
+      <li>Vous devez avoir misé au moins <span class="highlight">2 fois le montant de vos gains</span>
+        issus des parrainages avant de pouvoir retirer ces fonds.</li>
+      <li>Les retraits sont disponibles une fois par mois et doivent être effectués à partir d’un solde de
+        <span class="highlight">10 000 Points minimum</span>.</li>
+    </ul>
+
+    <h3 class="sous-titre">7. Suivi de vos parrainages et bonus</h3>
+    <p>
+      Vous pouvez suivre l’évolution de vos parrainages et vos gains directement depuis votre espace utilisateur. Vous y trouverez un tableau de bord détaillé qui affiche :
+    </p>
+    <ul>
+      <li>Le nombre de filleuls actifs.</li>
+      <li>Le montant total de bonus que vous avez accumulé.</li>
+    </ul>
+
+    <h3 class="sous-titre">8. Desactivation du code promo</h3>
+    <p>
+      Votre code promo sera desactivé au bout de 3 mois si vous ne remplissez pas les conditions mentionnées précédement.
+    </p>
+
+    <h3 class="sous-titre">Rejoignez notre programme dès aujourd’hui !</h3>
+    <p>
+      Ce programme est une opportunité unique de gagner des bonus tout en invitant vos amis à découvrir notre plateforme de jeu. Non seulement vous bénéficiez d'avantages financiers, mais vous permettez aussi à vos filleuls de profiter de nos offres exclusives.
+    </p>
+    <p><strong>Inscrivez-vous dès maintenant</strong> et commencez à partager votre code promo pour maximise|priceFormatr vos gains !</p>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="subscribe()">S'inscrire</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

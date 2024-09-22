@@ -66,7 +66,7 @@ export class AviatorPage implements OnInit {
   private user:any={};
   game:any={};
   private target =0;
-  private count = 100;
+  private count = 50;
   private dif = 0;
   isWin=false;
   auto=false;
@@ -320,106 +320,6 @@ export class AviatorPage implements OnInit {
 
     }, this.timeInterval);
   }
-  
-  logiquePoint(){
-    if(this.decision==1){
-      console.log(this.multiplier==this.target,this.target);
-      if(this.is_win && this.multiplier==this.target){
-        console.log("bon");
-        this.stopGame();
-        return;
-      }
-      if(this.multiplier == this.target && this.multiplier<this.user_multiplier) {
-        this.crash();
-        clearInterval(this.interval);
-      }
-      if(this.private_multiplier>=this.user_multiplier){
-        this.is_win=true;
-      }
-    } else {
-      // decision 0
-      if(this.user_multiplier==1.01 || this.user_multiplier-1.01<0.1){
-        this.crash();
-        clearInterval(this.interval);
-      } else {
-        // un nombre entre 1.00 et user_multiplier
-        this.target = this.dif;
-        if(this.target==this.multiplier){
-          // crash
-          this.crash();
-          clearInterval(this.interval);
-          return;
-        } else {
-          // on attends
-        }
-
-        /*if(this.private_multiplier>this.target){
-          this.multiplier+=0.01;
-          //console.log("a",this.private_multiplier,this.multiplier);
-          this.crash();
-          clearInterval(this.interval);
-          return;
-        }*/
-      }
-
-    }
-    /*
-          if(this.is_win){
-            if(this.target == this.multiplier){
-              console.log("bon");
-              this.stopGame();
-              return;
-            } else if(this.multiplier == this.target && this.multiplier<this.user_multiplier) {
-              this.crash();
-              clearInterval(this.interval);
-            } else {
-              // on va attendre l'arriver jusqu'au nombre
-            }
-          } else {
-            if(this.private_multiplier>=this.user_multiplier){
-              if(this.decision==0){
-                this.crash();
-                clearInterval(this.interval);
-                //console.log('c');
-                return;
-              } else {
-                this.multiplier=this.user_multiplier;
-                this.is_win=true;
-                //console.log("F");
-              }
-            }
-    
-            if(this.private_multiplier>this.target){
-              this.multiplier+=0.01;
-              //console.log("a",this.private_multiplier,this.multiplier);
-              this.crash();
-              clearInterval(this.interval);
-              return;
-            }
-    
-            if(this.decision==0 && this.user_multiplier==1.01){
-              this.crash();
-              clearInterval(this.interval);
-              //console.log('b');
-              return;
-    
-            }
-            if(this.decision==0 && this.user_multiplier-1.01>0.1){
-              if(this.private_multiplier==this.user_multiplier-this.dif){
-                this.crash();
-                clearInterval(this.interval);
-                //console.log('d');
-                return;
-              }
-    
-            }
-          }*/
-
-    this.private_multiplier = parseFloat(this.private_multiplier.toFixed(2));
-    this.multiplier=this.private_multiplier;
-
-    this.x+=this.timeInterval;
-  }
 
   crash() {
     this.isCrashed = true;
@@ -441,14 +341,25 @@ export class AviatorPage implements OnInit {
   }
 
   cancel(){
+    clearInterval(this.countdownInterval);
+    clearInterval(this.interval);
+    this.chiffre=3;
     if(this.total_partie>1 && this.gain - this.prelevement>0){
+      const info = {
+        mise:this.mise,
+        user_multiplier:this.user_multiplier,
+        target:this.target,
+        gain:this.gain-this.prelevement,
+        auto:true,
+        history:this.history
+      };
       const opt ={
         level:this.user_multiplier,
         user_id:this.user.id,
         game_id:this.game.id,
-        jackpot:this.gain,
+        jackpot:this.gain-this.prelevement,
         is_winner:true,
-        info:this.history
+        info:JSON.stringify(info)
       };
 
       this.api.post('scores',opt).then(d=>{
@@ -457,7 +368,6 @@ export class AviatorPage implements OnInit {
         this.showMessage=true;
         this.total_partie=0;
         this.isCountdown=false;
-        clearInterval(this.countdownInterval);
         this.chiffre=3;
         this.prelevement=0;
         this.gain=0;
@@ -475,8 +385,6 @@ export class AviatorPage implements OnInit {
       this.prelevement=0;
       this.gain=0;
       this.isCountdown=false;
-      clearInterval(this.countdownInterval);
-      clearInterval(this.interval);
       this.chiffre=3;
       this.isStarted=false;
       this.isCrashed=false;
@@ -487,14 +395,12 @@ export class AviatorPage implements OnInit {
   }
 
   close(){
-    this.admob.showInterstitial();
     this.navCtrl.navigateRoot('/game');
   }
 
   stopGame() {
     clearInterval(this.interval);
     if (!this.isCrashed) {
-      //this.util.doToast('Vous avez encaissé avant le crash! Le multiplicateur était de  ' + this.multiplier.toFixed(2),5000,'medium','top');
       // ajout des points
       this.isCrashed=true;
       this.win();

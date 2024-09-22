@@ -339,7 +339,6 @@ export class DicePage implements OnInit {
 
   close(){
     if(this.gain_tmp==0){
-      this.admob.showInterstitial();
       this.navCtrl.navigateRoot('/game');
     } else {
       this.win();

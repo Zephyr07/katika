@@ -1,42 +1,42 @@
-.info-tournament{
+ion-content{
+  --background: var(--ion-color-tertiary) !important;
+}
+ion-list{
+  background: transparent !important;
+}
 
-  ion-col{
-    padding: 5px;
-    div{
-      background: #fff;
-      height: 100px;
-      padding-top: 21px;
-      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 6px !important;
+ion-item-group{
+  margin-bottom: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  background: #fff;
+  padding: 10px 0;
 
+  ion-item-divider{
+    background: transparent !important;
 
-      &.bg-dark{
-        background: #000 !important;
-        color:#fff !important;
-        ion-icon{
-          color:#fff !important;
-        }
-      }
-
-      &.bg-red{
-        background: var(--ion-color-primary) !important;
-        color:#fff !important;
-        ion-icon{
-          color:#fff !important;
-        }
-      }
+    ion-label{
+      font-weight: bold;
+      color:var(--ion-color-tertiary)
     }
   }
 
-}
-
-.info{
-  ion-item {
-    text-align: center;
+  ion-item:first-child{
+    border-radius: 20px 20px 0 0;
   }
-}
 
-.video{
+  ion-item:last-child{
+    border-radius: 0 0 20px 20px;
+  }
+
   ion-item{
-    background: var(--ion-color-tertiary);
+    margin-bottom: 5px;
+    ion-avatar{
+      img{
+        background: var(--ion-color-tertiary);
+        padding: 10px;
+      }
+    }
   }
 }

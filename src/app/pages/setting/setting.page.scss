@@ -1,5 +1,5 @@
 ion-content{
-  --background: rgba(255, 255, 0, 0.33) !important;
+  --background: var(--ion-color-tertiary) !important;
 }
 ion-list{
   background: transparent !important;
@@ -10,6 +10,8 @@ ion-item-group{
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
+  background: #fff;
+  padding: 10px 0;
 
   ion-item-divider{
     background: transparent !important;
@@ -29,6 +31,7 @@ ion-item-group{
   }
 
   ion-item{
+    margin-bottom: 5px;
     ion-avatar{
       img{
         background: var(--ion-color-tertiary);

@@ -1,157 +1,73 @@
 <ion-header class="ion-no-border">
   <ion-toolbar style="--background:transparent">
-    <ion-title>Mon compte</ion-title>
+    <ion-title class="white">Mon compte</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content
-      pullingIcon="chevron-down-circle-outline"
-      pullingText="{{'pull_to_refresh'|translate}}"
-      refreshingSpinner="circles"
-      refreshingText="{{'loading'|translate}}...">
-    </ion-refresher-content>
-  </ion-refresher>
-  <div class="video" style="height: 200px">
-    <div class="info" (click)="editUser()">
-      <ion-item class="infos shadow" color="tertiary" lines="none">
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
+
+  <ion-list class="ion-margin">
+
+    <ion-item-group>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="showAccount()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/person.svg" />
+        </ion-avatar>
         <ion-label>
-          <h3 class="bold ion-text-capitalize">{{user.user_name}}</h3>
-          <p> {{user.point|priceFormat}} W</p>
+          <h2>{{username}}</h2>
+          <p>Informations personnelles</p>
         </ion-label>
       </ion-item>
-    </div>
-  </div>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="withdrawal()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/diamond.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Gestion du compte</h2>
+          <p>{{user_point|priceFormat}} W</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="promo_code()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/gift.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Code promo</h2>
+          <p>Participer au programme</p>
+        </ion-label>
+      </ion-item>
+
+    </ion-item-group>
+
+    <ion-item-group>
+
+      <ion-item lines="none" *ngIf="is_user" (click)="logout()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/log-out.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Déconnexion</h2>
+          <p>Informations personnelles</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" *ngIf="is_user" (click)="deleteUser()">
+        <ion-avatar aria-hidden="true" slot="start">
+          <img alt="" src="../../../assets/icon/setting/trash.svg" />
+        </ion-avatar>
+        <ion-label>
+          <h2>Supprimer le compte</h2>
+          <p>Supprimer définitivement votre compte</p>
+        </ion-label>
+      </ion-item>
+
+    </ion-item-group>
 
 
-  <ion-grid class="info-tournament">
-    <ion-row>
-      <ion-col size="4" (click)="historique()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="list-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Historique'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="modalTransfert()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="repeat-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Transfert de point'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="recharge()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="refresh-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Recharger le compte'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="joinGroup()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="people-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Rejoindre le groupe'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="callKatika()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="chatbubbles-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'Contacter le Katika'|translate}}</span>
-        </div>
-      </ion-col>
-
-      <ion-col size="4" (click)="askLanguage()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="flag-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'set_language'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="presentAlert()">
-        <div class="radius">
-          <span>
-          <ion-icon class="big" color="medium" name="key-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'change_password'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="deleteUser()">
-        <div class="radius bg-red">
-          <span>
-          <ion-icon class="big" color="medium" name="trash-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'delete_account'|translate}}</span>
-        </div>
-      </ion-col>
-      <ion-col size="4" (click)="logout()">
-        <div class="radius bg-dark">
-          <span>
-          <ion-icon class="big" color="medium" name="log-out-outline"></ion-icon>
-          </span>
-          <br>
-          <span class="info-title">{{'logout'|translate}}</span>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <a id="contact" style="display: none" href="mailto:thewarzone237@gmail.com"></a>
-  <ion-button  style="display: none" id="open-modalT" expand="block">Open Sheet Modal</ion-button>
-
-  <ion-modal #modalDetail trigger="open-modalT" [initialBreakpoint]="0.75" [breakpoints]="[0,0.75,1]">
-    <ng-template>
-      <ion-content>
-        <ion-row class="ion-text-center" style="margin-top: 10px">
-          <ion-col size="12">
-            <img src="../../../assets/img/Transfert-de-point-11-08-2024.png" alt="" class="radius" style="width: 80%">
-          </ion-col>
-        </ion-row>
-
-        <ion-grid class="custom">
-          <h5>Transfert tes points à un autre joueur</h5>
-          <ion-row>
-            <ion-col>
-              <ion-input type="number" label="Nombre de point*" min="10000" max="user.point" [(ngModel)]="point" labelPlacement="stacked" placeholder="Nombre de point"></ion-input>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-input type="number" label="Téléphone*" min="MIN" max="MAX" [(ngModel)]="phone" labelPlacement="stacked" placeholder="Téléphone"></ion-input>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-input type="password" label="Mot de passe" (keyup.enter)="transfert()" [(ngModel)]="password" labelPlacement="stacked" placeholder="Mot de passe"></ion-input>
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col>
-              <ion-button expand="block" color="tertiary" (click)="transfert()" >{{'Transferer'|translate}}</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+  </ion-list>
 </ion-content>
 
 <ion-footer style=" width: 100%; background: transparent !important;">
@@ -164,7 +80,7 @@
       <ion-col size="5">
 
         <ion-row class="encoche shadow">
-          <ion-col class="middle" (click)="showUser()">
+          <ion-col class="middle">
             <ion-icon class="active" name="person-outline"></ion-icon>
           </ion-col>
 
@@ -173,11 +89,12 @@
           </ion-col>
 
           <ion-col class="middle" (click)="showSetting()">
-            <ion-icon name="cog-outline"></ion-icon>
+            <ion-icon name="menu-outline"></ion-icon>
           </ion-col>
         </ion-row>
 
       </ion-col>
     </ion-row>
+
   </ion-grid>
 </ion-footer>
