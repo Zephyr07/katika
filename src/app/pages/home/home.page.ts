@@ -1,15 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {IonModal, NavController} from "@ionic/angular";
+import {AlertController, IonModal, NavController} from "@ionic/angular";
 import {ApiProvider} from "../../providers/api/api";
 import {UtilProvider} from "../../providers/util/util";
-import {NavigationExtras, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {AuthProvider} from "../../providers/auth/auth";
-import {Camera, CameraResultType, CameraSource} from "@capacitor/camera";
+import { App } from '@capacitor/app';
 import {Device} from "@capacitor/device";
 import {NUMBER_RANGE} from "../../services/contants";
-import {AdmobProvider} from "../../providers/admob/AdmobProvider";
 import {environment} from "../../../environments/environment";
-import {Network, NetworkStatus} from "@capacitor/network";
 
 @Component({
   selector: 'app-home',
@@ -30,11 +28,14 @@ export class HomePage implements OnInit {
   promo_code:any={};
   code="";
   promo_code_id:number;
-  target:number;
-  jackpot:number;
   devise="W";
   lang="";
   choice="c";
+
+  title="";
+  description="";
+  price="";
+  periode="";
 
   showLoading=true;
 
@@ -53,6 +54,7 @@ export class HomePage implements OnInit {
     private auth:AuthProvider,
     private util:UtilProvider,
     private navCtrl:NavController,
+    private alertController:AlertController
   ) {
     this.util.initializeNetworkListener();
     Device.getLanguageCode().then(d=>{
@@ -61,6 +63,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+    this.majeur();
     if(this.api.checkCredential()){
       //this.util.showLoading('login');
       // connexion
@@ -93,10 +96,14 @@ export class HomePage implements OnInit {
   ionViewWillEnter(){
     this.api.getSettings().then((d:any)=>{
       if(d){
-        this.target = d.target;
-        this.jackpot = d.jackpot;
-        this.devise = d.devise;
+        this.title=d.tournament.title;
+        this.description=d.tournament.description;
+        this.price=d.tournament.price;
+        this.periode=d.tournament.periode;
+        this.devise=d.devise;
       }
+    },q=>{
+      this.util.handleError(q);
     });
     this.getScores();
     if(!this.api.checkCredential()){
@@ -123,6 +130,29 @@ export class HomePage implements OnInit {
     } else {
       this.connexion();
     }
+  }
+
+  async majeur(){
+    const alert = await this.alertController.create({
+      //header: "Information",
+      subHeader:"Nul n'entre ici, s'il n'a pas plus de 21 ans!",
+      message:'Les jeux que nous proposons sont reservés aux personnes agées de plus de 21 ans. Avez vous 21 ans ou plus?',
+      buttons: [
+        {
+          text: "Non",
+          role: 'cancel',
+          handler:()=>{
+            App.exitApp();
+          }
+        },
+        {
+          text: "Oui",
+          role:'confirm'
+        },
+      ]
+    });
+
+    await alert.present();
   }
 
   getScores(){

@@ -10,7 +10,7 @@ ion-content{
 .reels {
   display: flex;
   justify-content: center;
-  margin: 20px 40px;
+  margin: 40px;
   padding: 10px;
   border-radius: 20px;
   background: #fcd65175;
@@ -19,7 +19,7 @@ ion-content{
 
 .reel {
   width: 80px;
-  height: 240px; /* Set to show only 3 symbols at a time */
+  height: 200px; /* Set to show only 3 symbols at a time */
   overflow: hidden;
   border: 1px solid #000;
   position: relative;
@@ -31,7 +31,7 @@ ion-content{
   font-size: 50px;
   text-align: center;
   //padding: 10px 0;
-  height: 80px;
+  height: 65px;
 }
 
 button {
@@ -70,15 +70,18 @@ button:disabled {
   margin: 10px;
   padding: 5px;
   border-radius: 20px;
-  background: #b34b15;
-  color: white;
+  background: url('/assets/img/apple/default_snow.png') no-repeat center/cover fixed !important;
+  color: black;
 
   ion-col{
     text-align: center;
   }
   ion-input{
-    color:#000;
-    background: #ffe384;
+    color:var(--ion-color-primary);
+    background: url('/assets/img/default_meselamp.png') center/cover fixed !important;
+    font-family: Rapier;
+    font-size: 25px;
+    border-color: #FCD000;
   }
 }
 
@@ -89,4 +92,11 @@ button:disabled {
   padding: 10px;
   height: 44.5px;
   margin-top: -4px;
+}
+
+.fruits{
+  font-size: 20px;
+  span{
+    font-size: 25px;
+  }
 }

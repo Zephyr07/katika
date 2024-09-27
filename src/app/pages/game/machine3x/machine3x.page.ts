@@ -46,7 +46,7 @@ export class Machine3xPage implements OnInit {
 
   private interval:any;
 
-  chiffre=3; // valeur du countdown
+  chiffre=2; // valeur du countdown
   isCountdown=false;
   multipliers:any=[];
   private finals:any=[];
@@ -125,10 +125,11 @@ export class Machine3xPage implements OnInit {
           this.countdownInterval = setInterval(()=>{
             this.chiffre--;
             if(this.chiffre==0){
+              this.start();
+            }
+            if(this.chiffre==-1){
               this.isCountdown=false;
               clearInterval(this.countdownInterval);
-
-              this.start();
             }
           },1000);
         } else {
@@ -151,6 +152,7 @@ export class Machine3xPage implements OnInit {
 
     this.api.post('start_game',opt).then(a=>{
       this.user_point-=this.mise;
+      this.isCountdown=false;
       this.spin();
     },q=>{
       this.util.handleError(q);
@@ -224,7 +226,7 @@ export class Machine3xPage implements OnInit {
       if(this.auto){
         setTimeout(()=>{
           this.startGame();
-        },500);
+        },2000);
       }
     },q=>{
       this.util.handleError(q);

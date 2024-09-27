@@ -21,12 +21,14 @@
 
         <img src="../../../assets/img/Joue-et-tente-de-gagner-25-08-2024.png" alt="" class="radius" >
       </ion-col>
-      <ion-col size="12" class="rapier ion-text-center">
+      <ion-col size="12" class="rapier ion-text-center" *ngIf="title!=''">
         <div class="cagnotte">
-          <span style="font-size: 25px">Tournoi de la semaine</span> <br>
-          <span style="font-size: 40px; color:#fff">{{jackpot|priceFormat}} {{devise}}</span>
+          <span style="font-size: 23px">{{title}}</span> <br>
+          <span style="font-size: 40px; color:#fff">{{price}} {{devise}}</span>
           <br>
-          <span>Le premier a cumuler <br><span class="white">{{target|priceFormat}} W</span> gagne le tournoi</span>
+          <span>{{description}}</span>
+          <br>
+          <span>{{periode}}</span>
         </div>
       </ion-col>
     </ion-row>

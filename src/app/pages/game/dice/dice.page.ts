@@ -83,6 +83,7 @@ export class DicePage implements OnInit {
   }
 
   ionViewWillEnter(){
+    this.getGame();
     if(this.api.checkUser()){
       this.api.getList('auth/me',{id:this.user.id}).then((a:any)=>{
         this.user = a.data.user;

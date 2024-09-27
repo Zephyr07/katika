@@ -11,7 +11,7 @@
     </ion-row>
 
   </ion-grid>
-
+  <app-modal-loading *ngIf="!isUpgrade && !isMaintenance"></app-modal-loading>
   <ion-grid class="middle">
     <div class="modal-message" *ngIf="isUpgrade">
       <h3>Mise à jour disponible</h3>

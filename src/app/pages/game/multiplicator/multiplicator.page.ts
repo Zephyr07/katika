@@ -344,7 +344,6 @@ export class MultiplicatorPage implements OnInit {
       },
       complete: () => {
         this.showFooter = true;
-
         if(this.finals[this.index]==0){
           // perdu
           const x = this.util.randomIntInRange(0,this.tab01.length-1);
@@ -359,7 +358,6 @@ export class MultiplicatorPage implements OnInit {
             this.recursif++;
           }
         } else {
-          console.log(this.mise);
           // gain en fonction de la mise
           if(this.mise>=50 && this.mise<100){
             if(this.finals[this.index]==2){
@@ -370,7 +368,7 @@ export class MultiplicatorPage implements OnInit {
               const x = this.util.randomIntInRange(0,this.tab010.length-1);
               this.highlightedSegment = this.tab010[x];
             }
-          } else if(this.mise>100 && this.mise<=500){
+          } else if(this.mise>=100 && this.mise<=500){
             const x = this.util.randomIntInRange(0,this.tab010.length-1);
             this.highlightedSegment = this.tab010[x];
           } else if(this.mise>500 && this.mise<=1000){
@@ -387,7 +385,6 @@ export class MultiplicatorPage implements OnInit {
             this.highlightedSegment = this.tab0[x];
           }
         }
-
         this.isStarted=false;
         const multiplier = parseInt(this.texts[this.highlightedSegment].split('x')[1]);
         //console.log("apres",this.highlightedSegment,this.texts[this.highlightedSegment],multiplier);

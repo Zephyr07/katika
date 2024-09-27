@@ -1,6 +1,6 @@
 <div class="modal-message scale-in-center"  style="width: {{largeur}}">
   <h3>{{titre}}</h3>
-  {{message}}
+  <div [innerHtml]="message"></div>
   <br>
   <div class="ion-text-center">
     <ion-button (click)="closeMessage()">

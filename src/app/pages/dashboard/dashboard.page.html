@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="/" color="medium"></ion-back-button>
     </ion-buttons>
     <ion-title class="medium">Tableau de bord</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" >
       <ion-icon slot="icon-only" class="medium" name="refresh" (click)="loadStories()"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
@@ -22,7 +22,7 @@
   </ion-refresher>
   <ion-grid>
 
-    <ion-row>
+    <ion-row class="hide">
       <ion-col size="6">
         <ion-button id="present-alert" size="small" colo="tertiary" style="--border-radius: 20px">
           <span *ngIf="periode=='day'">Aujourd'hui </span>
@@ -98,9 +98,9 @@
           <strong  class="primary"style="text-transform: uppercase;font-size:12px">Montant</strong> <br>
         </ion-col>
       </ion-row>
-      <ion-row class="row-gain" *ngFor="let g of stories">
+      <ion-row class="row-gain" *ngFor="let g of games">
         <ion-col size="6">
-          <strong>{{g.game.name}}</strong>
+          <strong>{{g.name}}</strong>
         </ion-col>
         <ion-col size="2" class="ion-text-right">
           <strong>{{g.count|priceFormat}}</strong>

@@ -162,7 +162,7 @@ export class UtilProvider {
   }
 
   async handleError(q, next?){
-    const status = await Network.getStatus();console.log('État initial du réseau:', status);
+    const status = await Network.getStatus();
     if(!status.connected){
       this.doToast("Vous devez être connecté à internet pour pouvoir continuer",'3000','light','top');
     } else {

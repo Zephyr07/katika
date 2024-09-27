@@ -23,6 +23,7 @@ export class DashboardPage implements OnInit {
   periode="day";
   custom_date:any=null;
 
+  games:any=[];
   stories:any=[];
   players:any=[];
   best_game:any=[];
@@ -95,7 +96,6 @@ export class DashboardPage implements OnInit {
   loadStories(){
     this.showLoading=true;
     this.api.getList('setup',{}).then((d:any)=>{
-      console.log(d);
       this.getStories();
       this.showLoading=false;
     },q=>{
@@ -108,7 +108,7 @@ export class DashboardPage implements OnInit {
     let user = JSON.parse(localStorage.getItem('user_ka'));
     this.user_id=user.id;
     this.user=user;
-    this.getStories();
+    this.getGames();
     this.getGain();
     this.getPlayers();
 
@@ -176,10 +176,27 @@ export class DashboardPage implements OnInit {
       d.forEach(v=>{
         this.dep_user+=v.amount;
         this.perte+=v.win;
-      })
+      });
       this.showLoading=false;
     },q=>{
       this.util.handleError(q);
+      this.showLoading=false;
+    })
+  }
+
+  getGames(){
+    const opt={
+      should_paginate:false,
+      'count-get':1,
+      _sort:'count',
+      '_sortDir':"desc"
+    };
+    this.dep_user=0;
+    this.api.getList('games',opt).then((d:any)=>{
+      this.games=d;
+      d.forEach(v=>{
+        this.dep_user+=v.amount;
+      });
       this.showLoading=false;
     })
   }
@@ -212,7 +229,7 @@ export class DashboardPage implements OnInit {
 
     this.api.getList('gain',0).then((d:any)=>{
       this.gain=d.gain;
-      //this.perte=d.perte;
+      this.perte=d.perte;
     })
   }
 

@@ -45,7 +45,7 @@
     },
     "multiplicator":{
       "prices":["x100", "x5", "x0", "x10", "x20", "x0", "x2", "x3", "x0", "x25","x50", "x0", "x5", "x2", "x0", "x2", "x1", "x0", "x6", "x3","x0"],
-      "percent":0.91,
+      "percent":0.1,
       "status":"enable"
     },
     "crystal":{
@@ -64,17 +64,17 @@
         {
           "point":50,
           "name":"RED",
-          "percent":10
+          "percent":9
         },
         {
           "point":50,
           "name":"GREEN",
-          "percent":10
+          "percent":8
         },
         {
           "point":50,
           "name":"BLUE",
-          "percent":10
+          "percent":8
         },
         {
           "point":70,
@@ -104,22 +104,22 @@
         {
           "point":100,
           "name":"ORANGE",
-          "percent":11
+          "percent":10
         },
         {
           "point":500,
           "name":"CYAN",
-          "percent":3
+          "percent":5
         },
         {
           "point":500,
           "name":"TRIANGLE",
-          "percent":3
+          "percent":5
         },
         {
           "point":500,
           "name":"STAR",
-          "percent":3
+          "percent":5
         }
       ]
     }
@@ -138,6 +138,12 @@
   "promo_code_number":100,
   "promo_code_discount":5,
   "promo_code_min_mise":5000,
+  "tournament":{
+    "title":"Tournoi de la semaine",
+    "price":"100 000",
+    "description":"A partager entre les 3 joueurs qui auront plus de 100 000 W",
+    "periode":"Du 23 au 29 septembre"
+  },
   "ios":{
     "version":1,
     "link":"https://apps.apple.com/cm/app/katika-games/id6670410048",

@@ -19,7 +19,7 @@
 
 <ion-content [fullscreen]="true">
 
-  <div class="countdown-container middle" *ngIf="chiffre>0 && isCountdown">
+  <div class="countdown-container middle" *ngIf="chiffre>-1 && isCountdown">
     <div class="countdown middle">
       {{chiffre}}
     </div>
@@ -52,12 +52,13 @@
       <ion-col size="6" class="middle">
         <div class="rapier">
           <ion-toggle style="z-index: 0;" [(ngModel)]="auto"
+                      color="primary"
                       [disabled]="!(spinningReel[0]==false && spinningReel[1]==false && spinningReel[2]==false)"
-                      [checked]="auto" color="medium" [enableOnOffLabels]="true">Auto ?</ion-toggle>
+                      [checked]="auto" [enableOnOffLabels]="true" style="font-size: 20px">Auto</ion-toggle>
         </div>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="fruits">
       <ion-col>
         {{reels[0]}} {{reels[0]}} {{reels[0]}}
         <br>
@@ -74,7 +75,7 @@
         <span>x{{multipliers[2]}}</span>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="fruits">
       <ion-col>
         {{reels[3]}} {{reels[3]}} {{reels[3]}}
         <br>
@@ -96,7 +97,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button expand="block" *ngIf="isCountdown && chiffre>1" (click)="cancel()" color="light">Annuler</ion-button>
+        <ion-button expand="block" *ngIf="isCountdown && chiffre>0" (click)="cancel()" color="primary">Annuler</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
