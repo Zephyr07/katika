@@ -384,7 +384,7 @@ export class FortunePage implements OnInit,AfterViewInit {
 
         // decision
         this.decision=this.finals[this.indexDec];
-        if(this.decision==1 && this.uscore>this.USCORE){
+        if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
           this.decision=0;
         }
         this.indexDec=(this.indexDec+1)%this.finals.length;

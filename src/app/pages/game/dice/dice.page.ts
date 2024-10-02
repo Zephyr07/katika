@@ -131,7 +131,7 @@ export class DicePage implements OnInit {
             this.showFooter=false;
 
             this.decision = this.finals[this.index];
-            if(this.decision==1 && this.uscore>this.USCORE){
+            if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
               this.decision=0;
             }
             if(this.index==this.finals.length-1){

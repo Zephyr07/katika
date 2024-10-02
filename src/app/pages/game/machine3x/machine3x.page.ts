@@ -155,6 +155,7 @@ export class Machine3xPage implements OnInit {
 
     this.api.post('start_game',opt).then((a:any)=>{
       this.uscore=a;
+      this.isStarted=true;
       this.user_point-=this.mise;
       this.isCountdown=false;
       this.spin();
@@ -206,35 +207,41 @@ export class Machine3xPage implements OnInit {
   }
 
   async win(){
-    const info ={
-      mise:this.mise,
-      multiplier:this.multipliers[this.targetIndexes[0]],
-      motif:this.reels[this.targetIndexes[0]]
-    };
-    const opt ={
-      level:1,
-      user_id:this.user.id,
-      game_id:this.game.id,
-      jackpot:this.mise*this.multipliers[this.targetIndexes[0]],
-      is_winner:true,
-      info:JSON.stringify(info)
-    };
+    if(this.isStarted){
+      const info ={
+        mise:this.mise,
+        multiplier:this.multipliers[this.targetIndexes[0]],
+        motif:this.reels[this.targetIndexes[0]]
+      };
+      const opt ={
+        level:1,
+        user_id:this.user.id,
+        game_id:this.game.id,
+        jackpot:this.mise*this.multipliers[this.targetIndexes[0]],
+        is_winner:true,
+        info:JSON.stringify(info)
+      };
 
-    this.api.post('scores',opt).then(d=>{
-      this.titre = "VOUS AVEZ GAGNEZ !!!";
-      this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
-      this.showMessage=true;
-      this.isStarted=false;
-      this.showFooter=true;
-      this.ionViewWillEnter();
-      if(this.auto){
-        setTimeout(()=>{
-          this.startGame();
-        },2000);
-      }
-    },q=>{
-      this.util.handleError(q);
-    });
+      this.api.post('scores',opt).then(d=>{
+        this.titre = "VOUS AVEZ GAGNEZ !!!";
+        this.message ="Vous avez gagnez "+opt.jackpot+" W. Vos points ont été crédités sur votre compte";
+        this.showMessage=true;
+        this.isStarted=false;
+        this.showFooter=true;
+        this.targetIndexes[0]=1;
+        this.targetIndexes[1]=2;
+        this.targetIndexes[2]=1;
+        this.ionViewWillEnter();
+        if(this.auto){
+          setTimeout(()=>{
+            this.startGame();
+          },2000);
+        }
+      },q=>{
+        this.util.handleError(q);
+      });
+    }
+
   }
 
   genererTableau(X: number,mise?:number): number[] {
@@ -289,7 +296,7 @@ export class Machine3xPage implements OnInit {
       this.index=0;
     }
 
-    if(this.uscore>this.USCORE){
+    if(this.uscore>this.USCORE && !this.game.is_challenge){
       target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
     } else {
       if(this.finals[(this.index)%this.finals.length]==1){
@@ -315,6 +322,8 @@ export class Machine3xPage implements OnInit {
           }
         }
 
+      } else {
+        target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
       }
     }
 
@@ -442,7 +451,6 @@ export class Machine3xPage implements OnInit {
   // Check if the player has won
   async checkWin() {
     this.showFooter=true;
-    this.isStarted=false;
     if (this.targetIndexes[0] === this.targetIndexes[1] && this.targetIndexes[1] === this.targetIndexes[2]) {
       this.win();
     } else {

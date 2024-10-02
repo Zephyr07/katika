@@ -222,7 +222,7 @@ export class AviatorPage implements OnInit {
     //const index = Math.floor(Math.random() * this.series.length);
     this.target = this.series[this.index];
     this.decision = this.finals[this.index];
-    if(this.decision==1 && this.uscore>this.USCORE){
+    if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
       this.decision=0;
     }
     if(this.index==this.series.length-1){

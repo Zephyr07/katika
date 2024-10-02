@@ -242,7 +242,7 @@ export class WithdrawalPage implements OnInit {
     if(this.can_withdrawal){
       const alert = await this.alertController.create({
         header: 'Retrait',
-        message:"Entrez le numéro mobile money qui va recevoir le retrait et le nombre de point que vous souhaitez retirer. Le retrait minimum est de 500 points. Le temps de traitement des retraits est de 72h et les frais de retraits sont de 5% du montant.",
+        message:"Entrez le numéro mobile money qui va recevoir le retrait et le nombre de point que vous souhaitez retirer. Le retrait minimum est de 10 000 points. Le temps de traitement des retraits est de 72h et les frais de retraits sont de 5% du montant.",
         inputs: [
           {
             placeholder: "Points",
@@ -250,7 +250,7 @@ export class WithdrawalPage implements OnInit {
             name:'amount',
             attributes: {
               step:100,
-              min: 500
+              min: 10000
             },
           },
           {
@@ -274,7 +274,7 @@ export class WithdrawalPage implements OnInit {
             role:'confirm',
             handler:(data)=>{
               if(!isNaN(data.phone) && data.phone <= NUMBER_RANGE.max && data.phone >= NUMBER_RANGE.min){
-                if(data.amount>=500){
+                if(data.amount>=10000){
                   this.util.showLoading("treatment");
                   const opt = {
                     amount:data.amount,
@@ -290,7 +290,7 @@ export class WithdrawalPage implements OnInit {
                     this.util.handleError(q);
                   });
                 } else {
-                  this.util.doToast('Le montant doit être supérieur ou égale à 500',3000);
+                  this.util.doToast('Le montant doit être supérieur ou égale à 10 000',3000);
                 }
 
               } else {

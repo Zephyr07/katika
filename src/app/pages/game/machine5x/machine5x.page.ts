@@ -303,20 +303,25 @@ export class Machine5xPage implements OnInit {
       this.finals= this.genererTableau(this.count);
       this.index=0;
     }
-    console.log(this.finals[this.index],target);
+    //console.log(this.finals[this.index],target);
 
-    if(this.uscore>this.USCORE){
+    if(this.uscore>this.USCORE && !this.game.is_challenge){
       target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
     } else {
-      if(this.finals[(this.index)%this.finals.length]==1){
+      if(this.finals[this.index]==1){
         if(this.mise>=1000 && this.mise<5000){
           // il ne peux que gagner x1
-          target = [0,0,0,0,0]
+          target = [
+            this.util.randomIntInRange(0,1),
+            this.util.randomIntInRange(0,1),
+            this.util.randomIntInRange(0,2),
+            this.util.randomIntInRange(0,1),
+            this.util.randomIntInRange(0,1),
+          ]
         } else if(this.mise>=5000) {
           // perdu
           target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
         } else {
-          console.log(this.checkTarget(target));
           if(!this.checkTarget(target)){
             let x = 0;
             while(x==this.old_x){
@@ -331,12 +336,12 @@ export class Machine5xPage implements OnInit {
         }
 
       } else {
-        let x = 0;
-        while(x==this.old_x){
-          x = this.util.randomIntInRange(0,this.reels.length-5);
+        if(this.checkTarget(target)){
+          target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
+        } else {
+          const x = this.util.randomIntInRange(0,2);
+          target=[4,x,x,5,7];
         }
-        target = [x,x,(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length];
-        this.old_x = x;
       }
     }
     this.index+=1;

@@ -235,7 +235,7 @@ export class ReaperPage implements OnInit {
       if(this.isStarted && !this.isLoose){
         if(item.row_id==this.level){
           this.decision=this.finals[item.row_id];
-          if(this.decision==1 && this.uscore>this.USCORE){
+          if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
             this.decision=0;
           }
           this.history+="item_status:"+item.status+"|level:"+this.level+"\n";

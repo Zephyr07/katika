@@ -45,10 +45,6 @@ const routes: Routes = [
     loadChildren: () => import('./reaper/reaper.module').then( m => m.ReaperPageModule)
   },
   {
-    path: 'machine',
-    loadChildren: () => import('./machine/machine.module').then( m => m.MachinePageModule)
-  },
-  {
     path: 'machine3x',
     loadChildren: () => import('./machine3x/machine3x.module').then( m => m.Machine3xPageModule)
   },

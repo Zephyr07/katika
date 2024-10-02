@@ -128,7 +128,7 @@
           <ion-row>
             <ion-col >
               <ion-input type="text" label="Code Promo(facultatif)" (focusout)="checkCodePromo()" [(ngModel)]="code" labelPlacement="stacked" placeholder="Code Promo(facultatif)"></ion-input>
-              <small *ngIf="promo_code.bonus>0">Ce code promo vous donne droit à {{promo_code.bonus|priceFormat}} W bonus</small>
+              <small *ngIf="promo_code.bonus>0">{{promo_code.bonus|priceFormat}} W bonus dès la première recharge</small>
             </ion-col>
           </ion-row>
           <ion-row>

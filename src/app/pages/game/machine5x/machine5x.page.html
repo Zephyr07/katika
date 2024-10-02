@@ -72,10 +72,6 @@
     </ion-row>
     <ion-row>
       <ion-col size="3">
-        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" expand="block" (click)="user_multiplier=2">x2</ion-button>
-        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==2" color="medium" expand="block" (click)="user_multiplier=1">x2</ion-button>
-      </ion-col>
-      <ion-col size="3">
         <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=3" color="tertiary" expand="block" (click)="user_multiplier=3">x3</ion-button>
         <ion-button [disabled]="isStarted" *ngIf="user_multiplier==3" color="medium" expand="block" (click)="user_multiplier=1">x3</ion-button>
       </ion-col>
@@ -86,6 +82,10 @@
       <ion-col size="3">
         <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=5" color="tertiary" expand="block" (click)="user_multiplier=5">x5</ion-button>
         <ion-button [disabled]="isStarted" *ngIf="user_multiplier==5" color="medium" expand="block" (click)="user_multiplier=1">x5</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=10" color="tertiary" expand="block" (click)="user_multiplier=10">x10</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==10" color="medium" expand="block" (click)="user_multiplier=1">x10</ion-button>
       </ion-col>
     </ion-row>
     <ion-row class="fruits">
