@@ -289,10 +289,9 @@ export class JewelPage implements OnInit, AfterViewInit {
   }
 
   refreshGrid(){
-    this.items = this.shuffleArray(this.items);
-    document.getElementById('grille').classList.add('scale-in-center');
+    this.items = [...this.shuffleArray(this.items)];
     this.getAllValidePositions();
-    this.isMouvement(false);
+    document.getElementById('grille').classList.add('scale-in-center');
   }
 
   shuffleArray(array) {
@@ -307,7 +306,7 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   isMouvement(isChange:boolean){
     const mouv = this.getAllValideNextPositions();
-    //console.log(mouv);
+    console.log(mouv);
     if(mouv[0].length==0 && mouv[1].length==0){
       setTimeout(()=>{
         this.refreshGrid();
@@ -329,6 +328,7 @@ export class JewelPage implements OnInit, AfterViewInit {
   }
 
   getGridCarre(index){
+
     const ligne = Math.trunc(index/8);
     const colonne = index%8;
     // recuperation des elements autour de startindex
@@ -481,6 +481,27 @@ export class JewelPage implements OnInit, AfterViewInit {
     let ndb12 = this.getItemName(db12);
     let ndb21 = this.getItemName(db21);
 
+    if(index==300){
+      console.log(index,[
+          '','','',nh3,'','','',
+          '','',ngh12,nh2,ndh12,'','',
+          '',ngh21,ngh11,nh1,ndh11,ndh21,'',
+          ng3,ng2,ng1,name,nd1,nd2,nd3,
+          '',ngb21,ngb11,nb1,ndb11,ndb21,'',
+          '','',ngb12,nb2,ndb12,'','',
+          '','','',nb3,'','','',
+        ],
+        [
+          '','','',h3,'','','',
+          '','',gh12,h2,dh12,'','',
+          '',gh21,gh11,h1,dh11,dh21,'',
+          g3,g2,g1,index,d1,d2,d3,
+          '',gb21,gb11,b1,db11,db21,'',
+          '','',gb12,b2,db12,'','',
+          '','','',b3,'','','',
+        ])
+    }
+
 
     return [[
       '','','',nh3,'','','',
@@ -491,15 +512,15 @@ export class JewelPage implements OnInit, AfterViewInit {
       '','',ngb12,nb2,ndb12,'','',
       '','','',nb3,'','','',
     ],
-      [
-        '','','',h3,'','','',
-        '','',gh12,h2,dh12,'','',
-        '',gh21,gh11,h1,dh11,dh21,'',
-        g3,g2,g1,index,d1,d2,d3,
-        '',gb21,gb11,b1,db11,db21,'',
-        '','',gb12,b2,db12,'','',
-        '','','',b3,'','','',
-      ]
+    [
+      '','','',h3,'','','',
+      '','',gh12,h2,dh12,'','',
+      '',gh21,gh11,h1,dh11,dh21,'',
+      g3,g2,g1,index,d1,d2,d3,
+      '',gb21,gb11,b1,db11,db21,'',
+      '','',gb12,b2,db12,'','',
+      '','','',b3,'','','',
+    ]
     ]
   }
 
@@ -677,6 +698,12 @@ export class JewelPage implements OnInit, AfterViewInit {
           this.recursion=0;
         }
       }
+    } else {
+      console.log("aucune position valide");
+      const m = this.getAllValideNextPositions();
+      if(m[0].length==0 && m[1].length==0){
+        this.refreshGrid();
+      }
     }
 
   }
@@ -746,6 +773,7 @@ export class JewelPage implements OnInit, AfterViewInit {
       allPositions = r;
 
     }
+
     return [allNextPositions,allPositions];
   }
 
@@ -1094,13 +1122,10 @@ export class JewelPage implements OnInit, AfterViewInit {
 
   // Permute les éléments
   swapItems(draggedIndex: number, dropIndex: number) {
-    /*const temp = this.items[draggedIndex];
-    this.items[draggedIndex] = this.items[dropIndex];
-    this.items[dropIndex] = temp;*/
     let t = {...this.items[draggedIndex]};
     let a = {...this.items[dropIndex]};
-    this.items[dropIndex]=t;
     this.items[draggedIndex]=a;
+    this.items[dropIndex]=t;
   }
 
   changeItem() {
@@ -1109,13 +1134,19 @@ export class JewelPage implements OnInit, AfterViewInit {
       pos.forEach((i, itemIndex) => {
         const gridItem = document.getElementById('grid' + i);
         if (gridItem) {
+          //console.log(i,gridItem);
+          gridItem.classList.add('explode');
           this.score+=this.items[i].point;
           let x = this.values;
           let index = this.values.findIndex(item => item.name === this.items[i].name);
-          this.items[i] = this.getRandomElements(this.removeElementAtIndex(x,index))
+          setTimeout(() => {
+            //this.items[i] = this.getRandomElements(this.removeElementAtIndex(x,index))
+            gridItem.classList.remove('explode');
+          }, 600);
         }
       });
     });
+    //this.positions=[];
 
     this.getAllValidePositions();
     this.isMouvement(false);
@@ -1277,8 +1308,7 @@ export class JewelPage implements OnInit, AfterViewInit {
     if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
     } else {
-      //this.items = this.getRandomItems(this.values,this.itemCount);
-      //this.setItem();
+      this.setItem();
       // debit
       const opt ={
         user_id:this.user.id,

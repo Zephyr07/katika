@@ -3,6 +3,7 @@ import {IonModal} from "@ionic/angular";
 import {ApiProvider} from "../../providers/api/api";
 import * as moment from "moment";
 import {UtilProvider} from "../../providers/util/util";
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-dashboard',
@@ -193,11 +194,25 @@ export class DashboardPage implements OnInit {
     };
     this.dep_user=0;
     this.api.getList('games',opt).then((d:any)=>{
-      this.games=d;
-      d.forEach(v=>{
-        this.dep_user+=v.amount;
-      });
+      if(d.length>0){
+        d.forEach(v=>{
+          v.lost=0;
+          this.dep_user+=v.amount;
+        });
+        this.api.getList('best_game',opt).then((e:any)=>{
+          for (const s in e) {
+            let g= _.find( d, {name:s});
+            if (e.hasOwnProperty(s)) {
+              g.lost = e[s];
+            }
+          }
+          d = _.orderBy(d,'amount').reverse();
+          this.games=d;
+          this.showLoading=false;
+        });
+      }
       this.showLoading=false;
+
     })
   }
 
@@ -233,36 +248,10 @@ export class DashboardPage implements OnInit {
     })
   }
 
-  // jeux qui paye le plus
-  getScore(){
-    this.best_game=[];
-    const opt = {
-      should_paginate:false,
-    };
-
-    this.api.getList('best_game',opt).then((d:any)=>{
-      let i = 1;
-      for (const s in d) {
-        if (d.hasOwnProperty(s)) {
-          this.best_game.push(
-            {
-              rank:i,
-              name:s,
-              point:d[s]
-            }
-          );
-          i++;
-        }
-      }
-    })
-
-  }
-
   doRefresh(event) {
     this.getStories();
     this.getGain();
     this.getPlayers();
-    this.getScore();
     setTimeout(() => {
       console.log('Async operation has ended');
       event.target.complete();

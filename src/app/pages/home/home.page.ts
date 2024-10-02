@@ -24,11 +24,13 @@ export class HomePage implements OnInit {
   password="";
   password_confirmation="";
   scores:any=[];
+  tournament:any={};
   version = environment.version;
   promo_code:any={};
   code="";
   promo_code_id:number;
   devise="W";
+  active:boolean=false;
   lang="";
   choice="c";
 
@@ -63,7 +65,6 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-    this.majeur();
     if(this.api.checkCredential()){
       //this.util.showLoading('login');
       // connexion
@@ -96,16 +97,17 @@ export class HomePage implements OnInit {
   ionViewWillEnter(){
     this.api.getSettings().then((d:any)=>{
       if(d){
-        this.title=d.tournament.title;
-        this.description=d.tournament.description;
-        this.price=d.tournament.price;
-        this.periode=d.tournament.periode;
+        this.tournament=d.tournament;
         this.devise=d.devise;
+        if(this.tournament.active){
+          this.getScores();
+        } else {
+          this.showLoading=false;
+        }
       }
     },q=>{
       this.util.handleError(q);
     });
-    this.getScores();
     if(!this.api.checkCredential()){
       this.is_user=false;
     }
@@ -132,36 +134,16 @@ export class HomePage implements OnInit {
     }
   }
 
-  async majeur(){
-    const alert = await this.alertController.create({
-      //header: "Information",
-      subHeader:"Nul n'entre ici, s'il n'a pas plus de 21 ans!",
-      message:'Les jeux que nous proposons sont reservés aux personnes agées de plus de 21 ans. Avez vous 21 ans ou plus?',
-      buttons: [
-        {
-          text: "Non",
-          role: 'cancel',
-          handler:()=>{
-            App.exitApp();
-          }
-        },
-        {
-          text: "Oui",
-          role:'confirm'
-        },
-      ]
-    });
-
-    await alert.present();
-  }
-
   getScores(){
     this.scores=[];
     const opt={
-      _sortDir:'desc'
+      _sortDir:'desc',
+      game:this.tournament.game,
+      start_at:this.tournament.start_at,
+      end_at:this.tournament.end_at
     };
 
-    this.api.getList('hit',opt).then((d:any)=>{
+    this.api.getList('hit_game',opt).then((d:any)=>{
       let i = 1;
       for (const s in d) {
         if (d.hasOwnProperty(s)) {

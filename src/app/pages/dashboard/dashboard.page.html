@@ -89,24 +89,30 @@
     <ion-list class="custom-list">
       <ion-row>
         <ion-col>
-          <strong class="primary" style="text-transform: uppercase;font-size:12px">Jeu</strong> <br>
+          <strong size="4" class="primary" style="text-transform: uppercase;font-size:12px">Jeu</strong> <br>
         </ion-col>
-        <ion-col class="ion-text-right">
+        <ion-col size="2" class="ion-text-right">
           <strong  class="primary"style="text-transform: uppercase;font-size:12px">Partie</strong> <br>
         </ion-col>
-        <ion-col class="ion-text-right">
-          <strong  class="primary"style="text-transform: uppercase;font-size:12px">Montant</strong> <br>
+        <ion-col size="3" class="ion-text-right">
+          <strong  class="primary"style="text-transform: uppercase;font-size:12px">Gain</strong> <br>
+        </ion-col>
+        <ion-col size="3" class="ion-text-right">
+          <strong class="primary"style="text-transform: uppercase;font-size:12px">Perte</strong> <br>
         </ion-col>
       </ion-row>
       <ion-row class="row-gain" *ngFor="let g of games">
-        <ion-col size="6">
+        <ion-col size="4">
           <strong>{{g.name}}</strong>
         </ion-col>
         <ion-col size="2" class="ion-text-right">
           <strong>{{g.count|priceFormat}}</strong>
         </ion-col>
-        <ion-col size="4" class="ion-text-right">
+        <ion-col size="3" class="ion-text-right">
           <strong>{{g.amount|priceFormat}}</strong>
+        </ion-col>
+        <ion-col size="3" class="ion-text-right">
+          <strong>{{g.lost|priceFormat}}</strong>
         </ion-col>
       </ion-row>
     </ion-list>

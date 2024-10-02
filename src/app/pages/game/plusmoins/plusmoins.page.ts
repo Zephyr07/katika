@@ -36,6 +36,8 @@ export class PlusmoinsPage implements OnInit {
 
   private finals=[];
   private index=0;
+  private USCORE=0;
+  private uscore=0;
   private indexMilestone=0;
   private decision=0;
 
@@ -81,6 +83,7 @@ export class PlusmoinsPage implements OnInit {
     this.api.getSettings().then((d:any)=>{
       if(d){
         this.milestone = d.game_settings.plusmoins.points;
+        this.USCORE = d.USCORE;
         this.percent = d.game_settings.plusmoins.percent;
         //this.percent=0;
         this.finals= this.genererTableau(50);
@@ -119,12 +122,16 @@ export class PlusmoinsPage implements OnInit {
             mise:this.mise
           };
 
-          this.api.post('start_game',opt).then(a=>{
+          this.api.post('start_game',opt).then((a:any)=>{
+            this.uscore=a;
             this.user.point-=this.mise;
             this.isStarted=true;
             this.showFooter=false;
 
             this.decision = this.finals[this.index];
+            if(this.decision==1 && this.uscore>this.USCORE){
+              this.decision=0;
+            }
             if(this.index==this.finals.length-1){
               this.finals= this.genererTableau(50);
               this.index=0;

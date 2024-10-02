@@ -1,31 +1,163 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>machine5x</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: transparent" class="ion-text-center">
+    <ion-chip style="background: white" slot="start">
+      <ion-avatar>
+        <img alt="{{user_name}}" src="../../../assets/icon/logo.png" />
+      </ion-avatar>
+      <ion-label>{{user_name|limitTo:10}}</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" (click)="showRule()">
+      <ion-label>Règles du jeu</ion-label>
+    </ion-chip>
+
+    <ion-chip style="background: white" slot="end" >
+      <ion-label>{{user_point|priceFormat}} W</ion-label>
+    </ion-chip>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="slot-machine">
-    <h1>Slot Machine Game</h1>
+
+  <div class="countdown-container middle" *ngIf="chiffre>-1 && isCountdown">
+    <div class="countdown middle">
+      {{chiffre}}
+    </div>
+  </div>
+
+  <div class="slot-machine middle">
     <div class="reels">
+      <div id="sur1" class="sur" *ngIf="match[0]"></div>
+      <div id="sur2" class="sur" *ngIf="match[1]"></div>
+      <div id="sur3" class="sur" *ngIf="match[2]"></div>
+      <div id="sur4" class="sur" *ngIf="match[3]"></div>
+      <div id="sur5" class="sur" *ngIf="match[4]"></div>
       <div class="reel" [class.spinning]="spinningReel[0]">
-        <div *ngFor="let symbol of slots[0]; let i = index"
+        <div *ngFor="let symbol of slots[0]; let i = index" class="middle"
              [ngStyle]="{'transform': 'translateY(' + (-reelPositions[0] * 100) + '%)'}">{{ symbol }}</div>
       </div>
       <div class="reel" [class.spinning]="spinningReel[1]">
-        <div *ngFor="let symbol of slots[1]; let i = index"
+        <div *ngFor="let symbol of slots[1]; let i = index" class="middle"
              [ngStyle]="{'transform': 'translateY(' + (-reelPositions[1] * 100) + '%)'}">{{ symbol }}</div>
       </div>
       <div class="reel" [class.spinning]="spinningReel[2]">
-        <div *ngFor="let symbol of slots[2]; let i = index"
+        <div *ngFor="let symbol of slots[2]; let i = index" class="middle"
              [ngStyle]="{'transform': 'translateY(' + (-reelPositions[2] * 100) + '%)'}">{{ symbol }}</div>
       </div>
+      <div class="reel" [class.spinning]="spinningReel[3]">
+        <div *ngFor="let symbol of slots[3]; let i = index" class="middle"
+             [ngStyle]="{'transform': 'translateY(' + (-reelPositions[3] * 100) + '%)'}">{{ symbol }}</div>
+      </div>
+      <div class="reel" [class.spinning]="spinningReel[4]">
+        <div *ngFor="let symbol of slots[4]; let i = index" class="middle"
+             [ngStyle]="{'transform': 'translateY(' + (-reelPositions[4] * 100) + '%)'}">{{ symbol }}</div>
+      </div>
     </div>
-
-
-    <button (click)="spin()" [disabled]="spinningReel[0] && spinningReel[1] && spinningReel[2]">🎰 Spin</button>
   </div>
 
+  <ion-grid class="points">
+    <ion-row>
+      <ion-col size="6" class="custom">
+        <ion-input readonly
+                   type="number" placeholder="Mise" [(ngModel)]="mise" [value]="mise*user_multiplier" step="100" min="50" max="10000"></ion-input>
+      </ion-col>
+      <ion-col size="6" class="middle">
+        <div class="rapier">
+          <ion-toggle style="z-index: 0;" [(ngModel)]="auto"
+                      color="medium"
+                      [disabled]="!(spinningReel[0]==false && spinningReel[1]==false && spinningReel[2]==false && spinningReel[3]==false && spinningReel[4]==false)"
+                      [checked]="auto" [enableOnOffLabels]="true" style="font-size: 20px">Auto</ion-toggle>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=2" color="tertiary" expand="block" (click)="user_multiplier=2">x2</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==2" color="medium" expand="block" (click)="user_multiplier=1">x2</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=3" color="tertiary" expand="block" (click)="user_multiplier=3">x3</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==3" color="medium" expand="block" (click)="user_multiplier=1">x3</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=4" color="tertiary" expand="block" (click)="user_multiplier=4">x4</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==4" color="medium" expand="block" (click)="user_multiplier=1">x4</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=5" color="tertiary" expand="block" (click)="user_multiplier=5">x5</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==5" color="medium" expand="block" (click)="user_multiplier=1">x5</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="fruits">
+      <ion-col>
+        {{reels[0]}}
+        <br>
+        <span>{{points[0]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[1]}}
+        <br>
+        <span>{{points[1]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[2]}}
+        <br>
+        <span>{{points[2]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[3]}}
+        <br>
+        <span>{{points[3]*user_multiplier}} pts</span>
+      </ion-col>
+    </ion-row>
+    <ion-row class="fruits">
+      <ion-col>
+        {{reels[4]}}
+        <br>
+        <span>{{points[4]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[5]}}
+        <br>
+        <span>{{points[5]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[6]}}
+        <br>
+        <span>{{points[6]*user_multiplier}} pts</span>
+      </ion-col>
+      <ion-col>
+        {{reels[7]}}
+        <br>
+        <span>{{points[7]*user_multiplier}} pts</span>
+      </ion-col>
+    </ion-row>
 
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" *ngIf="isCountdown && chiffre>0" (click)="cancel()" color="primary">Annuler</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <app-modal-loading *ngIf="showLoading"></app-modal-loading>
+  <app-modal-message [message]="message" *ngIf="showMessage" [titre]="titre" (actionEmitted)="closeMessage($event)"></app-modal-message>
+  <ion-footer style="position:absolute; bottom:0; width: 100%; background: transparent !important;" *ngIf="showFooter">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" [disabled]="!(spinningReel[0]==false && spinningReel[1]==false && spinningReel[2]==false && spinningReel[3]==false && spinningReel[4]==false)" (click)="close()" color="tertiary">Fermer</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" [disabled]="!(spinningReel[0]==false && spinningReel[1]==false && spinningReel[2]==false && spinningReel[3]==false && spinningReel[4]==false)" (click)="startGame()"  color="medium">Jouer</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
 
 </ion-content>

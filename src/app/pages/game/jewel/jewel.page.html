@@ -19,9 +19,12 @@
 
 <ion-content [fullscreen]="true">
   <ion-grid>
+
+  </ion-grid>
+  <ion-grid>
     <ion-row class="white">
       <ion-col class="rapier ion-text-center" style="font-size: 20px">
-        Points <br>
+        Score <br>
         <span>{{score}}</span>
       </ion-col>
       <ion-col class="rapier ion-text-center" style="font-size: 20px">
@@ -48,7 +51,7 @@
            (touchstart)="onTouchStart($event, i)"
            (touchmove)="onTouchMove($event)"
            (touchend)="onTouchEnd($event, i)"
-           id="grid{{i}}"
+           [attr.id]="'grid' + i"
       >
         <img *ngIf="item.name=='RED'" src="../../../../assets/img/jewel/red.png" />
         <img *ngIf="item.name=='GREEN'" src="../../../../assets/img/jewel/green.png" />

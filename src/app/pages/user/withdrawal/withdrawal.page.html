@@ -45,6 +45,8 @@
       <ion-col size="5">
         <strong *ngIf="s.amount>0">Recharge</strong>
         <strong *ngIf="!(s.amount>0)">Retrait</strong>
+        <br *ngIf="s.comment">
+        {{s.comment}}
         <br>
         {{s.date|dateFormat}}
       </ion-col>

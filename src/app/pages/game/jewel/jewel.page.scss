@@ -21,8 +21,27 @@ ion-content{
   width: 39px;
   height: 39px;
   user-select: none; /* Désactive la sélection de texte lors du drag */
-  transition: opacity 0.5s ease, transform 0.5s ease; /* Assure une transition fluide pour l'opacité et la transformation */
+  //transition: opacity 0.5s ease, transform 0.5s ease; /* Assure une transition fluide pour l'opacité et la transformation */
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
   touch-action: none; /* Pour désactiver les gestes tactiles par défaut */
+}
+.explode {
+  animation: explode 0.6s forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
 }
 
 .grid-item img {

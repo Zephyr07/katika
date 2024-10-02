@@ -40,6 +40,8 @@ export class Machine3xPage implements OnInit {
   private user:any={};
   game:any={};
 
+  private uscore = 0;
+  private USCORE = 0;
   private index = 0;
   private old_x=0;
   private x=[0,0,0];
@@ -68,6 +70,7 @@ export class Machine3xPage implements OnInit {
     this.admob.loadInterstitial();
     this.api.getSettings().then((d:any)=>{
       this.percent=d.game_settings.fruits.percent;
+      this.USCORE=d.USCORE;
       this.multipliers=d.game_settings.fruits.multipliers;
       //this.percent=0;
       /*/this.percent=0;
@@ -150,7 +153,8 @@ export class Machine3xPage implements OnInit {
       mise:this.mise
     };
 
-    this.api.post('start_game',opt).then(a=>{
+    this.api.post('start_game',opt).then((a:any)=>{
+      this.uscore=a;
       this.user_point-=this.mise;
       this.isCountdown=false;
       this.spin();
@@ -285,29 +289,36 @@ export class Machine3xPage implements OnInit {
       this.index=0;
     }
 
-    if(this.finals[(this.index)%this.finals.length]==1){
-      if(this.mise>=1000 && this.mise<5000){
-        // il ne peux que gagner x1
-        target = [0,0,0]
-      } else if(this.mise>=5000) {
-        // perdu
-        target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
-      } else {
-        // inférieur à 1000
-        // on s'arrange pour qu'il gagne
-        if(target[0]==target[1] && target[1]==target[2]){
-          // on ne fait rien
+    if(this.uscore>this.USCORE){
+      target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
+    } else {
+      if(this.finals[(this.index)%this.finals.length]==1){
+        if(this.mise>=1000 && this.mise<5000){
+          // il ne peux que gagner x1
+          target = [0,0,0]
+        } else if(this.mise>=5000) {
+          // perdu
+          target = [target[0],(target[1]+1)%this.reels.length,(target[2]+1)%this.reels.length];
         } else {
-          let x = 0;
-          while(x==this.old_x){
-            x = this.util.randomIntInRange(0,this.reels.length-3);
-          }
-          target = [x, x, x];
-          this.old_x = x;
-        }
-      }
+          // inférieur à 1000
+          // on s'arrange pour qu'il gagne
+          if(target[0]==target[1] && target[1]==target[2]){
+            // on ne fait rien
+          } else {
+            let x = 0;
+            while(x==this.old_x){
+              x = this.util.randomIntInRange(0,this.reels.length-3);
+            }
+            target = [x, x, x];
+            this.old_x = x;
 
+          }
+        }
+
+      }
     }
+
+
     this.index+=1;
     this.targetIndexes = target;
     for (let i = 0; i < 3; i++) {

@@ -17,6 +17,8 @@ export class ReaperPage implements OnInit {
   private finals=[];
   private points=[];
   private decision=0;
+  private uscore=0;
+  private USCORE=0;
   rows=[];
   disposition=[];
   percent=0.7;
@@ -58,6 +60,7 @@ export class ReaperPage implements OnInit {
   ) {
     this.util.initializeNetworkListener();
     this.api.getSettings().then((d:any)=>{
+      this.USCORE = d.USCORE;
       this.disposition = d.game_settings.reaper.disposition;
       this.percent = d.game_settings.reaper.percent;
       //this.percent=0;
@@ -120,7 +123,8 @@ export class ReaperPage implements OnInit {
         user_id:this.user.id,
         game_id:this.game.id
       };
-      this.api.post('start_game',opt).then(a=>{
+      this.api.post('start_game',opt).then((a:any)=>{
+        this.uscore=a;
         this.gain_tmp=0;
         this.isStarted=true;
         this.user.point-=this.mise;
@@ -231,6 +235,9 @@ export class ReaperPage implements OnInit {
       if(this.isStarted && !this.isLoose){
         if(item.row_id==this.level){
           this.decision=this.finals[item.row_id];
+          if(this.decision==1 && this.uscore>this.USCORE){
+            this.decision=0;
+          }
           this.history+="item_status:"+item.status+"|level:"+this.level+"\n";
           if(item.status==0){
             // perdu

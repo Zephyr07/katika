@@ -26,6 +26,8 @@ export class AviatorPage implements OnInit {
   history="";
 
   total_partie=0;
+  private uscore=0;
+  private USCORE=0;
   private timeInterval=15;
   multiplier: number = 1;
   private private_multiplier: number = 1;
@@ -92,6 +94,7 @@ export class AviatorPage implements OnInit {
     this.api.getSettings().then((d:any)=>{
       this.percent=d.game_settings.truck.percent;
       //this.percent=0;
+      this.USCORE=d.USCORE;
       this.lessThan10=d.game_settings.truck.lessThan10;
       this.lessThan1=d.game_settings.truck.lessThan1;
       this.lessThan2=d.game_settings.truck.lessThan2;
@@ -190,7 +193,8 @@ export class AviatorPage implements OnInit {
             mise:this.mise
           };
 
-          this.api.post('start_game',opt).then(a=>{
+          this.api.post('start_game',opt).then((a:any)=>{
+            this.uscore=a;
             this.user_point-=this.mise;
             this.prelevement+=this.mise;
             this.settings();
@@ -218,6 +222,9 @@ export class AviatorPage implements OnInit {
     //const index = Math.floor(Math.random() * this.series.length);
     this.target = this.series[this.index];
     this.decision = this.finals[this.index];
+    if(this.decision==1 && this.uscore>this.USCORE){
+      this.decision=0;
+    }
     if(this.index==this.series.length-1){
       this.series = this.getSeries(this.count);
       this.finals= this.genererTableau(this.count);

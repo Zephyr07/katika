@@ -32,6 +32,8 @@ export class ApplePage implements OnInit {
   game:any={};
 
   gain_tmp = 0;
+  private USCORE = 0;
+  private uscore = 0;
 
   titre="";
   message="";
@@ -105,7 +107,8 @@ export class ApplePage implements OnInit {
         user_id:this.user.id,
         game_id:this.game.id
       };
-      this.api.post('start_game',opt).then(a=>{
+      this.api.post('start_game',opt).then((a:any)=>{
+        this.uscore=a;
         this.gain_tmp=0;
         this.isStarted=true;
         this.user.point-=50;
@@ -153,6 +156,7 @@ export class ApplePage implements OnInit {
       this.api.getSettings().then((d:any)=>{
         if(d){
           this.disposition = d.game_settings.repear.disposition;
+          this.USCORE = d.USCORE;
           this.percent = d.game_settings.repear.percent;
           this.table = this.generateTable();
           this.finals = this.genererTableau(this.countRow);
@@ -227,6 +231,9 @@ export class ApplePage implements OnInit {
       if(this.isStarted && !this.isLoose){
         if(item.row_id==this.level){
           this.decision=this.finals[item.row_id];
+          if(this.decision==1 && this.uscore>this.USCORE){
+            this.decision=0;
+          }
           if(item.status==0){
             // perdu
             this.loose();

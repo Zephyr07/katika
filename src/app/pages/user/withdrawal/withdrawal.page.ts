@@ -139,6 +139,7 @@ export class WithdrawalPage implements OnInit {
         d.forEach(v=>{
           s.push({
             amount:-v.amount,
+            comment:v.comment,
             status:v.status,
             date:v.updated_at
           })
@@ -169,7 +170,7 @@ export class WithdrawalPage implements OnInit {
             role:'confirm',
             handler:(data)=>{
               if(!isNaN(data.phone) && data.phone <= NUMBER_RANGE.max && data.phone >= NUMBER_RANGE.min){
-                if(data.amount>=50){
+                if(data.amount>=500){
                   this.util.showLoading("treatment");
                   const opt = {
                     amount:data.amount,
@@ -198,7 +199,7 @@ export class WithdrawalPage implements OnInit {
                     this.util.handleError(q);
                   });
                 } else {
-                  this.util.doToast('Le montant doit être supérieur ou égale à 50',3000);
+                  this.util.doToast('Le montant doit être supérieur ou égale à 500',3000);
                 }
 
               } else {
@@ -241,7 +242,7 @@ export class WithdrawalPage implements OnInit {
     if(this.can_withdrawal){
       const alert = await this.alertController.create({
         header: 'Retrait',
-        message:"Entrez le numéro mobile money qui va recevoir le retrait et le nombre de point que vous souhaitez retirer. Le retrait minimum est de 500 points. Le temps de traitement des retraits est de 24h et les frais de retraits sont de 5% du montant.",
+        message:"Entrez le numéro mobile money qui va recevoir le retrait et le nombre de point que vous souhaitez retirer. Le retrait minimum est de 500 points. Le temps de traitement des retraits est de 72h et les frais de retraits sont de 5% du montant.",
         inputs: [
           {
             placeholder: "Points",

@@ -21,10 +21,12 @@ export class FortunePage implements OnInit,AfterViewInit {
   private decision=0;
 
   private finals=[];
-  private count = 50;
+  private count = 100;
   isStarted=false;
 
   mise = 50;
+
+  private uscore=0;
 
   isConnected=true;
   showFooter=true;
@@ -36,6 +38,8 @@ export class FortunePage implements OnInit,AfterViewInit {
   win_p2=[];
   win_p=[];
   lost_p=[];
+
+  USCORE=0;
 
   showLoading=true;
   is_katika=true;
@@ -68,6 +72,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     this.admob.loadInterstitial();
     this.api.getSettings().then((d:any)=>{
       this.is_katika = d.katika == 'true';
+      this.USCORE = d.USCORE;
       this.prices = d.game_settings.fortune.prices;
       this.percent = d.game_settings.fortune.percent;
       //this.percent=0;
@@ -234,11 +239,12 @@ export class FortunePage implements OnInit,AfterViewInit {
           user_id:this.user.id,
           game_id:this.game.id
         };
-        this.api.post('start_game',opt).then(a=>{
+        this.api.post('start_game',opt).then((a:any)=>{
           this.user.point-=this.mise;
           this.showFooter=false;
           this.isStarted=true;
           this.result.prize=undefined;
+          this.uscore=a;
           this.spinWheel();
         },q=>{
           this.util.handleError(q);
@@ -302,7 +308,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     ctx.fill();
     ctx.closePath();
 
-    // Effet 3D ombré autour de la roue
+    /*/ Effet 3D ombré autour de la roue
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
@@ -310,7 +316,7 @@ export class FortunePage implements OnInit,AfterViewInit {
     ctx.shadowOffsetX = 10;
     ctx.shadowOffsetY = 10;
     ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.stroke();
+    ctx.stroke();*/
   }
 
   spinWheel() {
@@ -378,6 +384,9 @@ export class FortunePage implements OnInit,AfterViewInit {
 
         // decision
         this.decision=this.finals[this.indexDec];
+        if(this.decision==1 && this.uscore>this.USCORE){
+          this.decision=0;
+        }
         this.indexDec=(this.indexDec+1)%this.finals.length;
         this.result = this.segments[selectedIndex];
         if(this.result.prize==undefined){

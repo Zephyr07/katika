@@ -21,14 +21,19 @@
 
         <img src="../../../assets/img/Joue-et-tente-de-gagner-25-08-2024.png" alt="" class="radius" >
       </ion-col>
-      <ion-col size="12" class="rapier ion-text-center" *ngIf="title!=''">
+      <ion-col size="12" class="rapier ion-text-center" *ngIf="tournament.active">
         <div class="cagnotte">
-          <span style="font-size: 23px">{{title}}</span> <br>
-          <span style="font-size: 40px; color:#fff">{{price}} {{devise}}</span>
+          <span style="font-size: 23px">{{tournament.title}}</span> <br>
+          <span style="font-size: 40px; color:#fff">{{tournament.price}} {{devise}}</span>
           <br>
-          <span>{{description}}</span>
+          <span>{{tournament.description}} : </span> <span class="white">{{tournament.game}}</span>
           <br>
-          <span>{{periode}}</span>
+          <span [innerHtml]="tournament.periode"></span>
+        </div>
+      </ion-col>
+      <ion-col size="12" class="rapier ion-text-center" *ngIf="!tournament.active">
+        <div class="cagnotte">
+          <span style="font-size: 23px">Aucun tournoi disponible</span>
         </div>
       </ion-col>
     </ion-row>

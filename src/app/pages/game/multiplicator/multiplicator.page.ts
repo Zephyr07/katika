@@ -43,6 +43,9 @@ export class MultiplicatorPage implements OnInit {
 
   private prices = [];
   private percent = 0;
+  private decision = 0;
+  private USCORE = 0;
+  private uscore = 0;
 
   result:any={};
 
@@ -76,6 +79,7 @@ export class MultiplicatorPage implements OnInit {
     this.api.getSettings().then((d:any)=>{
       this.texts = d.game_settings.multiplicator.prices;
       this.percent = d.game_settings.multiplicator.percent;
+      this.USCORE = d.USCORE;
       //this.percent=0.5;
       this.finals = this.genererTableau(this.count);
       for(let i=0;i<this.texts.length;i++){
@@ -217,7 +221,8 @@ export class MultiplicatorPage implements OnInit {
           user_id:this.user.id,
           game_id:this.game.id
         };
-        this.api.post('start_game',opt).then(a=>{
+        this.api.post('start_game',opt).then((a:any)=>{
+          this.uscore=a;
           this.user_point-=this.mise;
           this.showFooter=false;
           this.isStarted=true;
@@ -344,14 +349,18 @@ export class MultiplicatorPage implements OnInit {
       },
       complete: () => {
         this.showFooter = true;
-        if(this.finals[this.index]==0){
+        this.decision = this.finals[this.index];
+        if(this.decision==1 && this.uscore>this.USCORE){
+          this.decision=0;
+        }
+        if(this.decision==0){
           // perdu
           const x = this.util.randomIntInRange(0,this.tab01.length-1);
           this.highlightedSegment = this.tab01[x];
           if(this.recursif==3){
             this.recursif=1;
-            const x = this.util.randomIntInRange(0,this.tab1.length-1);
-            this.highlightedSegment = this.tab1[x];
+            const x = this.util.randomIntInRange(0,this.tab02.length-1);
+            this.highlightedSegment = this.tab02[x];
           } else {
             const x = this.util.randomIntInRange(0,this.tab0.length-1);
             this.highlightedSegment = this.tab0[x];

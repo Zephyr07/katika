@@ -22,6 +22,7 @@ export class GamePage implements OnInit {
     fortune:{},
     multiplicator:{},
     plusmoins:{},
+    bigslot:{},
 
   };
   showLoading=true;
@@ -79,6 +80,8 @@ export class GamePage implements OnInit {
       this.router.navigateByUrl('game/multiplicator');
     } else if(t=='plusmoins'){
       this.router.navigateByUrl('game/plusmoins');
+    } else if(t=='ace'){
+      this.router.navigateByUrl('game/machine5x');
     }
   }
 }
