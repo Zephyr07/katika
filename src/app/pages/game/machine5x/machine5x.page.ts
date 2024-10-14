@@ -306,7 +306,13 @@ export class Machine5xPage implements OnInit {
     //console.log(this.finals[this.index],target);
 
     if(this.uscore>this.USCORE && !this.game.is_challenge){
-      target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
+      target = [
+        this.util.randomIntInRange(0,3),
+        this.util.randomIntInRange(4,7),
+        this.util.randomIntInRange(0,3),
+        this.util.randomIntInRange(4,7),
+        this.util.randomIntInRange(0,3),
+      ];
     } else {
       if(this.finals[this.index]==1){
         if(this.mise>=1000 && this.mise<5000){
@@ -320,7 +326,13 @@ export class Machine5xPage implements OnInit {
           ]
         } else if(this.mise>=5000) {
           // perdu
-          target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
+          target = [
+            this.util.randomIntInRange(0,3),
+            this.util.randomIntInRange(4,7),
+            this.util.randomIntInRange(0,3),
+            this.util.randomIntInRange(4,7),
+            this.util.randomIntInRange(0,3),
+          ];
         } else {
           if(!this.checkTarget(target)){
             let x = 0;
@@ -337,10 +349,23 @@ export class Machine5xPage implements OnInit {
 
       } else {
         if(this.checkTarget(target)){
-          target = [target[0],(target[0]+1)%this.reels.length,(target[0]+2)%this.reels.length,(target[0]+3)%this.reels.length,(target[0]+4)%this.reels.length];
+          target = [
+            this.util.randomIntInRange(0,3),
+            this.util.randomIntInRange(4,7),
+            this.util.randomIntInRange(0,3),
+            this.util.randomIntInRange(4,7),
+            this.util.randomIntInRange(0,3),
+          ];
         } else {
           const x = this.util.randomIntInRange(0,2);
-          target=[4,x,x,5,7];
+          const y = this.util.randomIntInRange(0,2);
+          target=[
+            this.util.randomIntInRange(3,5),
+            x,
+            y,
+            this.util.randomIntInRange(6,7),
+            this.util.randomIntInRange(3,5),
+          ];
         }
       }
     }
