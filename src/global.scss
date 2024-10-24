@@ -783,7 +783,7 @@ ion-title{
 }
 
 ion-content {
-  --background: #f6f6f6 !important;
+  //--background: #f6f6f6 !important;
   padding-bottom: 30px !important;
 }
 
@@ -899,12 +899,12 @@ ion-menu-button, ion-back-button {
     text-align: center;
   }
   h4{
-    font-size: 15px !important;
+    font-size: 20px !important;
     margin-bottom: 0 !important;
     color:var(--ion-color-primary) !important;
   }
   p{
-    font-size: 12px;
+    //font-size: 12px;
     margin-top: 5px !important;
   }
 
@@ -1043,4 +1043,52 @@ app-modal-loading{
 
 .alert-sub-title{
   color:var(--ion-color-tertiary) !important;
+}
+.ion-page{
+  ion-content{
+    --background:transparent;
+  }
+}
+
+app-lucky.ion-page{
+  --background: url('/assets/img/lucky/bigs.png') no-repeat center/cover fixed !important;
+  background: url('/assets/img/lucky/bigs.png') no-repeat center/cover fixed !important;
+}
+
+app-home.ion-page{
+  --background: url('/assets/img/wallpaper/ka.jpeg') no-repeat center/cover fixed !important;
+  background: url('/assets/img/wallpaper/ka.jpeg') no-repeat center/cover fixed !important;
+}
+
+app-dice.ion-page{
+  --background: url('/assets/img/wallpaper/de.jpg') no-repeat center/cover fixed !important;
+  background: url('/assets/img/wallpaper/de.jpg') no-repeat center/cover fixed !important;
+}
+
+app-fortune.ion-page{
+  background: url('/assets/img/wallpaper/roue.jpg') no-repeat center/cover fixed !important;
+}
+
+app-jewel.ion-page{
+  background: url('/assets/img/wallpaper/jewel.png') no-repeat center/cover fixed !important;
+}
+
+app-machine5x.ion-page{
+  background: url('/assets/img/wallpaper/bigs.png') no-repeat center/cover fixed !important;
+}
+
+app-multiplicator.ion-page{
+  background: url('/assets/img/wallpaper/multiplicator.png') no-repeat center/cover fixed !important;
+}
+
+app-plusmoins.ion-page{
+  background: url('/assets/img/wallpaper/plusmoins.png') no-repeat center/cover fixed !important;
+}
+
+app-puzzle.ion-page{
+  background: url('/assets/img/wallpaper/crystal.png') no-repeat center/cover fixed !important;
+}
+
+app-reaper.ion-page{
+  background: url('/assets/img/wallpaper/reapers.jpeg') no-repeat center/cover fixed !important;
 }

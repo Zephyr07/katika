@@ -1,9 +1,9 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar style="--background:#f6f6f6 !important">
+  <ion-toolbar color="tertiary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" color="tertiary"></ion-back-button>
+      <ion-back-button defaultHref="/" color="medium"></ion-back-button>
     </ion-buttons>
-    <ion-title>Historique de score</ion-title>
+    <ion-title class="medium">Historique</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,7 +11,7 @@
   <ion-grid>
     <ion-row style="font-weight: bold">
       <ion-col size="5">Désignation</ion-col>
-      <ion-col size="3" class="ion-text-right">Montant</ion-col>
+      <ion-col size="3" class="ion-text-right">Points</ion-col>
       <ion-col size="4" class="ion-text-right">Date</ion-col>
     </ion-row>
     <ion-row *ngFor="let s of items" style="font-size: 12px">

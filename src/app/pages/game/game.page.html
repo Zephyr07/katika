@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/" color="tertiary"></ion-back-button>
     </ion-buttons>
-    <ion-chip>
+    <ion-chip style="background: rgb(224, 224, 224)">
       <ion-avatar>
         <img alt="{{user.user_name}}" src="../../../assets/icon/logo.png" />
       </ion-avatar>
       <ion-label>{{user.user_name}}</ion-label>
     </ion-chip>
 
-    <ion-chip slot="end">
+    <ion-chip style="background: rgb(224, 224, 224)" slot="end">
       <ion-label>{{user.point|priceFormat}} W</ion-label>
     </ion-chip>
   </ion-toolbar>
@@ -24,48 +24,47 @@
     </div>
 
     <ion-row class=" ion-text-center">
-      <ion-col (click)="goToGame('puzzle')" size="4" *ngIf="games.crystal.status=='enable'">
-        <img src="../../../assets/img/wz/game/crystal.png"alt="" class="radius shadow">
+      <ion-col (click)="goToGame('trefle')" size="4" *ngIf="games.lucky.status=='enable'">
+        <img src="../../../assets/img/wz/game/trefle.jpeg" alt="" class="radius shadow">
         <br>
-        <img src="../../../assets/img/Crystal-26-08-2024.png" alt="" class="radius" style="width: 80%">
+        <img src="../../../assets/img/Lucky-24-10-2024.png" alt="" class="radius" style="width: 67%">
+      </ion-col>
+      <ion-col (click)="goToGame('ace')" size="4" *ngIf="games.bigslot.status=='enable'">
+        <img src="../../../assets/img/wz/game/ace.jpeg" alt="" class="radius shadow">
+        <br>
+        <img src="../../../assets/img/Ace-Slots-02-10-2024.png" alt="" class="radius">
       </ion-col>
       <ion-col (click)="goToGame('crash')" size="4" *ngIf="games.truck.status=='enable'">
-        <img src="../../../assets/img/wz/game/truck.png"alt="" class="radius shadow">
+        <img src="../../../assets/img/wz/game/truck.png" alt="" class="radius shadow">
         <br>
         <img src="../../../assets/img/Truck-Crash-26-08-2024.png" alt="">
       </ion-col>
       <ion-col (click)="goToGame('fortune')" size="4" *ngIf="games.fortune.status=='enable'">
-        <img src="../../../assets/img/wz/game/roue.png"alt="" class="radius shadow">
+        <img src="../../../assets/img/wz/game/roue.png" alt="" class="radius shadow">
         <br>
         <img src="../../../assets/img/Roue-du-Bonheur-26-08-2024.png" alt="">
       </ion-col>
 
-      <ion-col (click)="goToGame('memory')" size="4" *ngIf="games.memory.status=='enable'">
-        <img src="../../../assets/img/wz/game/memory.png"alt="" class="radius shadow">
-        <br>
-        <img src="../../../assets/img/Memory-26-08-2024.png" alt="" class="radius" style="width: 80%">
-      </ion-col>
-      <ion-col (click)="goToGame('bats')" size="4" *ngIf="games.bats.status=='enable'">
-        <img src="../../../assets/img/wz/game/10.png"alt="" class="radius shadow">
-        <br>
-        <img src="../../../assets/img/Bats-10-26-08-2024.png" alt="" class="radius" style="width: 80%">
-      </ion-col>
 
       <ion-col (click)="goToGame('fruits')" size="4" *ngIf="games.fruits.status=='enable'">
         <img src="../../../assets/icon/game/fruits.png" alt="" class="radius shadow">
         <br>
         <img src="../../../assets/img/Fruits-Slots-18-09-2024.png" alt="" class="radius" style="width: 100%">
       </ion-col>
-
-      <ion-col (click)="goToGame('dices')" size="4" *ngIf="games.dice.status=='enable'">
-        <img src="../../../assets/img/wz/game/dices.png"alt="" class="radius shadow">
+      <ion-col (click)="goToGame('puzzle')" size="4" *ngIf="games.crystal.status=='enable'">
+        <img src="../../../assets/img/wz/game/crystal.png"alt="" class="radius shadow">
         <br>
-        <img src="../../../assets/img/Dices-06-09-2024.png" alt="" class="radius" style="width: 80%">
+        <img src="../../../assets/img/Crystal-26-08-2024.png" alt="" class="radius" style="width: 80%">
+      </ion-col>
+      <ion-col (click)="goToGame('dices')" size="4" *ngIf="games.dice.status=='enable'">
+        <img src="../../../assets/img/wz/game/dices.png" alt="" class="radius shadow">
+        <br>
+        <img src="../../../assets/img/Dices-24-10-2024.png" alt="" class="radius" style="width: 67%">
       </ion-col>
       <ion-col (click)="goToGame('jewel')" size="4" *ngIf="games.jewel.status=='enable'">
         <img src="../../../assets/img/wz/game/jewel.png" alt="" class="radius shadow">
         <br>
-        <img src="../../../assets/img/Jewel-10-09-2024.png" alt="" class="radius" style="width: 80%">
+        <img src="../../../assets/img/Jewel-10-09-2024.png" alt="" class="radius" style="width: 72%">
       </ion-col>
       <ion-col (click)="goToGame('reaper')" size="4" *ngIf="games.reaper.status=='enable'">
         <img src="../../../assets/img/wz/game/reapers.png" alt="" class="radius shadow">
@@ -82,11 +81,17 @@
         <br>
         <img src="../../../assets/img/-ou-19-09-2024.png" alt="" class="radius" style="width: 80%">
       </ion-col>
-      <ion-col (click)="goToGame('ace')" size="4" *ngIf="games.bigslot.status=='enable'">
-        <img src="../../../assets/img/wz/game/ace.jpeg" alt="" class="radius shadow">
+      <ion-col (click)="goToGame('memory')" size="4" *ngIf="games.memory.status=='enable'">
+        <img src="../../../assets/img/wz/game/memory.png" alt="" class="radius shadow">
         <br>
-        <img src="../../../assets/img/Ace-Slots-02-10-2024.png" alt="" class="radius">
+        <img src="../../../assets/img/Memory-26-08-2024.png" alt="" class="radius" style="width: 80%">
       </ion-col>
+      <ion-col (click)="goToGame('bats')" size="4" *ngIf="games.bats.status=='enable'">
+        <img src="../../../assets/img/wz/game/10.png" alt="" class="radius shadow">
+        <br>
+        <img src="../../../assets/img/Bats-10-26-08-2024.png" alt="" class="radius" style="width: 80%">
+      </ion-col>
+
     </ion-row>
   </ion-grid>
 </ion-content>

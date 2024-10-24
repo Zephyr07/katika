@@ -32,7 +32,7 @@ export class LoadingPage implements OnInit {
       }
       if(d.maintenance==true){
         this.isMaintenance=true;
-      } else if(environment.code != this.version){
+      } else if(environment.code < this.version){
         // mise à jour disponible
         if(this.platform.is('ios')){
           this.link=d.ios.link;

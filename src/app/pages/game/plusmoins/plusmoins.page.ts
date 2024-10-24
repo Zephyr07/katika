@@ -158,7 +158,9 @@ export class PlusmoinsPage implements OnInit {
     while(this.face == face){
       face = parseInt(this.util.randomInRange(6,1)+'');
     }
-
+    if(this.game.is_challenge){
+      this.decision=1;
+    }
     if(this.decision==0){
       if(this.choix=='egal'){
         while(face+face2==7){

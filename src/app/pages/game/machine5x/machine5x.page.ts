@@ -109,46 +109,52 @@ export class Machine5xPage implements OnInit {
   }
 
   startGame() {
-    this.match=[false,false,false,false,false];
-    this.showFooter=false;
-    this.showMessage=false;
-    if(this.mise>=this.game.fees){
+    if(this.mise<=10000){
+      this.match=[false,false,false,false,false];
+      this.showFooter=false;
+      this.showMessage=false;
+      if(this.mise>=this.game.fees){
 
-      if(this.user.point==undefined || this.user.point<this.mise){
-        this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
-        this.isCountdown=false;
-        clearInterval(this.countdownInterval);
-        this.chiffre=5;
-        this.isStarted=false;
-        this.auto=false;
-        this.showFooter=true;
-      } else {
-        this.showFooter=false;
-        if(this.auto){
-          this.showFooter=false;
-          this.isCountdown=true;
-          this.chiffre=3;
-          this.countdownInterval = setInterval(()=>{
-            this.chiffre--;
-            if(this.chiffre==0){
-              this.start();
-            }
-            if(this.chiffre==-1){
-              this.isCountdown=false;
-              clearInterval(this.countdownInterval);
-            }
-          },1000);
+        if(this.user.point==undefined || this.user.point<this.mise){
+          this.util.doToast('Pas assez de point pour commencer à jouer. Veuillez contacter le katika depuis votre compte',5000);
+          this.isCountdown=false;
+          clearInterval(this.countdownInterval);
+          this.chiffre=5;
+          this.isStarted=false;
+          this.auto=false;
+          this.showFooter=true;
         } else {
-          this.start();
+          this.showFooter=false;
+          if(this.auto){
+            this.showFooter=false;
+            this.isCountdown=true;
+            this.chiffre=3;
+            this.countdownInterval = setInterval(()=>{
+              this.chiffre--;
+              if(this.chiffre==0){
+                this.start();
+              }
+              if(this.chiffre==-1){
+                this.isCountdown=false;
+                clearInterval(this.countdownInterval);
+              }
+            },1000);
+          } else {
+            this.start();
+          }
         }
+      } else {
+
+        this.showMessage=true;
+        this.showFooter=true;
+        this.titre="Mise insuffisante";
+        this.message="La mise doit être comprise entre "+this.game.fees+" et 10 000";
       }
     } else {
-      
-      this.showMessage=true;
-      this.showFooter=true;
-      this.titre="Mise insuffisante";
+      this.titre="Modifier votre mise";
       this.message="La mise doit être comprise entre "+this.game.fees+" et 10 000";
     }
+
   }
 
   start(){
@@ -159,7 +165,7 @@ export class Machine5xPage implements OnInit {
     };
 
     this.api.post('start_game',opt).then((a:any)=>{
-      
+      //console.log(a);
       this.uscore=a;
       this.user_point-=this.mise*this.user_multiplier;
       this.isCountdown=false;
@@ -316,22 +322,22 @@ export class Machine5xPage implements OnInit {
     } else {
       if(this.finals[this.index]==1){
         if(this.mise>=1000 && this.mise<5000){
-          // il ne peux que gagner x1
+          // il ne peux que gagner x2
           target = [
-            this.util.randomIntInRange(0,1),
-            this.util.randomIntInRange(0,1),
             this.util.randomIntInRange(0,2),
-            this.util.randomIntInRange(0,1),
-            this.util.randomIntInRange(0,1),
+            this.util.randomIntInRange(0,2),
+            this.util.randomIntInRange(3,7),
+            this.util.randomIntInRange(0,2),
+            this.util.randomIntInRange(0,2),
           ]
         } else if(this.mise>=5000) {
           // perdu
           target = [
             this.util.randomIntInRange(0,3),
             this.util.randomIntInRange(4,7),
-            this.util.randomIntInRange(0,3),
-            this.util.randomIntInRange(4,7),
-            this.util.randomIntInRange(0,3),
+            this.util.randomIntInRange(2,3),
+            this.util.randomIntInRange(0,1),
+            this.util.randomIntInRange(0,1),
           ];
         } else {
           if(!this.checkTarget(target)){

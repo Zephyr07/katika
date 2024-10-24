@@ -88,48 +88,66 @@
         <ion-button [disabled]="isStarted" *ngIf="user_multiplier==10" color="medium" expand="block" (click)="user_multiplier=1">x10</ion-button>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=15" color="tertiary" expand="block" (click)="user_multiplier=15">x15</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==15" color="medium" expand="block" (click)="user_multiplier=1">x15</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=25" color="tertiary" expand="block" (click)="user_multiplier=25">x25</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==25" color="medium" expand="block" (click)="user_multiplier=1">x25</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=50" color="tertiary" expand="block" (click)="user_multiplier=50">x50</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==50" color="medium" expand="block" (click)="user_multiplier=1">x50</ion-button>
+      </ion-col>
+      <ion-col size="3">
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier!=100" color="tertiary" expand="block" (click)="user_multiplier=100">x100</ion-button>
+        <ion-button [disabled]="isStarted" *ngIf="user_multiplier==100" color="medium" expand="block" (click)="user_multiplier=1">x100</ion-button>
+      </ion-col>
+    </ion-row>
     <ion-row class="fruits">
       <ion-col>
         {{reels[0]}}
         <br>
-        <span>{{points[0]*user_multiplier}} pts</span>
+        <span>{{points[0]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[1]}}
         <br>
-        <span>{{points[1]*user_multiplier}} pts</span>
+        <span>{{points[1]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[2]}}
         <br>
-        <span>{{points[2]*user_multiplier}} pts</span>
+        <span>{{points[2]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[3]}}
         <br>
-        <span>{{points[3]*user_multiplier}} pts</span>
+        <span>{{points[3]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
     </ion-row>
     <ion-row class="fruits">
       <ion-col>
         {{reels[4]}}
         <br>
-        <span>{{points[4]*user_multiplier}} pts</span>
+        <span>{{points[4]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[5]}}
         <br>
-        <span>{{points[5]*user_multiplier}} pts</span>
+        <span>{{points[5]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[6]}}
         <br>
-        <span>{{points[6]*user_multiplier}} pts</span>
+        <span>{{points[6]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
       <ion-col>
         {{reels[7]}}
         <br>
-        <span>{{points[7]*user_multiplier}} pts</span>
+        <span>{{points[7]*user_multiplier|priceFormat}} pts</span>
       </ion-col>
     </ion-row>
 

@@ -1,4 +1,7 @@
-
+ion-content {
+  --background: #f6f6f6 !important;
+  padding-bottom: 30px !important;
+}
 h3 {
   color: var(--ion-color-primary);
   //font-size: 12px;

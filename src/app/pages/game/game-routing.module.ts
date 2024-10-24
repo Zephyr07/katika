@@ -59,6 +59,10 @@ const routes: Routes = [
   {
     path: 'plusmoins',
     loadChildren: () => import('./plusmoins/plusmoins.module').then( m => m.PlusmoinsPageModule)
+  },
+  {
+    path: 'lucky',
+    loadChildren: () => import('./lucky/lucky.module').then( m => m.LuckyPageModule)
   }
 
 ];

@@ -160,7 +160,9 @@ export class DicePage implements OnInit {
     while(this.face == face){
       face = parseInt(this.util.randomInRange(6,1)+'');
     }
-
+    if(this.game.is_challenge){
+      this.decision=1;
+    }
     if(this.decision==0){
       if(this.choix_decision=='egal'){
         while(face+face2==this.choix_result){

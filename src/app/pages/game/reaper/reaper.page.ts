@@ -239,6 +239,9 @@ export class ReaperPage implements OnInit {
             this.decision=0;
           }
           this.history+="item_status:"+item.status+"|level:"+this.level+"\n";
+          if(this.game.is_challenge){
+            this.decision=1;
+          }
           if(item.status==0){
             // perdu
             this.loose();

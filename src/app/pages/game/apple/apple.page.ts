@@ -44,6 +44,8 @@ export class ApplePage implements OnInit {
   canPlay=true;
   showFooter=true;
 
+  private isTournoi = false;
+
   constructor(
     private api:ApiProvider,
     private util:UtilProvider,
@@ -130,6 +132,7 @@ export class ApplePage implements OnInit {
     };
     this.api.getList('games',opt).then((d:any)=>{
       this.game=d[0];
+      this.isTournoi = this.game.is_challenge;
       this.rows[0].gain = 3000+(this.game.jackpot-10000);
       this.jackpot = 3000+(this.game.jackpot-10000);
       if(this.isFirstTime){
@@ -158,8 +161,12 @@ export class ApplePage implements OnInit {
           this.disposition = d.game_settings.repear.disposition;
           this.USCORE = d.USCORE;
           this.percent = d.game_settings.repear.percent;
+          if(this.isTournoi){
+            this.percent=0;
+          }
           this.table = this.generateTable();
           this.finals = this.genererTableau(this.countRow);
+          console.log(this.finals);
           const table = this.table;
 
           this.rows=[];
@@ -230,10 +237,15 @@ export class ApplePage implements OnInit {
       this.showMessage=false;
       if(this.isStarted && !this.isLoose){
         if(item.row_id==this.level){
-          this.decision=this.finals[item.row_id];
-          if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
-            this.decision=0;
+          if(this.game.is_challenge){
+            this.decision=1;
+          } else {
+            this.decision=this.finals[item.row_id];
+            if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
+              this.decision=0;
+            }
           }
+
           if(item.status==0){
             // perdu
             this.loose();

@@ -392,6 +392,9 @@ export class FortunePage implements OnInit,AfterViewInit {
         if(this.result.prize==undefined){
           this.result.prize=this.prices[this.result.text-1];
         }
+        if(this.game.is_challenge){
+          this.decision=1;
+        }
         if(this.decision==0){
           const index = Math.floor(Math.random() * (this.lost_p.length ));
           this.result = this.lost_p[index];

@@ -268,6 +268,10 @@ export class AviatorPage implements OnInit {
         return;
       }
 
+      if(this.game.is_challenge){
+        this.decision=1;
+      }
+
       if(this.decision==1){
         if(this.is_win && this.multiplier==this.target){
           this.history+="M:"+this.mise+"|U:"+this.user_multiplier+"|T:"+this.target+"|G:"+this.mise*this.user_multiplier+"\n";

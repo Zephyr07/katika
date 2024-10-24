@@ -82,10 +82,13 @@ export class MultiplicatorPage implements OnInit {
       this.USCORE = d.USCORE;
       //this.percent=0.5;
       this.finals = this.genererTableau(this.count);
+
       for(let i=0;i<this.texts.length;i++){
         const x = parseInt(this.texts[i].split("x")[1]);
         if(x==0){
           this.tab0.push(i);
+        } else {
+          this.win_p.push(i);
         }
         if(x==1){
           this.tab1.push(i);
@@ -353,47 +356,55 @@ export class MultiplicatorPage implements OnInit {
         if(this.decision==1 && this.uscore>this.USCORE && !this.game.is_challenge){
           this.decision=0;
         }
-        if(this.decision==0){
-          // perdu
-          const x = this.util.randomIntInRange(0,this.tab01.length-1);
-          this.highlightedSegment = this.tab01[x];
-          if(this.recursif==3){
-            this.recursif=1;
-            const x = this.util.randomIntInRange(0,this.tab02.length-1);
-            this.highlightedSegment = this.tab02[x];
-          } else {
-            const x = this.util.randomIntInRange(0,this.tab0.length-1);
-            this.highlightedSegment = this.tab0[x];
-            this.recursif++;
-          }
+        if(this.game.is_challenge){
+          // on gagne
+          const x = this.util.randomIntInRange(0,this.win_p.length-1);
+          this.highlightedSegment = this.win_p[x];
         } else {
-          // gain en fonction de la mise
-          if(this.mise>=50 && this.mise<100){
-            if(this.finals[this.index]==2){
-              // on peut aller jusqu'a 100
-              const x = this.util.randomIntInRange(0,this.tab0100.length-1);
-              this.highlightedSegment = this.tab0100[x];
-            } else {
-              const x = this.util.randomIntInRange(0,this.tab010.length-1);
-              this.highlightedSegment = this.tab010[x];
-            }
-          } else if(this.mise>=100 && this.mise<=500){
-            const x = this.util.randomIntInRange(0,this.tab010.length-1);
-            this.highlightedSegment = this.tab010[x];
-          } else if(this.mise>500 && this.mise<=1000){
-            const x = this.util.randomIntInRange(0,this.tab05.length-1);
-            this.highlightedSegment = this.tab05[x];
-          } else if(this.mise>1000 && this.mise<5000){
-            const x = this.util.randomIntInRange(0,this.tab02.length-1);
-            this.highlightedSegment = this.tab02[x];
-          } else if (this.mise>=5000 && this.mise<10000){
+          if(this.decision==0){
+            // perdu
             const x = this.util.randomIntInRange(0,this.tab01.length-1);
             this.highlightedSegment = this.tab01[x];
-          } else if (this.mise>=10000){
-            const x = this.util.randomIntInRange(0,this.tab0.length-1);
-            this.highlightedSegment = this.tab0[x];
+            if(this.recursif==3){
+              this.recursif=1;
+              const x = this.util.randomIntInRange(0,this.tab02.length-1);
+              this.highlightedSegment = this.tab02[x];
+            } else {
+              const x = this.util.randomIntInRange(0,this.tab0.length-1);
+              this.highlightedSegment = this.tab0[x];
+              this.recursif++;
+            }
+          } else {
+            // gain en fonction de la mise
+            if(this.mise>=50 && this.mise<100){
+              if(this.finals[this.index]==2){
+                // on peut aller jusqu'a 100
+                const x = this.util.randomIntInRange(0,this.tab0100.length-1);
+                this.highlightedSegment = this.tab0100[x];
+              } else {
+                const x = this.util.randomIntInRange(0,this.tab010.length-1);
+                this.highlightedSegment = this.tab010[x];
+              }
+            } else if(this.mise>=100 && this.mise<=500){
+              const x = this.util.randomIntInRange(0,this.tab010.length-1);
+              this.highlightedSegment = this.tab010[x];
+            } else if(this.mise>500 && this.mise<=1000){
+              const x = this.util.randomIntInRange(0,this.tab05.length-1);
+              this.highlightedSegment = this.tab05[x];
+            } else if(this.mise>1000 && this.mise<5000){
+              const x = this.util.randomIntInRange(0,this.tab02.length-1);
+              this.highlightedSegment = this.tab02[x];
+            } else if (this.mise>=5000 && this.mise<10000){
+              const x = this.util.randomIntInRange(0,this.tab01.length-1);
+              this.highlightedSegment = this.tab01[x];
+            } else if (this.mise>=10000){
+              const x = this.util.randomIntInRange(0,this.tab0.length-1);
+              this.highlightedSegment = this.tab0[x];
+            }
+
           }
         }
+
         this.isStarted=false;
         const multiplier = parseInt(this.texts[this.highlightedSegment].split('x')[1]);
         //console.log("apres",this.highlightedSegment,this.texts[this.highlightedSegment],multiplier);

@@ -675,4 +675,29 @@ export class UtilProvider {
 
     return array;
   }
+
+  genererTableau(X: number,percent): number[] {
+    const tableau: number[] = [];
+
+    const nbZeros = Math.floor(X * percent); // Calcul du nombre de 0 (70%)
+    const nbUn = X - nbZeros; // Le reste sera des 1
+
+    // Ajouter 0 au tableau
+    for (let i = 0; i < nbZeros; i++) {
+      tableau.push(0);
+    }
+
+    // Ajouter 1 au tableau
+    for (let i = 0; i < nbUn; i++) {
+      tableau.push(1);
+    }
+
+    // Mélanger le tableau de manière aléatoire pour répartir les 0 et 1
+    for (let i = tableau.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tableau[i], tableau[j]] = [tableau[j], tableau[i]]; // Échange des éléments
+    }
+
+    return tableau;
+  }
 }
