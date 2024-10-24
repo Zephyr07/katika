@@ -84,8 +84,10 @@ export class LuckyPage implements OnInit {
 
   startGame(){
     this.showMessage=false;
+    this.isStarted=true;
     if(this.user.point==undefined || this.user.point<this.mise){
       this.util.doToast('Pas assez de W point pour commencer à jouer. Veuillez recharger votre compte',5000);
+      this.isStarted=false;
     } else {
 
       if(this.isConnected){
@@ -97,7 +99,6 @@ export class LuckyPage implements OnInit {
         this.api.post('start_game',opt).then((a:any)=>{
           this.user.point-=this.mise;
           this.showFooter=false;
-          this.isStarted=true;
           this.uscore=a;
           this.user_choice=-1;
           this.isStarted=true;
@@ -106,6 +107,7 @@ export class LuckyPage implements OnInit {
           this.util.handleError(q);
         });
       } else {
+        this.isStarted=false;
         this.showMessage=true;
         this.titre="Vous n'êtes pas connecté";
         this.message="Connectez-vous à internet pour continuer à jouer";
