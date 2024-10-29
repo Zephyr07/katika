@@ -34,7 +34,7 @@ export class AppComponent {
     this.splash();
     moment.locale('fr');
     if(isCordovaAvailable()){
-      this.majeur()
+      this.majeur();
       ScreenOrientation.lock({ orientation: 'portrait' });
       this.OneSignalInit();
       this.notif.init();

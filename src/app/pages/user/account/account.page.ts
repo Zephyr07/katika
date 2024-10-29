@@ -235,6 +235,7 @@ export class AccountPage implements OnInit {
                   id:this.user.id,
                   phone:this.user.phone,
                   email:this.user.email,
+                  user_name:this.user.user_name,
                   current_password:data.current_password,
                   password_confirmation:data.password_confirmation,
                   password:data.password,
@@ -244,6 +245,7 @@ export class AccountPage implements OnInit {
                 this.auth.update_info(opt).then((d:any)=>{
                   this.util.hideLoading();
                   this.util.doToast("password_updated",5000);
+                  this.logout();
                 })
               } else {
                 this.util.hideLoading();

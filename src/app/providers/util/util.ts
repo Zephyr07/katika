@@ -166,7 +166,7 @@ export class UtilProvider {
     if(!status.connected){
       this.doToast("Vous devez être connecté à internet pour pouvoir continuer",'3000','light','top');
     } else {
-      console.log(JSON.stringify(q),q);
+
       if(q.response){
         q=q.response;
       }
@@ -174,6 +174,7 @@ export class UtilProvider {
         // crypté
         q.data = this.decryptAESData(JSON.stringify(q.data));
       }
+      console.log(JSON.stringify(q),q);
       if (q.data.status_code === 401) {
         if(q.data.errors.message[0]=="These credentials do not match our records."){
           this.doToast('bad_credential',3000,'danger');

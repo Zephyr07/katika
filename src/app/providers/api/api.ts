@@ -128,10 +128,19 @@ export class ApiProvider {
     })
   }
 
-  public post(target:string,data:any){
+  public post(target:string,data:any,is_crypt?:boolean){
     return new Promise((resolve, reject) => {
-      http.post(target,data).then(d=>{
-        resolve(d);
+      let crypt = this.util.encryptAESData(data);
+      if(is_crypt && is_crypt==true){
+        crypt = data;
+      }
+      //let crypt = this.util.encryptAESData(data);
+      http.post(target,{value:crypt}).then(d=>{
+        let data = this.util.decryptAESData(JSON.stringify(d));
+        if(is_crypt && is_crypt==true){
+          data = d;
+        }
+        resolve(data);
       }, q=>{
         reject(q);
       });
@@ -140,7 +149,8 @@ export class ApiProvider {
 
   public put(target:string,id:number,data:any){
     return new Promise((resolve, reject) => {
-      http.put(target+'/'+id,data).then(d=>{
+      let crypt = this.util.encryptAESData(data);
+      http.put(target+'/'+id,crypt).then(d=>{
         resolve(d);
       }, q=>{
         reject(q);

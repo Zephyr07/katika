@@ -36,7 +36,7 @@ export class AuthProvider {
     //this.permissionsService.flushPermissions();
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/signin',{value:crypt})
+      this.api.post('auth/signin',crypt,true)
         .then( (response:any) => {
           const data = this.util.decryptAESData(JSON.stringify(response));
           this.storeSession(data);
@@ -77,7 +77,7 @@ d
     //this.permissionsService.flushPermissions();
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/activate',{value:crypt})
+      this.api.post('auth/activate',crypt,true)
         .then( (response) => {
           const data = this.util.decryptAESData(JSON.stringify(response));
           this.storeSession(data);
@@ -112,7 +112,7 @@ d
     //this.permissionsService.flushPermissions();
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/delete',{value:crypt})
+      this.api.post('auth/delete',crypt,true)
         .then( (response) => {
           this.logout();
           /*angular.forEach(data.userRole, function (value) {
@@ -146,7 +146,7 @@ d
     settings?:any, onesignal_id?:string, promo_code_id?:number}) {
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/signup',{value:crypt})
+      this.api.post('auth/signup',crypt,true)
         .then( (response) => {
           const data = this.util.decryptAESData(JSON.stringify(response));
           /*localStorage.setItem(this.token_key, data.token);
@@ -206,7 +206,7 @@ d
   }) {
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/update_info',{value:crypt})
+      this.api.post('auth/update_info',crypt,true)
         .then((response) => {
           const data = this.util.decryptAESData(JSON.stringify(response));
           //localStorage.setItem(this.token_key, JSON.stringify(data.token));
@@ -226,7 +226,7 @@ d
     id: number, phone: number, email: string, point:number}) {
     return new Promise((resolve, reject) => {
       let crypt = this.util.encryptAESData(credentials);
-      this.api.post('auth/update_point',{value:crypt})
+      this.api.post('auth/update_point',crypt,true)
         .then((response:any) => {
           const data = response.data;
           resolve(data);

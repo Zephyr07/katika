@@ -199,7 +199,7 @@ export class DashboardPage implements OnInit {
           v.lost=0;
           this.dep_user+=v.amount;
         });
-        this.api.getList('best_game',opt).then((e:any)=>{
+        this.api.getList('best_game',{}).then((e:any)=>{
           for (const s in e) {
             let g= _.find( d, {name:s});
             if (e.hasOwnProperty(s)) {
