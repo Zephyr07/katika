@@ -343,6 +343,9 @@ export class HomePage implements OnInit {
     } else if (this.password.length<8){
       this.util.doToast("Le mot de passe doit contenir 8 caractères",3000, 'danger');
       return false;
+    } else if (this.password != this.password_confirmation ){
+      this.util.doToast("Les mots de passe ne correspondent pas",3000, 'danger');
+      return false;
     } else {
       return true
     }

@@ -33,12 +33,13 @@ export class ActivatedAccountPage implements OnInit {
   }
 
   active() {
+    const code = parseInt((this.code+" ").trim());
     if(this.code<100000 || this.code >999999){
       this.util.doToast('Erreur sur le code d\'activation',3000,'light');
     } else {
       this.util.showLoading('Activation');
       const opt ={
-        code:this.code,
+        code,
         user_id:this.user.id
       };
       this.auth.activate(opt).then(d=>{

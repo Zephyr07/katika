@@ -30,7 +30,7 @@ export class LoadingPage implements OnInit {
         // redirection vers play store
         this.version=d.android.version;
       }
-      if(d.maintenance==true){
+      if(d.maintenance=='true'){
         this.isMaintenance=true;
       } else if(environment.code < this.version){
         // mise à jour disponible
