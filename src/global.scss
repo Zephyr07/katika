@@ -874,7 +874,7 @@ ion-menu-button, ion-back-button {
 .modal-message{
   //position: absolute;
   width: 300px;
-  height: 30%;
+  height: 40%;
   background: url('/assets/img/default_meselamp.png') no-repeat center/cover fixed !important;
   //top: 30%;
   //left: 8%;
@@ -1091,4 +1091,8 @@ app-puzzle.ion-page{
 
 app-reaper.ion-page{
   background: url('/assets/img/wallpaper/reapers.jpeg') no-repeat center/cover fixed !important;
+}
+
+app-tile-2048.ion-page{
+  background: #bbada0 !important;
 }

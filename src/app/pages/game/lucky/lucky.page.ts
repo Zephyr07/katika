@@ -83,6 +83,7 @@ export class LuckyPage implements OnInit {
   }
 
   startGame(){
+    this.user_choice=-1;
     this.showMessage=false;
     this.isStarted=true;
     if(this.user.point==undefined || this.user.point<this.mise){
@@ -103,6 +104,8 @@ export class LuckyPage implements OnInit {
           this.user_choice=-1;
           this.isStarted=true;
           this.dispositions = this.util.shuffleArray(this.dispositions);
+          this.dispositions = this.util.shuffleArray(this.dispositions);
+          console.log(this.dispositions);
         },q=>{
           this.util.handleError(q);
         });

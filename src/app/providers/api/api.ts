@@ -136,6 +136,7 @@ export class ApiProvider {
       }
       //let crypt = this.util.encryptAESData(data);
       http.post(target,{value:crypt}).then(d=>{
+        console.log(target);
         let data = this.util.decryptAESData(JSON.stringify(d));
         if(is_crypt && is_crypt==true){
           data = d;

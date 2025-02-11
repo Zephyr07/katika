@@ -44,6 +44,11 @@
         <br>
         <img src="../../../assets/img/Roue-du-Bonheur-26-08-2024.png" alt="">
       </ion-col>
+      <ion-col (click)="goToGame('tile')" size="4" *ngIf="games.tile.status=='enable'">
+        <img src="../../../assets/img/wz/game/roue.png" alt="" class="radius shadow">
+        <br>
+        <img src="../../../assets/img/Roue-du-Bonheur-26-08-2024.png" alt="">
+      </ion-col>
 
 
       <ion-col (click)="goToGame('fruits')" size="4" *ngIf="games.fruits.status=='enable'">

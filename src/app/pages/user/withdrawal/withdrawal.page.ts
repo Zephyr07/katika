@@ -159,7 +159,7 @@ export class WithdrawalPage implements OnInit {
     if(this.can_recharge){
       const alert = await this.alertController.create({
         header: this.TEXT,
-        message:"Entrez le numéro mobile money et le nombre de point que vous souhaitez recharger. La recharge minimum est de 50.",
+        message:"Entrez le numéro mobile money et le nombre de point que vous souhaitez recharger. La recharge minimum est de 1 000.",
         buttons: [
           {
             text: this.CANCEL,
@@ -170,7 +170,7 @@ export class WithdrawalPage implements OnInit {
             role:'confirm',
             handler:(data)=>{
               if(!isNaN(data.phone) && data.phone <= NUMBER_RANGE.max && data.phone >= NUMBER_RANGE.min){
-                if(data.amount>=500){
+                if(data.amount>=1000){
                   this.util.showLoading("treatment");
                   const opt = {
                     amount:data.amount,
@@ -199,7 +199,7 @@ export class WithdrawalPage implements OnInit {
                     this.util.handleError(q);
                   });
                 } else {
-                  this.util.doToast('Le montant doit être supérieur ou égale à 500',3000);
+                  this.util.doToast('Le montant doit être supérieur ou égale à 1 000',3000);
                 }
 
               } else {

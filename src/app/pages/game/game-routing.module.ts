@@ -63,6 +63,10 @@ const routes: Routes = [
   {
     path: 'lucky',
     loadChildren: () => import('./lucky/lucky.module').then( m => m.LuckyPageModule)
+  },
+  {
+    path: 'tile-2048',
+    loadChildren: () => import('./tile-2048/tile-2048.module').then( m => m.Tile2048PageModule)
   }
 
 ];
